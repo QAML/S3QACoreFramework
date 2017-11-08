@@ -40,6 +40,7 @@ import qa.qcri.iyas.data.preprocessing.TextPreprocessor;
 import qa.qcri.iyas.data.readers.DataReader;
 import qa.qcri.iyas.types.Comment;
 import qa.qcri.iyas.types.Instance;
+import qa.qcri.iyas.types.InstanceA;
 import qa.qcri.iyas.types.RelatedQuestionBody;
 import qa.qcri.iyas.types.RelatedQuestionSubject;
 import qa.qcri.iyas.types.UserQuestionBody;
@@ -159,8 +160,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			Document document = saxBuilder.build(new StringReader(jcas.getDocumentText()));
 			Element root = document.getRootElement();
 			Element instance = root.getChildren().get(0);
-			if (instance.getName().equals(DataReader.INSTANCE_TAG))
-				parseInstance(instance);
+			parseInstance(instance);
 						
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -352,7 +352,10 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		if (next.typeOfInstance == TypeOfInstance.INSTANCE) {
 			Instance instanceAnnotation = new Instance(jcas);
 			instanceAnnotation.addToIndexes();
-		}
+		} else if (next.typeOfInstance == TypeOfInstance.INSTANCE_A) {
+			InstanceA instanceAnnotation = new InstanceA(jcas);
+			instanceAnnotation.addToIndexes();
+		} 
 
 		return jcas;
 	}

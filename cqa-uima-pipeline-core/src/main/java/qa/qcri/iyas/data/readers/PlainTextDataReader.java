@@ -59,6 +59,7 @@ public class PlainTextDataReader extends DataReader {
 		String userQuestionID = null;
 		String userQuestionSubject = null;
 		String userQuestionBody = null;
+		String language = "en";
 		
 //		StringBuilder sb_c = new StringBuilder();
 //		sb_c.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));

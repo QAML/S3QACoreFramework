@@ -14,7 +14,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Oct 31 16:46:26 AST 2017
+ * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
  * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class RelatedQuestion extends Annotation {
@@ -143,6 +143,28 @@ public class RelatedQuestion extends Annotation {
       jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.types.RelatedQuestion");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);
     jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestion_Type)jcasType).casFeatCode_candidateViewNames), i, v);}
+   
+    
+  //*--------------*
+  //* Feature: ID
+
+  /** getter for ID - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getID() {
+    if (RelatedQuestion_Type.featOkTst && ((RelatedQuestion_Type)jcasType).casFeat_ID == null)
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.RelatedQuestion");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((RelatedQuestion_Type)jcasType).casFeatCode_ID);}
+    
+  /** setter for ID - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setID(String v) {
+    if (RelatedQuestion_Type.featOkTst && ((RelatedQuestion_Type)jcasType).casFeat_ID == null)
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.RelatedQuestion");
+    jcasType.ll_cas.ll_setStringValue(addr, ((RelatedQuestion_Type)jcasType).casFeatCode_ID, v);}    
   }
 
     

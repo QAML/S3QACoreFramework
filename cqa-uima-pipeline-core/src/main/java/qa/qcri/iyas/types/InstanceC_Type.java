@@ -9,7 +9,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue Oct 31 16:46:26 AST 2017
+ * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
  * @generated */
 public class InstanceC_Type extends Annotation_Type {
   /** @generated */

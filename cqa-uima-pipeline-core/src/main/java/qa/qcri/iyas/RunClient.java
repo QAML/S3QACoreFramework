@@ -14,10 +14,12 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 
 import qa.qcri.iyas.types.Comment;
+import qa.qcri.iyas.types.RelatedQuestion;
 //import qa.qcri.iyas.types.RelatedQuestion;
 import qa.qcri.iyas.types.RelatedQuestionBody;
 import qa.qcri.iyas.types.RelatedQuestionSubject;
@@ -36,7 +38,6 @@ class ProcessingOutputListener extends UimaAsBaseCallbackListener {
 			} else {
 				for (Annotation annotation : cas.getJCas().getAnnotationIndex()) {
 					if (annotation instanceof UserQuestion) {
-						@SuppressWarnings("unused")
 						UserQuestion cqaAnnotation = (UserQuestion)annotation;
 						System.out.println(cqaAnnotation.getID()+" complete ");
 					} else 
@@ -47,10 +48,10 @@ class ProcessingOutputListener extends UimaAsBaseCallbackListener {
 						UserQuestionBody cqaAnnotation = (UserQuestionBody)annotation;
 						System.out.println(cqaAnnotation.getID()+" body "+cqaAnnotation.getNumberOfCandidates());
 					} else 
-//					if (annotation instanceof RelatedQuestion) {
-//						RelatedQuestion cqaAnnotation = (RelatedQuestion)annotation;
-//						System.out.println(cqaAnnotation.getID()+" question "+cqaAnnotation.getNumberOfCandidates());
-//					} else 
+					if (annotation instanceof RelatedQuestion) {
+						RelatedQuestion cqaAnnotation = (RelatedQuestion)annotation;
+						System.out.println(cqaAnnotation.getID()+" complete");
+					} else 
 					if (annotation instanceof RelatedQuestionSubject) {
 						RelatedQuestionSubject cqaAnnotation = (RelatedQuestionSubject)annotation;
 						System.out.println(cqaAnnotation.getID()+" subject ");
@@ -61,8 +62,10 @@ class ProcessingOutputListener extends UimaAsBaseCallbackListener {
 						Comment cqaAnnotation = (Comment)annotation;
 						System.out.println(cqaAnnotation.getID()+" comment ");
 					} else if (annotation instanceof DocumentAnnotation) {
-						   
-					} 
+//						if (!JCasUtil.exists(cas.getJCas(), UserQuestion.class) &&
+//								!JCasUtil.exists(cas.getJCas(), RelatedQuestion.class))
+//							System.out.println(cas.getDocumentText());
+					}
 //					else {
 //						for (Annotation ann : cas.getJCas().getAnnotationIndex()) {
 //							System.err.println(ann.toString());

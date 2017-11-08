@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Tue Oct 31 16:46:26 AST 2017
+ * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
  * @generated */
 public class RelatedQuestion_Type extends Annotation_Type {
   /** @generated */
@@ -96,6 +96,30 @@ public class RelatedQuestion_Type extends Annotation_Type {
     ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_candidateViewNames), i, v);
   }
  
+ 
+  /** @generated */
+  final Feature casFeat_ID;
+  /** @generated */
+  final int     casFeatCode_ID;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getID(int addr) {
+        if (featOkTst && casFeat_ID == null)
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.RelatedQuestion");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_ID);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setID(int addr, String v) {
+        if (featOkTst && casFeat_ID == null)
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.RelatedQuestion");
+    ll_cas.ll_setStringValue(addr, casFeatCode_ID, v);}
+    
+  
 
 
 
@@ -115,6 +139,10 @@ public class RelatedQuestion_Type extends Annotation_Type {
  
     casFeat_candidateViewNames = jcas.getRequiredFeatureDE(casType, "candidateViewNames", "uima.cas.StringArray", featOkTst);
     casFeatCode_candidateViewNames  = (null == casFeat_candidateViewNames) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_candidateViewNames).getCode();
+
+ 
+    casFeat_ID = jcas.getRequiredFeatureDE(casType, "ID", "uima.cas.String", featOkTst);
+    casFeatCode_ID  = (null == casFeat_ID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_ID).getCode();
 
   }
 }

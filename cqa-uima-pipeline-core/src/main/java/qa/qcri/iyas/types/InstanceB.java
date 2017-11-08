@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Oct 31 16:46:26 AST 2017
+ * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
  * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class InstanceB extends Annotation {

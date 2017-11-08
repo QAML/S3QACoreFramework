@@ -8,7 +8,7 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 
 /** 
- * Updated by JCasGen Tue Oct 31 16:46:26 AST 2017
+ * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
  * @generated */
 public class RelatedQuestionSubject_Type extends QAAnnotation_Type {
   /** @generated */

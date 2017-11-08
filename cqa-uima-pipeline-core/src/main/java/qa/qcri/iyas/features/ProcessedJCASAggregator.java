@@ -28,6 +28,7 @@ import org.apache.uima.util.CasCreationUtils;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.util.CasCopier;
 import qa.qcri.iyas.types.Comment;
 import qa.qcri.iyas.types.Instance;
+import qa.qcri.iyas.types.InstanceA;
 import qa.qcri.iyas.types.QAAnnotation;
 import qa.qcri.iyas.types.RelatedQuestion;
 import qa.qcri.iyas.types.RelatedQuestionBody;
@@ -111,21 +112,53 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 			qaAnn = getAnnotation(jcas, RelatedQuestionSubject.class);
 		else if (JCasUtil.exists(jcas, Comment.class))
 			qaAnn = getAnnotation(jcas, Comment.class);
+		else
+			throw new AnalysisEngineProcessException("Expected annotation not found!",null);
 		
 		return qaAnn.getID().split("_")[0];
+	}
+	
+	private String getRelatedQuestionID(JCas jcas) throws AnalysisEngineProcessException {
+		QAAnnotation qaAnn = null;
+		
+		if (JCasUtil.exists(jcas, RelatedQuestionBody.class))
+			qaAnn = getAnnotation(jcas, RelatedQuestionBody.class);
+		else if (JCasUtil.exists(jcas, RelatedQuestionSubject.class))
+			qaAnn = getAnnotation(jcas, RelatedQuestionSubject.class);
+		else if (JCasUtil.exists(jcas, Comment.class))
+			qaAnn = getAnnotation(jcas, Comment.class);
+		else
+			throw new AnalysisEngineProcessException("Expected annotation not found!",null);
+		
+		return qaAnn.getID().split("_")[0]+"_"+qaAnn.getID().split("_")[1];
 	}
 	
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		if (JCasUtil.exists(jcas, Instance.class)) {
 			String userQuestionID = getUserQuestionID(jcas);
-//			if (instances.get(userQuestionID) == null)
-//				instances.put(userQuestionID, new ProcessedJCASAggregator.ProcessedInstance());
 			try {
-				boolean ready = processedInstancesManager.addJCas(userQuestionID,jcas);
+				boolean ready = processedInstancesManager.addJCasToInstance(userQuestionID,jcas);
 				if (ready) {
 					JCas readyJCas = getEmptyJCas();
-					processedInstancesManager.getJCasToInstance(userQuestionID, readyJCas, true);
+					processedInstancesManager.getJCasForInstance(userQuestionID, readyJCas, true);
+					pendingJCases.addLast(readyJCas);
+				}
+			} catch (CASException e) {
+				e.printStackTrace();
+				throw new AnalysisEngineProcessException(e.getMessage(),null);
+			} catch (ResourceInitializationException e) {
+				e.printStackTrace();
+				throw new AnalysisEngineProcessException(e.getMessage(),null);
+
+			}
+		} else if (JCasUtil.exists(jcas, InstanceA.class)) {
+			String relatedQuestionID = getRelatedQuestionID(jcas);
+			try {
+				boolean ready = processedInstancesManager.addJCasToInstanceA(relatedQuestionID,jcas);
+				if (ready) {
+					JCas readyJCas = getEmptyJCas();
+					processedInstancesManager.getJCasForInstanceA(relatedQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
 			} catch (CASException e) {
