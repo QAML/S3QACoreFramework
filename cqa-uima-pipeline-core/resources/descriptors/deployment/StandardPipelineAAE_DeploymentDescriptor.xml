@@ -1,0 +1,32 @@
+<analysisEngineDeploymentDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>FeatureExtraction</name>
+    <description>Feature Extraction</description>
+    <deployment protocol="jms" provider="activemq">
+        <casPool numberOfCASes="1" initialFsHeapSize="2000000"/>
+        <service>
+            <inputQueue endpoint="myQueueName" brokerURL="tcp://localhost:61616" prefetch="0"/>
+            <topDescriptor>
+                <import name="descriptors.qa.qcri.iyas.StandardPipelineAAE_Descriptor"/>
+            </topDescriptor>
+            <analysisEngine async="true">
+                <delegates>
+                    <analysisEngine key="InputJCasMultiplierAAE_Descriptor" inputQueueScaleout="1">
+                        <casMultiplier poolSize="1" initialFsHeapSize="2000000" processParentLast="false"/>
+                    </analysisEngine>
+                    <analysisEngine key="ProcessedJCASAggregatorAAE_Descriptor" inputQueueScaleout="1">
+                        <casMultiplier poolSize="1" initialFsHeapSize="2000000" processParentLast="false"/>
+                    </analysisEngine>
+                    <remoteAnalysisEngine key="StandardSimpleFeatureExtractorAAE_Descriptor" remoteReplyQueueScaleout="1">
+                        <inputQueue endpoint="standardSimpleFeatureExtractorQueue" brokerURL="tcp://localhost:61616" prefetch="1"/>
+                        <serializer method="xmi"/>
+                        <asyncAggregateErrorConfiguration>
+                            <getMetadataErrors maxRetries="0" errorAction="Terminate" timeout="0"/>
+                            <processCasErrors maxRetries="0" thresholdAction="terminate" timeout="0" thresholdCount="0" thresholdWindow="0" continueOnRetryFailure="false"/>
+                            <collectionProcessCompleteErrors timeout="0" additionalErrorAction="Terminate"/>
+                        </asyncAggregateErrorConfiguration>
+                    </remoteAnalysisEngine>
+                </delegates>
+            </analysisEngine>
+        </service>
+    </deployment>
+</analysisEngineDeploymentDescription>
