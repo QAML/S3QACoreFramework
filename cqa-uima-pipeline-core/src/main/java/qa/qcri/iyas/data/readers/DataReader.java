@@ -12,13 +12,11 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String LANGUAGE_PARAM = "language";
 	public static final String TASK_PARAM = "task";
 	
-	public static final String INSTANCE_TASK = "instance";
 	public static final String INSTANCE_A_TASK = "instance_a";
 	public static final String INSTANCE_B_TASK = "instance_b";
 	public static final String INSTANCE_C_TASK = "instance_c";
 	
 	public static final String ROOT_TAG = "root";
-	public static final String INSTANCE_TAG = "instance";
 	public static final String INSTANCE_A_TAG = "instance_a";
 	public static final String INSTANCE_B_TAG = "instance_b";
 	public static final String INSTANCE_C_TAG = "instance_c";
@@ -43,7 +41,7 @@ public abstract class DataReader extends Resource_ImplBase {
 	@Override
 	public void afterResourcesInitialized() {
 		try {
-			if (!task.matches(INSTANCE_TASK+"|"+INSTANCE_A_TASK+"|"+INSTANCE_B_TASK+"|"+INSTANCE_C_TASK))
+			if (!task.matches(INSTANCE_A_TASK+"|"+INSTANCE_B_TASK+"|"+INSTANCE_C_TASK))
 				throw new ResourceInitializationException("Unknown task!",null);
 			init();
 		} catch (Exception e) {

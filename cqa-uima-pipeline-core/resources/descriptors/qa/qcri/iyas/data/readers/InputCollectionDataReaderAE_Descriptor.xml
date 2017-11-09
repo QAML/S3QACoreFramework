@@ -1374,6 +1374,11 @@ systems.&lt;/p&gt;
                             <description/>
                             <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                         </featureDescription>
+                        <featureDescription>
+                            <name>ID</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
                     </features>
                 </typeDescription>
                 <typeDescription>
@@ -1481,8 +1486,7 @@ systems.&lt;/p&gt;
                     <resourceClassName>qa.qcri.iyas.data.readers.PlainTextDataReader</resourceClassName>
                     <parameters>
                         <parameter name="file" value="/home/shared_files/workspace/Iyas.UIMA.Pipeline/data/dev.txt"/>
-                        <parameter name="language" value="en"/>
-                        <parameter name="task" value="instance"/>
+                        <parameter name="task" value="instance_b"/>
                         <parameter name="__UIMAFIT_RESOURCE_NAME__" value="qa.qcri.iyas.data.readers.PlainTextDataReader-0"/>
                     </parameters>
                 </customResourceSpecifier>

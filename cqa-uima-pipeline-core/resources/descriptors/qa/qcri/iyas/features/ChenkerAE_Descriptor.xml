@@ -1440,6 +1440,11 @@ systems.&lt;/p&gt;
                             <description/>
                             <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                         </featureDescription>
+                        <featureDescription>
+                            <name>ID</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
                     </features>
                 </typeDescription>
                 <typeDescription>

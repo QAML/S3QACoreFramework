@@ -3,45 +3,6 @@
 	<xs:element name="root">
 		<xs:complexType>
 			<xs:choice>
-				<xs:element name="instance">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="user_question">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="subject" type="xs:string" />
-										<xs:element name="body" type="xs:string" />
-									</xs:sequence>
-									<xs:attribute name="id" type="xs:string" use="required" />
-									<xs:attribute name="lang" type="xs:string" use="required" />
-									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="related_question" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="subject" type="xs:string" />
-										<xs:element name="body" type="xs:string" />
-										<xs:element name="comment" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:simpleContent>
-													<xs:extension base="xs:string">
-														<xs:attribute name="id" type="xs:string" use="required" />
-														<xs:attribute name="lang" type="xs:string" use="required" />
-													</xs:extension>
-												</xs:simpleContent>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-									<xs:attribute name="id" type="xs:string" use="required" />
-									<xs:attribute name="lang" type="xs:string" use="required" />
-									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-
 				<xs:element name="instance_a">
 					<xs:complexType>
 						<xs:sequence>
@@ -63,6 +24,7 @@
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
+									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -80,6 +42,7 @@
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
+									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="related_question" maxOccurs="unbounded">
@@ -95,7 +58,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-                
+				
 				<xs:element name="instance_c">
 					<xs:complexType>
 						<xs:sequence>
@@ -107,11 +70,14 @@
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
+									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="related_question_comments">
+							<xs:element name="related_question" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
+										<xs:element name="subject" type="xs:string" />
+										<xs:element name="body" type="xs:string" />
 										<xs:element name="comment" maxOccurs="unbounded">
 											<xs:complexType>
 												<xs:simpleContent>
@@ -123,7 +89,9 @@
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>
-                                    <xs:attribute name="id" type="xs:string" use="required" />
+									<xs:attribute name="id" type="xs:string" use="required" />
+									<xs:attribute name="lang" type="xs:string" use="required" />
+									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>

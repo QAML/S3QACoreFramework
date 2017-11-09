@@ -27,8 +27,9 @@ import org.apache.uima.util.CasCreationUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.util.CasCopier;
 import qa.qcri.iyas.types.Comment;
-import qa.qcri.iyas.types.Instance;
 import qa.qcri.iyas.types.InstanceA;
+import qa.qcri.iyas.types.InstanceB;
+import qa.qcri.iyas.types.InstanceC;
 import qa.qcri.iyas.types.QAAnnotation;
 import qa.qcri.iyas.types.RelatedQuestion;
 import qa.qcri.iyas.types.RelatedQuestionBody;
@@ -135,13 +136,13 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		if (JCasUtil.exists(jcas, Instance.class)) {
+		if (JCasUtil.exists(jcas, InstanceC.class)) {
 			String userQuestionID = getUserQuestionID(jcas);
 			try {
-				boolean ready = processedInstancesManager.addJCasToInstance(userQuestionID,jcas);
+				boolean ready = processedInstancesManager.addJCasToInstanceC(userQuestionID,jcas);
 				if (ready) {
 					JCas readyJCas = getEmptyJCas();
-					processedInstancesManager.getJCasForInstance(userQuestionID, readyJCas, true);
+					processedInstancesManager.getJCasForInstanceC(userQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
 			} catch (CASException e) {
@@ -159,6 +160,23 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 				if (ready) {
 					JCas readyJCas = getEmptyJCas();
 					processedInstancesManager.getJCasForInstanceA(relatedQuestionID, readyJCas, true);
+					pendingJCases.addLast(readyJCas);
+				}
+			} catch (CASException e) {
+				e.printStackTrace();
+				throw new AnalysisEngineProcessException(e.getMessage(),null);
+			} catch (ResourceInitializationException e) {
+				e.printStackTrace();
+				throw new AnalysisEngineProcessException(e.getMessage(),null);
+
+			}
+		} else if (JCasUtil.exists(jcas, InstanceB.class)) {
+			String userQuestionID = getUserQuestionID(jcas);
+			try {
+				boolean ready = processedInstancesManager.addJCasToInstanceB(userQuestionID,jcas);
+				if (ready) {
+					JCas readyJCas = getEmptyJCas();
+					processedInstancesManager.getJCasForInstanceB(userQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
 			} catch (CASException e) {

@@ -39,8 +39,9 @@ import org.jsoup.nodes.TextNode;
 import qa.qcri.iyas.data.preprocessing.TextPreprocessor;
 import qa.qcri.iyas.data.readers.DataReader;
 import qa.qcri.iyas.types.Comment;
-import qa.qcri.iyas.types.Instance;
 import qa.qcri.iyas.types.InstanceA;
+import qa.qcri.iyas.types.InstanceB;
+import qa.qcri.iyas.types.InstanceC;
 import qa.qcri.iyas.types.RelatedQuestionBody;
 import qa.qcri.iyas.types.RelatedQuestionSubject;
 import qa.qcri.iyas.types.UserQuestionBody;
@@ -65,7 +66,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	//TODO release the CASes in case of error
 	private static enum Status{USER_QUESTION_SUBJECT,USER_QUESTION_BODY,RELATED_QUESTION_SUBJECT,RELATED_QUESTION_BODY,COMMENT};
 	private Status status = null;
-	private static enum TypeOfInstance{INSTANCE,INSTANCE_A,INSTANCE_B,INSTANCE_C};
+	private static enum TypeOfInstance{INSTANCE_A,INSTANCE_B,INSTANCE_C};
 	
 	public static final String PREPROCESSOR_EXTERNAL_RESOURCE = "preprocessor";
 	public static final String CONCATENATE_PARAM = "concatenate";
@@ -92,9 +93,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	}
 	
 	private void parseInstance(Element instance) throws ResourceConfigurationException, ResourceInitializationException, AnalysisEngineProcessException {
-		if (instance.getName().equals(DataReader.INSTANCE_TAG)) {
+		if (instance.getName().equals(DataReader.INSTANCE_C_TAG)) {
 			Element userQuestion = instance.getChild(DataReader.USER_QUESTION_TAG);
-			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE));
+			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE_C));
 			
 			String userQuestionID = userQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 			if (userQuestionID.split("_").length != 1)
@@ -103,12 +104,12 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				String relatedQuestionID = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 				if (relatedQuestionID.split("_").length != 2 || !relatedQuestionID.startsWith(userQuestionID))
 					throw new AnalysisEngineProcessException("The related question ID does not satisfy the requirements",null);
-				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE));
+				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE_C));
 				for (Element comment : relatedQuestion.getChildren(DataReader.COMMENT_TAG)) {
 					String commentID = comment.getAttributeValue(DataReader.ID_ATTRIBUTE);
 					if (commentID.split("_").length != 3 || !commentID.startsWith(relatedQuestionID))
 						throw new AnalysisEngineProcessException("The comment question ID does not satisfy the requirements",null);
-					currentElements.addLast(new MyElement(comment,TypeOfInstance.INSTANCE));
+					currentElements.addLast(new MyElement(comment,TypeOfInstance.INSTANCE_C));
 				}
 			}
 			status = Status.USER_QUESTION_SUBJECT;
@@ -125,6 +126,20 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				currentElements.addLast(new MyElement(comment,TypeOfInstance.INSTANCE_A));
 			}
 			status = Status.RELATED_QUESTION_SUBJECT;
+		} else if (instance.getName().equals(DataReader.INSTANCE_B_TAG)) {
+			Element userQuestion = instance.getChild(DataReader.USER_QUESTION_TAG);
+			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE_B));
+			
+			String userQuestionID = userQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
+			if (userQuestionID.split("_").length != 1)
+				throw new AnalysisEngineProcessException("The user question ID does not satisfy the requirements",null);
+			for (Element relatedQuestion : instance.getChildren(DataReader.RELATED_QUESTION_TAG)) {
+				String relatedQuestionID = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
+				if (relatedQuestionID.split("_").length != 2 || !relatedQuestionID.startsWith(userQuestionID))
+					throw new AnalysisEngineProcessException("The related question ID does not satisfy the requirements",null);
+				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE_B));
+			}
+			status = Status.USER_QUESTION_SUBJECT;
 		}
 	}
 	
@@ -230,7 +245,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	private JCas getRelatedQuestion(Element relatedQuestion) {
 		String id = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 		String lang = relatedQuestion.getAttributeValue(DataReader.LANG_ATTRIBUTE);
-		int numberOfCandidates = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE));
+		int numberOfCandidates = 0;
+		if (relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE) != null)
+			numberOfCandidates = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE));
 		
 		String subject = preprocessor.preprocess(relatedQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
@@ -266,7 +283,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	private JCas getRelatedQuestionBody(Element relatedQuestion) {
 		String id = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 		String lang = relatedQuestion.getAttributeValue(DataReader.LANG_ATTRIBUTE);
-		int numberOfCandidates = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE));
+		int numberOfCandidates = 0;
+		if (relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE) != null)
+			numberOfCandidates = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE));
 		
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
 		JCas bodyJCas = getEmptyJCas();
@@ -309,7 +328,14 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			} else if (status == Status.RELATED_QUESTION_SUBJECT && next.element.getName().equals(DataReader.RELATED_QUESTION_TAG)) {
 				jcas = getRelatedQuestion(next.element);
 				currentElements.removeFirst();
-				status = Status.COMMENT;
+				if (next.typeOfInstance != TypeOfInstance.INSTANCE_B)
+					status = Status.COMMENT;
+				else {
+					if (currentElements.isEmpty())
+						status = null;
+					else if (currentElements.getFirst().element.getName().equals(DataReader.RELATED_QUESTION_TAG))
+						status = Status.RELATED_QUESTION_SUBJECT;
+				}
 			} else if (status == Status.COMMENT && next.element.getName().equals(DataReader.COMMENT_TAG)) {
 				jcas = getComment(next.element);
 				currentElements.removeFirst();
@@ -335,7 +361,14 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			} else if (status == Status.RELATED_QUESTION_BODY && next.element.getName().equals(DataReader.RELATED_QUESTION_TAG)) {
 				jcas = getRelatedQuestionBody(next.element);
 				currentElements.removeFirst();
-				status = Status.COMMENT;
+				if (next.typeOfInstance != TypeOfInstance.INSTANCE_B)
+					status = Status.COMMENT;
+				else {
+					if (currentElements.isEmpty())
+						status = null;
+					else if (currentElements.getFirst().element.getName().equals(DataReader.RELATED_QUESTION_TAG))
+						status = Status.RELATED_QUESTION_SUBJECT;
+				}
 			} else if (status == Status.COMMENT && next.element.getName().equals(DataReader.COMMENT_TAG)) {
 				jcas = getComment(next.element);
 				currentElements.removeFirst();
@@ -349,11 +382,14 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			}
 		}
 		
-		if (next.typeOfInstance == TypeOfInstance.INSTANCE) {
-			Instance instanceAnnotation = new Instance(jcas);
+		if (next.typeOfInstance == TypeOfInstance.INSTANCE_C) {
+			InstanceC instanceAnnotation = new InstanceC(jcas);
 			instanceAnnotation.addToIndexes();
 		} else if (next.typeOfInstance == TypeOfInstance.INSTANCE_A) {
 			InstanceA instanceAnnotation = new InstanceA(jcas);
+			instanceAnnotation.addToIndexes();
+		} else if (next.typeOfInstance == TypeOfInstance.INSTANCE_B) {
+			InstanceB instanceAnnotation = new InstanceB(jcas);
 			instanceAnnotation.addToIndexes();
 		} 
 

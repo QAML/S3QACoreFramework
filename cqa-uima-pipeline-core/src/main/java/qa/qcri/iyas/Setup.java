@@ -83,7 +83,7 @@ public class Setup {
 				InputCollectionDataReader.class);
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
 				PlainTextDataReader.FILE_PARAM,"/home/shared_files/workspace/Iyas.UIMA.Pipeline/data/dev.txt",
-				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_A_TASK);
+				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescritor, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		collectionReaderDescritor.toXML(new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/data/readers/InputCollectionDataReaderAE_Descriptor.xml"));

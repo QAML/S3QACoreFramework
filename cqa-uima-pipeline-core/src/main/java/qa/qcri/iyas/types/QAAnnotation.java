@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Mon Oct 30 14:47:28 AST 2017 */
+/* First created by JCasGen Thu Nov 09 13:31:39 AST 2017 */
 package qa.qcri.iyas.types;
 
 import org.apache.uima.jcas.JCas; 
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
+ * Updated by JCasGen Thu Nov 09 13:31:39 AST 2017
  * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class QAAnnotation extends Annotation {

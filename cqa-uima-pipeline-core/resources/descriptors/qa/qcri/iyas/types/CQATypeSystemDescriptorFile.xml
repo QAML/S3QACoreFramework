@@ -74,11 +74,6 @@
       </features>
     </typeDescription>
   <typeDescription>
-      <name>qa.qcri.iyas.types.Instance</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
       <name>qa.qcri.iyas.types.InstanceA</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
@@ -129,6 +124,11 @@
           <name>candidateViewNames</name>
           <description/>
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>ID</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Mon Oct 30 14:47:28 AST 2017 */
+/* First created by JCasGen Thu Nov 09 13:31:39 AST 2017 */
 package qa.qcri.iyas.types;
 
 import org.apache.uima.jcas.JCas;
@@ -9,7 +9,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Wed Nov 08 12:20:51 AST 2017
+ * Updated by JCasGen Thu Nov 09 13:31:39 AST 2017
  * @generated */
 public class InstanceC_Type extends Annotation_Type {
   /** @generated */
