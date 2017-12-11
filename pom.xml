@@ -3,7 +3,7 @@
 	
 	<groupId>qa.qcri.iyas.uima.pipeline</groupId>
 	<artifactId>s3qa-uima-pipeline-core</artifactId>
-	<name>s3qa-uima-pipeline-core</name>
+	<name>S3QACore</name>
 	<version>0.0.1-SNAPSHOT</version>
 	
 	<properties>
