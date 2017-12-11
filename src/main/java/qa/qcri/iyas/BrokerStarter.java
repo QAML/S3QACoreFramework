@@ -27,7 +27,8 @@ public class BrokerStarter {
 		 
 		// configure the broker
 		broker.addConnector("tcp://localhost:61616");
-		 
+		
+		// start the broker
 		broker.start();
 	}
 
