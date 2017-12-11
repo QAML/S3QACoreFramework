@@ -47,5 +47,5 @@ public abstract class SimilarityMeasure implements SharedResourceObject, Externa
 		// TODO Auto-generated method stub	
 	}
 	
-	public abstract double getSimilarity(JCas leftJCas, JCas rightJCas);
+	public abstract double getSimilarityValue(JCas leftJCas, JCas rightJCas);
 }
