@@ -61,11 +61,11 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
-import qa.qcri.iyas.data.readers.InputCollectionDataReader;
-import qa.qcri.iyas.data.readers.PlainTextDataReader;
-import qa.qcri.iyas.features.InputJCasMultiplier;
-import qa.qcri.iyas.features.ProcessedInstancesManager;
-import qa.qcri.iyas.features.ProcessedJCASAggregator;
+import qa.qcri.iyas.data.reader.InputCollectionDataReader;
+import qa.qcri.iyas.data.reader.PlainTextDataReader;
+import qa.qcri.iyas.feature.InputJCasMultiplier;
+import qa.qcri.iyas.feature.ProcessedInstancesManager;
+import qa.qcri.iyas.feature.ProcessedJCASAggregator;
 
 public class Setup {
 	

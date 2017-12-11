@@ -35,13 +35,13 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 
-import qa.qcri.iyas.types.Comment;
-import qa.qcri.iyas.types.RelatedQuestion;
-import qa.qcri.iyas.types.RelatedQuestionBody;
-import qa.qcri.iyas.types.RelatedQuestionSubject;
-import qa.qcri.iyas.types.UserQuestion;
-import qa.qcri.iyas.types.UserQuestionBody;
-import qa.qcri.iyas.types.UserQuestionSubject;
+import qa.qcri.iyas.type.Comment;
+import qa.qcri.iyas.type.RelatedQuestion;
+import qa.qcri.iyas.type.RelatedQuestionBody;
+import qa.qcri.iyas.type.RelatedQuestionSubject;
+import qa.qcri.iyas.type.UserQuestion;
+import qa.qcri.iyas.type.UserQuestionBody;
+import qa.qcri.iyas.type.UserQuestionSubject;
 
 class ProcessingOutputListener extends UimaAsBaseCallbackListener {
 	
