@@ -1,5 +1,4 @@
 .settings/
 .project
-cqa-uima-pipeline-broker-starter/activemq-data/
-cqa-uima-pipeline-broker-starter/target/
-cqa-uima-pipeline-core/target
+S3QACore/activemq-data/
+S3QACore/target/
