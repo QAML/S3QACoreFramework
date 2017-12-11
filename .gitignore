@@ -1,4 +1,4 @@
 .settings/
 .project
-S3QACore/activemq-data/
-S3QACore/target/
+activemq-data/
+target/
