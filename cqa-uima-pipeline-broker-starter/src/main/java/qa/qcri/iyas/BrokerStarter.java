@@ -1,7 +1,6 @@
 package qa.qcri.iyas;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.console.Main;
 
 public class BrokerStarter {
 

@@ -1,40 +1,27 @@
 package qa.qcri.iyas.features;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FSClassRegistry;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.CasCreationUtils;
 
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.util.CasCopier;
 import qa.qcri.iyas.types.Comment;
 import qa.qcri.iyas.types.InstanceA;
 import qa.qcri.iyas.types.InstanceB;
 import qa.qcri.iyas.types.InstanceC;
 import qa.qcri.iyas.types.QAAnnotation;
-import qa.qcri.iyas.types.RelatedQuestion;
 import qa.qcri.iyas.types.RelatedQuestionBody;
 import qa.qcri.iyas.types.RelatedQuestionSubject;
-import qa.qcri.iyas.types.UserQuestion;
 import qa.qcri.iyas.types.UserQuestionBody;
 import qa.qcri.iyas.types.UserQuestionSubject;
 

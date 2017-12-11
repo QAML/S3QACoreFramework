@@ -1,11 +1,9 @@
 package qa.qcri.iyas.data.readers;
 
-import java.util.Map;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceSpecifier;
 
 public abstract class DataReader extends Resource_ImplBase {
 	

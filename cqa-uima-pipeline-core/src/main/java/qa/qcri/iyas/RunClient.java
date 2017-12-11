@@ -14,17 +14,14 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 
 import qa.qcri.iyas.types.Comment;
 import qa.qcri.iyas.types.RelatedQuestion;
-//import qa.qcri.iyas.types.RelatedQuestion;
 import qa.qcri.iyas.types.RelatedQuestionBody;
 import qa.qcri.iyas.types.RelatedQuestionSubject;
 import qa.qcri.iyas.types.UserQuestion;
-//import qa.qcri.iyas.types.UserQuestion;
 import qa.qcri.iyas.types.UserQuestionBody;
 import qa.qcri.iyas.types.UserQuestionSubject;
 

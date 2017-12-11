@@ -135,10 +135,10 @@ public class StandardPreprocessor extends TextPreprocessor {
 	    return text;
 	}
 	
-	private String removeMultipleWhiteSpaces(String string){
-		char noBreakSpace = (char)160;
-		return string.replaceAll("[\r \t\f"+ noBreakSpace +"\r]+", " ").replaceAll("(( )*\n( )*)+", "\n").trim();
-	}
+//	private String removeMultipleWhiteSpaces(String string){
+//		char noBreakSpace = (char)160;
+//		return string.replaceAll("[\r \t\f"+ noBreakSpace +"\r]+", " ").replaceAll("(( )*\n( )*)+", "\n").trim();
+//	}
 	
 	@Override
 	public String preprocess(String text, String lang) {
