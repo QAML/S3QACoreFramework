@@ -66,7 +66,8 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void getNext(JCas jcas) throws IOException, CollectionException {
 		try {
-			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(DataReader.SCHEMA_PATH));
+			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
+					new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_PATH).toURI()));
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
 
 			String nextStr = reader.next();

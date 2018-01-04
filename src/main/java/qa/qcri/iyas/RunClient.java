@@ -106,7 +106,8 @@ public class RunClient {
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		
-		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescriptionFromPath("resources/descriptors/qa/qcri/iyas/data/readers/InputCollectionDataReaderAE_Descriptor.xml");
+		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescriptionFromPath(
+				RunClient.class.getResource("/descriptors/qa/qcri/iyas/data/reader/InputCollectionDataReaderAE_Descriptor.xml").getPath());
 		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(collectionReaderDescr);
 		
 		uimaAsEngine.setCollectionReader(collectionReader);

@@ -28,6 +28,9 @@ import java.util.Scanner;
 import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
 import org.apache.uima.aae.client.UimaAsynchronousEngine;
 import org.apache.uima.adapter.jms.client.BaseUIMAAsynchronousEngine_impl;
+import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
+import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 
 public class RunStandardPipeline extends UimaAsBaseCallbackListener {
@@ -35,6 +38,7 @@ public class RunStandardPipeline extends UimaAsBaseCallbackListener {
 	private static final List<String> IDs = new LinkedList<String>();
 	
 	public static void main(String[] args) throws Exception {
+		
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
 		// create a Map to hold required parameters
@@ -44,51 +48,64 @@ public class RunStandardPipeline extends UimaAsBaseCallbackListener {
 		
 		
 
+		// Deploy service
 		for (int i=0;i<1;i++) {
 			IDs.add(uimaAsEngine.deploy(
-					new File("resources/descriptors/deployment/StandardSimpleFeatureExtractorAAE_DeploymentDescriptor.xml").getAbsolutePath(), appCtx));
+					new File(RunStandardPipeline.class.getResource(
+							"/descriptors/deployment/StandardSimpleFeatureExtractorAAE_DeploymentDescriptor.xml" ).toURI()).getAbsolutePath(),
+					appCtx));
 		}
 		
 		// Deploy service
 		for (int i=0;i<1;i++) {
 			IDs.add(uimaAsEngine.deploy(
-					new File("resources/descriptors/deployment/StandardPipelineAAE_DeploymentDescriptor.xml").getAbsolutePath(), appCtx));
+					new File(RunStandardPipeline.class.getResource(
+							"/descriptors/deployment/StandardPipelineAAE_DeploymentDescriptor.xml" ).toURI()).getAbsolutePath(),
+					appCtx));
 		}
-		
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				 Scanner scanner = new Scanner(System.in);
-				 while (true) {
-					 String command = scanner.nextLine();
-					 if (command.startsWith("s")) {
-						 try {
-							uimaAsEngine.undeploy(IDs.get(0));
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} finally {
-							scanner.close();
-						}
-					 } else if (command.equals("q")) {
-						 System.out.println(IDs);
-					 } else if (command.startsWith("a ")) {
-						 int n = Integer.parseInt(command.split(" ")[1]);
-						 for (int i=0;i<n;i++)
-							try {
-								IDs.add(uimaAsEngine.deploy(
-										new File("resources/descriptors/qa/qcri/iyas/StandardPipelineAAE_DeploymentDescriptor.xml").getAbsolutePath(), appCtx));
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-					 }
-				 }
-			}
-		});
-		t.start();
+//		
+//		Thread t = new Thread(new Runnable() {
+//			public void run() {
+//				 Scanner scanner = new Scanner(System.in);
+//				 while (true) {
+//					 String command = scanner.nextLine();
+//					 if (command.startsWith("s")) {
+//						 try {
+//							uimaAsEngine.undeploy(IDs.get(0));
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						} finally {
+//							scanner.close();
+//						}
+//					 } else if (command.equals("q")) {
+//						 System.out.println(IDs);
+//					 } else if (command.startsWith("a ")) {
+//						 int n = Integer.parseInt(command.split(" ")[1]);
+//						 for (int i=0;i<n;i++)
+//							try {
+//								IDs.add(uimaAsEngine.deploy(
+//										new File("resources/descriptors/qa/qcri/iyas/StandardPipelineAAE_DeploymentDescriptor.xml").getAbsolutePath(), appCtx));
+//							} catch (Exception e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//					 }
+//				 }
+//			}
+//		});
+//		t.start();
 //		System.out.println(IDs);
 		
 //		uimaAsEngine.undeploy("-626a937e:15f522aa729:-7fb1");
+		
+		
+		TypeSystemDescription tsd = 
+				  TypeSystemDescriptionFactory.createTypeSystemDescription();
+		for (TypeDescription td : tsd.getTypes())
+			System.out.println(td.getName());		
+		
+		
 	}
 
 }

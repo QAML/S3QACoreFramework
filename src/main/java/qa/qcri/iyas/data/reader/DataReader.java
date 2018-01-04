@@ -24,7 +24,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * This abstract class defines a data reader to be used by the {@link InputCollectionDataReader}. Any new data source can be made available by implementing this class.
+ * This abstract class defines a data reader to be used by the {@link InputCollectionDataReader}. Any new data source can be made available by implementing this class. 
  * @author Salvatore Romeo
  *
  */
@@ -51,7 +51,7 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String LANG_ATTRIBUTE = "lang";
 	public static final String NUMBER_OF_CANDIDATES_ATTRIBUTE = "numberOfCandidates";
 	
-	public static final String SCHEMA_PATH = "resources/schemas/cqa_instance_schema.xsd";
+	public static final String SCHEMA_PATH = "/schemas/cqa_instance_schema.xsd";
 	
 //	@ConfigurationParameter(name = LANGUAGE_PARAM)
 //	protected String language;
