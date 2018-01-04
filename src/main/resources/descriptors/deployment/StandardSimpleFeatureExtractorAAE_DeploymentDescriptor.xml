@@ -1,0 +1,22 @@
+<analysisEngineDeploymentDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>FeatureExtraction</name>
+    <description>Feature Extraction</description>
+    <deployment protocol="jms" provider="activemq">
+        <casPool numberOfCASes="1" initialFsHeapSize="2000000"/>
+        <service>
+            <inputQueue endpoint="standardSimpleFeatureExtractorQueue" brokerURL="tcp://localhost:61616" prefetch="0"/>
+            <topDescriptor>
+                <import name="descriptors.qa.qcri.iyas.feature.StandardSimpleFeatureExtractorAAE_Descriptor"/>
+            </topDescriptor>
+            <analysisEngine async="true">
+                <delegates>
+                    <analysisEngine key="StanfordSegmenter" inputQueueScaleout="1"/>
+                    <analysisEngine key="StanfordPosTagger" inputQueueScaleout="1"/>
+                    <analysisEngine key="StanfordLemmatizer" inputQueueScaleout="1"/>
+                    <analysisEngine key="OpenNlpChunker" inputQueueScaleout="1"/>
+                    <analysisEngine key="StanfordParser" inputQueueScaleout="1"/>
+                </delegates>
+            </analysisEngine>
+        </service>
+    </deployment>
+</analysisEngineDeploymentDescription>

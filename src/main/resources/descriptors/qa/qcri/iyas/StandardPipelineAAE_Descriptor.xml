@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>false</primitive>
+    <delegateAnalysisEngineSpecifiers>
+        <delegateAnalysisEngine key="InputJCasMultiplierAAE_Descriptor">
+            <import name="descriptors.qa.qcri.iyas.feature.InputJCasMultiplierAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+        <delegateAnalysisEngine key="StandardSimpleFeatureExtractorAAE_Descriptor">
+            <import name="descriptors.qa.qcri.iyas.feature.StandardSimpleFeatureExtractorAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+        <delegateAnalysisEngine key="ProcessedJCASAggregatorAAE_Descriptor">
+            <import name="descriptors.qa.qcri.iyas.feature.ProcessedJCASAggregatorAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+    </delegateAnalysisEngineSpecifiers>
+    <flowController key="FixedFlowController">
+        <import name="org.apache.uima.flow.FixedFlowController"/>
+    </flowController>
+    <analysisEngineMetaData>
+        <name/>
+        <configurationParameters>
+            <configurationParameter>
+                <name>ActionAfterCasMultiplier</name>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+                <overrides>
+                    <parameter>FixedFlowController/ActionAfterCasMultiplier</parameter>
+                </overrides>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name>ActionAfterCasMultiplier</name>
+                <value>
+                    <string>drop</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <flowConstraints>
+            <fixedFlow>
+                <node>InputJCasMultiplierAAE_Descriptor</node>
+                <node>StandardSimpleFeatureExtractorAAE_Descriptor</node>
+                <node>ProcessedJCASAggregatorAAE_Descriptor</node>
+            </fixedFlow>
+        </flowConstraints>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>true</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>
