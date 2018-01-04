@@ -54,7 +54,7 @@ public class PlainTextDataReader extends DataReader {
 	}
 
 	@Override
-	public void close() {
+	public void releaseResources() {
 		try {
 			in.close();
 		} catch (IOException e) {

@@ -34,6 +34,11 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 
+/**
+ * 
+ * @author Salvatore Romeo
+ *
+ */
 @OperationalProperties(outputsNewCases = true,multipleDeploymentAllowed = false)
 @TypeCapability(
 		outputs = {"qa.qcri.iyas.types.UserQuestionSubject",
@@ -52,7 +57,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void close() {
 		try {
-			reader.close();
+			reader.releaseResources();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
