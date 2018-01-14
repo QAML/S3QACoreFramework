@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.jdom2.JDOMException;
 
 public class PlainTextDataReader extends DataReader {
 	
@@ -69,7 +68,7 @@ public class PlainTextDataReader extends DataReader {
 	}
 
 	@Override
-	public String next() throws JDOMException, IOException {
+	public String next() throws IOException {
 		
 		String relatedQuestionID = null;
 		String realtedQuestionSubject = null;

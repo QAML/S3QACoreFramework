@@ -32,9 +32,13 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
+import org.apache.uima.resource.ExternalResourceDescription;
 
+import qa.qcri.iyas.data.reader.InputCollectionDataReader;
+import qa.qcri.iyas.data.reader.PlainTextDataReader;
 import qa.qcri.iyas.type.Comment;
 import qa.qcri.iyas.type.RelatedQuestion;
 import qa.qcri.iyas.type.RelatedQuestionBody;
@@ -106,8 +110,17 @@ public class RunClient {
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		
-		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescriptionFromPath(
-				RunClient.class.getResource("/descriptors/qa/qcri/iyas/data/reader/InputCollectionDataReaderAE_Descriptor.xml").getPath());
+//		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescriptionFromPath(
+//				RunClient.class.getResource("/descriptors/qa/qcri/iyas/data/reader/InputCollectionDataReaderAE_Descriptor.xml").getPath());
+		
+		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+				InputCollectionDataReader.class);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
+				PlainTextDataReader.FILE_PARAM,"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt",
+				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_C_TASK);
+		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
+				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+		
 		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(collectionReaderDescr);
 		
 		uimaAsEngine.setCollectionReader(collectionReader);

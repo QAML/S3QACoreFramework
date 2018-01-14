@@ -66,8 +66,17 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void getNext(JCas jcas) throws IOException, CollectionException {
 		try {
+			File schemaFile = null;
+			if (reader.getTask().equals(DataReader.INSTANCE_A_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_A_PATH).toURI());
+			else if (reader.getTask().equals(DataReader.INSTANCE_B_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_B_PATH).toURI());
+			else if (reader.getTask().equals(DataReader.INSTANCE_C_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_C_PATH).toURI());
+			
+			
 			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
-					new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_PATH).toURI()));
+					schemaFile);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
 
 			String nextStr = reader.next();

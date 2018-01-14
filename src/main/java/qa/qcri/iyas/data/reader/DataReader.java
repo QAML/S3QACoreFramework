@@ -51,6 +51,9 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String LANG_ATTRIBUTE = "lang";
 	public static final String NUMBER_OF_CANDIDATES_ATTRIBUTE = "numberOfCandidates";
 	
+	public static final String SCHEMA_INSTANCE_A_PATH = "/schemas/cqa_instance_a_schema.xsd";
+	public static final String SCHEMA_INSTANCE_B_PATH = "/schemas/cqa_instance_b_schema.xsd";
+	public static final String SCHEMA_INSTANCE_C_PATH = "/schemas/cqa_instance_c_schema.xsd";
 	public static final String SCHEMA_PATH = "/schemas/cqa_instance_schema.xsd";
 	
 //	@ConfigurationParameter(name = LANGUAGE_PARAM)
@@ -77,6 +80,10 @@ public abstract class DataReader extends Resource_ImplBase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public final String getTask() {
+		return task;
 	}
 	
 	protected void init() throws Exception {}
