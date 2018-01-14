@@ -29,7 +29,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
  * @generated */
 public class QAAnnotation_Type extends Annotation_Type {
   /** @generated */
@@ -38,7 +38,7 @@ public class QAAnnotation_Type extends Annotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.types.QAAnnotation");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.QAAnnotation");
  
   /** @generated */
   final Feature casFeat_ID;
@@ -50,7 +50,7 @@ public class QAAnnotation_Type extends Annotation_Type {
    */ 
   public String getID(int addr) {
         if (featOkTst && casFeat_ID == null)
-      jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.QAAnnotation");
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_ID);
   }
   /** @generated
@@ -59,7 +59,7 @@ public class QAAnnotation_Type extends Annotation_Type {
    */    
   public void setID(int addr, String v) {
         if (featOkTst && casFeat_ID == null)
-      jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.QAAnnotation");
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
     ll_cas.ll_setStringValue(addr, casFeatCode_ID, v);}
     
   

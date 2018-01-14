@@ -20,6 +20,11 @@ package qa.qcri.iyas;
 
 import org.apache.activemq.broker.BrokerService;
 
+/**
+ * A simple class to start the broker.
+ * @author Salvatore Romeo
+ *
+ */
 public class BrokerStarter {
 
 	public static void main(String[] args) throws Exception {

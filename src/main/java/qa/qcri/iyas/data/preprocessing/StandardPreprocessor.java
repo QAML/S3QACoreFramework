@@ -29,6 +29,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
+/**
+ * Standard implementation for {@link TextPreprocessor}. This preprocessing has been used for SemEval English and Arabic.
+ * @author Salvatore Romeo
+ *
+ */
 public class StandardPreprocessor extends TextPreprocessor {
 	
 	private static final String WWW = "3WSUBS";
@@ -158,6 +163,12 @@ public class StandardPreprocessor extends TextPreprocessor {
 //		return string.replaceAll("[\r \t\f"+ noBreakSpace +"\r]+", " ").replaceAll("(( )*\n( )*)+", "\n").trim();
 //	}
 	
+	/**
+	 * Performs the preprocessing on the specified text and returns the preprocessed one.
+	 * @param text text to preprocess
+	 * @param lang language of the text to preprocess
+	 * @return preprocessed text
+	 */
 	@Override
 	public String preprocess(String text, String lang) {
 		if (lang.equals("en"))

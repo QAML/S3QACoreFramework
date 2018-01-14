@@ -79,8 +79,8 @@ public abstract class DataReader extends Resource_ImplBase {
 		}
 	}
 	
-	public void init() throws Exception {}
-	public void releaseResources() throws Exception {}
+	protected void init() throws Exception {}
+	protected void releaseResources() throws Exception {}
 	public abstract boolean hasNext();
 	public abstract String next() throws Exception;
 	

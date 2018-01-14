@@ -49,7 +49,7 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 )
 public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	
-	public static final String INPUT_READER_PARAM = "InputFile";
+	public static final String INPUT_READER_PARAM = "InputReader";
 
 	@ExternalResource(key = INPUT_READER_PARAM)
 	private DataReader reader;

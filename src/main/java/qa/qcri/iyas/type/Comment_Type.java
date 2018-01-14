@@ -28,7 +28,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
  * @generated */
 public class Comment_Type extends QAAnnotation_Type {
   /** @generated */
@@ -37,7 +37,7 @@ public class Comment_Type extends QAAnnotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.types.Comment");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.Comment");
  
   /** @generated */
   final Feature casFeat_questionID;
@@ -49,7 +49,7 @@ public class Comment_Type extends QAAnnotation_Type {
    */ 
   public String getQuestionID(int addr) {
         if (featOkTst && casFeat_questionID == null)
-      jcas.throwFeatMissing("questionID", "qa.qcri.iyas.types.Comment");
+      jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
     return ll_cas.ll_getStringValue(addr, casFeatCode_questionID);
   }
   /** @generated
@@ -58,7 +58,7 @@ public class Comment_Type extends QAAnnotation_Type {
    */    
   public void setQuestionID(int addr, String v) {
         if (featOkTst && casFeat_questionID == null)
-      jcas.throwFeatMissing("questionID", "qa.qcri.iyas.types.Comment");
+      jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
     ll_cas.ll_setStringValue(addr, casFeatCode_questionID, v);}
     
   

@@ -23,14 +23,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import org.apache.uima.aae.client.UimaAsBaseCallbackListener;
 import org.apache.uima.aae.client.UimaAsynchronousEngine;
 import org.apache.uima.adapter.jms.client.BaseUIMAAsynchronousEngine_impl;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 
 public class RunStandardPipeline extends UimaAsBaseCallbackListener {
@@ -100,10 +96,10 @@ public class RunStandardPipeline extends UimaAsBaseCallbackListener {
 //		uimaAsEngine.undeploy("-626a937e:15f522aa729:-7fb1");
 		
 		
-		TypeSystemDescription tsd = 
-				  TypeSystemDescriptionFactory.createTypeSystemDescription();
-		for (TypeDescription td : tsd.getTypes())
-			System.out.println(td.getName());		
+//		TypeSystemDescription tsd = 
+//				  TypeSystemDescriptionFactory.createTypeSystemDescription();
+//		for (TypeDescription td : tsd.getTypes())
+//			System.out.println(td.getName());		
 		
 		
 	}

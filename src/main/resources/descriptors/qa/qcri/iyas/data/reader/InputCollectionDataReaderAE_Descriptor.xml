@@ -1328,11 +1328,6 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.type.Instance</name>
-                    <description/>
-                    <supertypeName>uima.tcas.Annotation</supertypeName>
-                </typeDescription>
-                <typeDescription>
                     <name>qa.qcri.iyas.type.InstanceA</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
@@ -1404,6 +1399,33 @@ systems.&lt;/p&gt;
                     <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
+                    <name>qa.qcri.iyas.type.Similarity</name>
+                    <description/>
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                    <features>
+                        <featureDescription>
+                            <name>name</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>leftViewName</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>rightViewName</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>value</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.Double</rangeTypeName>
+                        </featureDescription>
+                    </features>
+                </typeDescription>
+                <typeDescription>
                     <name>qa.qcri.iyas.type.UserQuestion</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
@@ -1454,11 +1476,11 @@ systems.&lt;/p&gt;
             <capability>
                 <inputs/>
                 <outputs>
-                    <type>qa.qcri.iyas.type.UserQuestionSubject</type>
-                    <type>qa.qcri.iyas.type.UserQuestionBody</type>
-                    <type>qa.qcri.iyas.type.RelatedQuestionSubject</type>
-                    <type>qa.qcri.iyas.type.RelatedQuestionBody</type>
-                    <type>qa.qcri.iyas.type.Comment</type>
+                    <type>qa.qcri.iyas.types.UserQuestionSubject</type>
+                    <type>qa.qcri.iyas.types.UserQuestionBody</type>
+                    <type>qa.qcri.iyas.types.RelatedQuestionSubject</type>
+                    <type>qa.qcri.iyas.types.RelatedQuestionBody</type>
+                    <type>qa.qcri.iyas.types.Comment</type>
                 </outputs>
                 <languagesSupported/>
             </capability>
@@ -1471,7 +1493,7 @@ systems.&lt;/p&gt;
     </processingResourceMetaData>
     <externalResourceDependencies>
         <externalResourceDependency>
-            <key>InputFile</key>
+            <key>InputReader</key>
             <description/>
             <interfaceName>qa.qcri.iyas.data.reader.DataReader</interfaceName>
             <optional>false</optional>
@@ -1487,14 +1509,14 @@ systems.&lt;/p&gt;
                     <parameters>
                         <parameter name="file" value="/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt"/>
                         <parameter name="task" value="instance_b"/>
-                        <parameter name="__UIMAFIT_RESOURCE_NAME__" value="qa.qcri.iyas.data.readers.PlainTextDataReader-0"/>
+                        <parameter name="__UIMAFIT_RESOURCE_NAME__" value="qa.qcri.iyas.data.reader.PlainTextDataReader-0"/>
                     </parameters>
                 </customResourceSpecifier>
             </externalResource>
         </externalResources>
         <externalResourceBindings>
             <externalResourceBinding>
-                <key>InputFile</key>
+                <key>InputReader</key>
                 <resourceName>qa.qcri.iyas.data.reader.PlainTextDataReader-0</resourceName>
             </externalResourceBinding>
         </externalResourceBindings>

@@ -47,14 +47,14 @@ public class PlainTextDataReader extends DataReader {
 	}
 
 	@Override
-	public void init() throws IOException, ResourceInitializationException {
+	protected void init() throws Exception, ResourceInitializationException {
 		in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 		String line = in.readLine();
 		setNextLine(line);
 	}
 
 	@Override
-	public void releaseResources() {
+	protected void releaseResources() {
 		try {
 			in.close();
 		} catch (IOException e) {

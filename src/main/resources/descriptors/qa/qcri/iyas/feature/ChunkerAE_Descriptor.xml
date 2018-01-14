@@ -1382,9 +1382,9 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.Comment</name>
+                    <name>qa.qcri.iyas.type.Comment</name>
                     <description/>
-                    <supertypeName>qa.qcri.iyas.types.QAAnnotation</supertypeName>
+                    <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                     <features>
                         <featureDescription>
                             <name>questionID</name>
@@ -1394,27 +1394,22 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.Instance</name>
+                    <name>qa.qcri.iyas.type.InstanceA</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.InstanceA</name>
+                    <name>qa.qcri.iyas.type.InstanceB</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.InstanceB</name>
+                    <name>qa.qcri.iyas.type.InstanceC</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.InstanceC</name>
-                    <description/>
-                    <supertypeName>uima.tcas.Annotation</supertypeName>
-                </typeDescription>
-                <typeDescription>
-                    <name>qa.qcri.iyas.types.QAAnnotation</name>
+                    <name>qa.qcri.iyas.type.QAAnnotation</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                     <features>
@@ -1426,7 +1421,7 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.RelatedQuestion</name>
+                    <name>qa.qcri.iyas.type.RelatedQuestion</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                     <features>
@@ -1448,9 +1443,9 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.RelatedQuestionBody</name>
+                    <name>qa.qcri.iyas.type.RelatedQuestionBody</name>
                     <description/>
-                    <supertypeName>qa.qcri.iyas.types.QAAnnotation</supertypeName>
+                    <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                     <features>
                         <featureDescription>
                             <name>numberOfCandidates</name>
@@ -1465,12 +1460,39 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.RelatedQuestionSubject</name>
+                    <name>qa.qcri.iyas.type.RelatedQuestionSubject</name>
                     <description/>
-                    <supertypeName>qa.qcri.iyas.types.QAAnnotation</supertypeName>
+                    <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.UserQuestion</name>
+                    <name>qa.qcri.iyas.type.Similarity</name>
+                    <description/>
+                    <supertypeName>uima.tcas.Annotation</supertypeName>
+                    <features>
+                        <featureDescription>
+                            <name>name</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>leftViewName</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>rightViewName</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.String</rangeTypeName>
+                        </featureDescription>
+                        <featureDescription>
+                            <name>value</name>
+                            <description/>
+                            <rangeTypeName>uima.cas.Double</rangeTypeName>
+                        </featureDescription>
+                    </features>
+                </typeDescription>
+                <typeDescription>
+                    <name>qa.qcri.iyas.type.UserQuestion</name>
                     <description/>
                     <supertypeName>uima.tcas.Annotation</supertypeName>
                     <features>
@@ -1492,9 +1514,9 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.UserQuestionBody</name>
+                    <name>qa.qcri.iyas.type.UserQuestionBody</name>
                     <description/>
-                    <supertypeName>qa.qcri.iyas.types.QAAnnotation</supertypeName>
+                    <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                     <features>
                         <featureDescription>
                             <name>numberOfCandidates</name>
@@ -1509,9 +1531,9 @@ systems.&lt;/p&gt;
                     </features>
                 </typeDescription>
                 <typeDescription>
-                    <name>qa.qcri.iyas.types.UserQuestionSubject</name>
+                    <name>qa.qcri.iyas.type.UserQuestionSubject</name>
                     <description/>
-                    <supertypeName>qa.qcri.iyas.types.QAAnnotation</supertypeName>
+                    <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
                 </typeDescription>
             </types>
         </typeSystemDescription>
