@@ -21,6 +21,7 @@ import org.apache.uima.jcas.JCas;
 
 import it.uniroma2.sag.kelp.data.representation.tree.TreeRepresentation;
 import it.uniroma2.sag.kelp.kernel.DirectKernel;
+import it.uniroma2.sag.kelp.kernel.standard.NormalizationKernel;
 import it.uniroma2.sag.kelp.kernel.tree.PartialTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SmoothedPartialTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubSetTreeKernel;
@@ -39,7 +40,8 @@ import qa.qcri.iyas.data.tree.TreeSerializer;
 public class TreeKernelSimilarity extends SimilarityMeasure {
 	
 	public enum TREE_TYPE {
-		DEPENDENCY_TREE("dependency_tree"), CONSTITUENCY_TREE("constituency_tree"), POS_CHUNK_TREE("poschunk_tree");
+		DEPENDENCY_TREE("dependency_tree"), CONSTITUENCY_TREE("constituency_tree"), 
+		POS_CHUNK_TREE("poschunk_tree");
 		private String treeType;
 		TREE_TYPE(String treeType) {
 			this.treeType = treeType;
@@ -48,9 +50,9 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 			return treeType;
 		}
 	};
-	//public enum TREE_KERNEL_FUNCTION {SPTK, PTK, SST, ST};
+
 	public enum TREE_KERNEL_FUNCTION {
-		SPTK("sptk"), PTK("ptk"), SST("sst"), ST("st");
+		PTK("ptk"), SST("sst"), ST("st"); //SPTK("sptk")
 		private String kernelFunctionName;
 		TREE_KERNEL_FUNCTION(String kernelFunctionName) {
 			this.kernelFunctionName = kernelFunctionName;
@@ -61,21 +63,30 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 		};
 	
 	/**
-	 * The tree kernel to be used for computing the similarity
+	 * The tree kernel to be used for computing the similarity. Possible values 
+	 * are the ones described by the enum TREE_KERNEL_FUNCTION. Default kernel
+	 * is the Partial Tree Kernel. 
 	 */
 	public static final String PARAM_NAME_TREE_KERNEL = "treeKernel";
 	
 	/**
 	 * The type of tree to be extracted from the JCas.
-	 * Currently dependency, constituency and PosChunk trees are supported  
+	 * Currently dependency, constituency and PosChunk trees are supported.
+	 * Default type of tree extracted is PosChunk  
 	 */
 	public static final String PARAM_NAME_TREE_TYPE = "treeType";
 	
 	/**
-	 * Parameter lambda of the kernel 
+	 * Parameter lambda of the tree kernel. Default value is 0.4 
 	 */
 	public static final String PARAM_NAME_LAMBDA = "lambda";
 
+	/**
+	 * Whether the kernel should be normalized
+	 */
+	public static final String PARAM_NAME_NORMALIZED = "normalized";
+	
+	
 	@ConfigurationParameter(name = PARAM_NAME_TREE_KERNEL, defaultValue="ptk")
 	private TREE_KERNEL_FUNCTION treeKernel;
 	
@@ -84,7 +95,10 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 	
 	@ConfigurationParameter(name = PARAM_NAME_TREE_TYPE, defaultValue="poschunk_tree")
 	private TREE_TYPE treeType; 
-		
+
+	@ConfigurationParameter(name = PARAM_NAME_NORMALIZED, defaultValue="true")
+	private boolean normalized; 
+	
 	@Override
 	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) {
 
@@ -105,6 +119,8 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 		}
 			
 		try {
+			System.out.println(ts.serializeTree(leftTree));
+			System.out.println(ts.serializeTree(rightTree));
 			t1.setDataFromText(ts.serializeTree(leftTree));
 			t2.setDataFromText(ts.serializeTree(rightTree));
 		} catch (Exception e) {
@@ -113,27 +129,31 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 			//throw new Exception(); //TODO add UIMA exception
 		}
 		
+		DirectKernel<TreeRepresentation> tk = null;
+		
 		if(treeKernel==TREE_KERNEL_FUNCTION.PTK) {
-			PartialTreeKernel tk = new PartialTreeKernel();
-			tk.setLambda(lambda);
-			return tk.kernelComputation(t1, t2);
+			tk = new PartialTreeKernel(lambda, 0.4f, 1f, "0");
 		} else if(treeKernel==TREE_KERNEL_FUNCTION.SST) {
-			SubSetTreeKernel tk = new SubSetTreeKernel();
-			tk.setLambda(lambda);
-			return tk.kernelComputation(t1, t2);
+			tk = new SubSetTreeKernel(lambda, "0");
 		} else if(treeKernel==TREE_KERNEL_FUNCTION.ST) {
-			SubTreeKernel tk = new SubTreeKernel();
-			tk.setLambda(lambda);
-			return tk.kernelComputation(t1, t2);
-		} else if(treeKernel==TREE_KERNEL_FUNCTION.SPTK) {
-			SmoothedPartialTreeKernel tk = new SmoothedPartialTreeKernel();
-			tk.setLambda(lambda);
-			return tk.kernelComputation(t1, t2);
+			tk = new SubTreeKernel(lambda, "0");
+//		} else if(treeKernel==TREE_KERNEL_FUNCTION.SPTK) { //many more complex parameters need to be passed to the SPTK, such as the nodeSimilarity, leave them as future work
+//			tk = new SmoothedPartialTreeKernel(lambda, MU, terminalFactor, similarityThreshold, nodeSimilarity, representationIdentifier)
 		} else {
 			//TODO add UIMA exception
 		}
 		
-		return 0;
+		if(normalized) {
+			Float normt1 = tk.kernelComputation(t1, t1);
+			Float normt2 = tk.kernelComputation(t2, t2);
+			if(normt1==0 || normt2==0) {
+				return 0;
+			} else {
+				return tk.kernelComputation(t1, t2)/(Math.sqrt(normt1*normt2));
+			}
+		} else {
+			return tk.kernelComputation(t1, t2);
+		}
 	}
 	
 }
