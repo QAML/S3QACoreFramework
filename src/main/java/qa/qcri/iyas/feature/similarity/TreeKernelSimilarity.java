@@ -16,14 +16,13 @@
  */
 package qa.qcri.iyas.feature.similarity;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import it.uniroma2.sag.kelp.data.representation.tree.TreeRepresentation;
 import it.uniroma2.sag.kelp.kernel.DirectKernel;
-import it.uniroma2.sag.kelp.kernel.standard.NormalizationKernel;
 import it.uniroma2.sag.kelp.kernel.tree.PartialTreeKernel;
-import it.uniroma2.sag.kelp.kernel.tree.SmoothedPartialTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubSetTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubTreeKernel;
 import qa.qcri.iyas.data.tree.RichTree;
@@ -32,7 +31,20 @@ import qa.qcri.iyas.data.tree.TreeSerializer;
 
 /**
  * Defines a similarity function between two JCas annotations based
- * on any kernel function defined in KeLP.   
+ * on the following tree kernels (defined in KeLP): PTK (default), SST, ST. 
+ *  
+ * The tree kernel is defined by the parameter PARAM_NAME_TREE_KERNEL. 
+ * Its current values are determined by the type TREE_TYPE.   
+ *  The type of tree extracted from the JCas depends on the parameter  
+ * PARAM_NAME_TREE_TYPE, current values are: DEPENDENCY_TREE,  
+ * CONSTITUENCY_TREE, POS_CHUNK_TREE (default).
+ *  All tree kernels depend on a parameter PARAM_NAME_LAMBDA which relates 
+ * to the lambda parameter of the kernel. Default value is 0.4. 
+ *  All tree kernels can be normalized according to the boolean parameter 
+ * PARAM_NAME_NORMALIZED (default value is true, the kernel is normalized).
+ *  
+ * For an example of usage, see the test class 
+ * {@link qa.qcri.iyas.feature.similarity.SimilarityMeasureTreeKernelSimilarityTest}
  * 
  * @author Giovanni Da San Martino
  *
@@ -100,7 +112,7 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 	private boolean normalized; 
 	
 	@Override
-	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) {
+	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException {
 
 		TreeRepresentation t1 = new TreeRepresentation();
 		TreeRepresentation t2 = new TreeRepresentation();
@@ -124,9 +136,7 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 			t1.setDataFromText(ts.serializeTree(leftTree));
 			t2.setDataFromText(ts.serializeTree(rightTree));
 		} catch (Exception e) {
-			System.out.println("ERROR: Unrecognized tree type");
-			e.printStackTrace();
-			//throw new Exception(); //TODO add UIMA exception
+			throw new UIMAException(new IllegalStateException("ERROR: Unrecognized tree type")); 
 		}
 		
 		DirectKernel<TreeRepresentation> tk = null;
@@ -140,7 +150,8 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 //		} else if(treeKernel==TREE_KERNEL_FUNCTION.SPTK) { //many more complex parameters need to be passed to the SPTK, such as the nodeSimilarity, leave them as future work
 //			tk = new SmoothedPartialTreeKernel(lambda, MU, terminalFactor, similarityThreshold, nodeSimilarity, representationIdentifier)
 		} else {
-			//TODO add UIMA exception
+			throw new UIMAException(
+					new IllegalStateException("Unrecognized Tree Kernel Function in " + this.getClass().getName()));
 		}
 		
 		if(normalized) {
