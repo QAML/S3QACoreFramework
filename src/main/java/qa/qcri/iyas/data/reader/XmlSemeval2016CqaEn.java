@@ -5,9 +5,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-//import java.text.ParseException;
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -18,18 +17,26 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class XmlSemeval2016CqaEn extends DataReader{
-
-	private final Charset ENCODING = StandardCharsets.UTF_8;
 	
-	private final String FILE_PARAM = "file";
-	private final String LINE_START = "line-start-sub";
+	public static final String FILE_PARAM = "file";
+	
 	@ConfigurationParameter(name = FILE_PARAM)
 	private String file;
 	
+	private final Charset ENCODING = StandardCharsets.UTF_8;
+	
+	private final String LINE_START = "line-start-sub";
+	
+	
 	/** The tag representing and original (user) question */
 	private final String XML_TAG_ORG_Q = "OrgQuestion";
+	private final String XML_ATT_ORG_QID = "ORGQ_ID";
+	private final String XML_TAG_ORG_Q_SUBJECT = "OrgQSubject";
+	private final String XML_TAG_ORG_Q_BODY = "OrgQBody";
 	
-	/** The tag representing and related (forum) question */
+	private final String XML_TAG_THREAD = "Thread";
+	
+	/** The tag representing and related (forum) question */	
 	private final String XML_TAG_REL_Q = "RelQuestion";	
 	private final String XML_ATT_REL_QID = "RELQ_ID";
 	
@@ -43,6 +50,17 @@ public class XmlSemeval2016CqaEn extends DataReader{
 //	private final String XML_ATT_REL_CUSERID = "RELC_USERID";
 	
 	private ListIterator<Element> QUESTION_ITERATOR;
+
+	
+	/**
+	 * String to keep track of the current original question (if necessary)
+	 */
+	private String CURRENT_ID = "NULL";
+	
+	/** This is specific to this reader because it is for the English dataset.
+	 * TODO find out if it is actually necessary 
+	 */
+	private final String language = "en";
 	
 //	private String DOCUMENT; 
 
@@ -54,7 +72,8 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		Elements questions;
 		if (task.equals(DataReader.INSTANCE_A_TASK)) {
 			//ABC this should allow us to read all the related questions instantaneously
-			questions = DOCUMENT.getElementsByTag(XML_TAG_REL_Q);
+//			questions = DOCUMENT.getElementsByTag(XML_TAG_REL_Q);
+			questions = DOCUMENT.getElementsByTag(XML_TAG_THREAD);
 		} else  { // same applies for both B and C
 			questions = DOCUMENT.getElementsByTag(XML_TAG_ORG_Q);
 		} 
@@ -81,61 +100,71 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		return QUESTION_ITERATOR.hasNext();
 	}
 
-	@Override
-	public String next() throws Exception {
+	
+	
+	private String produceBinstance(List<Element> questions) {	
+		// GET THE ORIGINAL QUESTION INFO FROM THE FIRST INSTANCE
+		Element userQ = questions.get(0).getElementsByTag(XML_TAG_ORG_Q).first();
+		String userQuestionID = userQ.attr(XML_ATT_ORG_QID);
+		String userQuestionSubject = userQ.getElementsByTag(XML_TAG_ORG_Q_SUBJECT).get(0).ownText();
+		String userQuestionBody = userQ.getElementsByTag(XML_TAG_ORG_Q_BODY).get(0).ownText();
 		
-		Element current = QUESTION_ITERATOR.next();
+		StringBuffer sb = new StringBuffer();
+		sb.append("<")
+		  .append(ROOT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("	<")
+		  .append(INSTANCE_B_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));		
+		sb.append("		<")
+		  .append(USER_QUESTION_TAG)
+		  .append(" ")
+		  .append(ID_ATTRIBUTE)
+		  .append("=\""+userQuestionID)
+		  .append("\" ")
+		  .append(LANG_ATTRIBUTE)
+		  .append("=\"")
+		  .append(language)
+		  .append("\" ")
+		  .append(NUMBER_OF_CANDIDATES_ATTRIBUTE)
+		  .append("=\"")
+		  .append(questions.size())
+		  .append("\">")
+		  .append(System.getProperty("line.separator"));
 		
-		String relatedQuestionID = null;
-		String realtedQuestionSubject = null;
-		String realtedQuestionBody = null;
-//		String userQuestionID = null;
-//		String userQuestionSubject = null;
-//		String userQuestionBody = null;
-		String language = "en";
+		sb.append("			<")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(userQuestionSubject)
+		  .append("</")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
 		
-		////////////
-		StringBuilder sb = new StringBuilder();
-		if (task.equals(DataReader.INSTANCE_C_TASK)) {
-//			sb.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("	<"+INSTANCE_C_TAG+">"+System.getProperty("line.separator"));
-//			userQuestionID = currentLine[0];
-//			userQuestionSubject = currentLine[1];
-//			userQuestionBody = currentLine[2];
-//			sb.append("		<"+USER_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+userQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+NUMBER_OF_CANDIDATES_ATTRIBUTE+"=\""+10+"\">"+System.getProperty("line.separator"));
-//			sb.append("			<"+SUBJECT_TAG+">"+userQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("			<"+BODY_TAG+">"+userQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("		</"+USER_QUESTION_TAG+">"+System.getProperty("line.separator"));
-//			
-//			do {
-//				relatedQuestionID = currentLine[3];
-//				realtedQuestionSubject = currentLine[4];
-//				realtedQuestionBody = currentLine[5];
-//				sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+NUMBER_OF_CANDIDATES_ATTRIBUTE+"=\""+10+"\">"+System.getProperty("line.separator"));
-//				sb.append("			<"+SUBJECT_TAG+">"+realtedQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
-//				sb.append("			<"+BODY_TAG+">"+realtedQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
-//				for (int i=6;i<currentLine.length;i+=2) {
-//					String commentID = currentLine[i];
-//					String comment = currentLine[i+1];
-//					sb.append("			<"+COMMENT_TAG+" "+ID_ATTRIBUTE+"=\""+commentID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\">"+comment+"</"+COMMENT_TAG+">"+System.getProperty("line.separator"));
-//				}
-//				sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
-//				
-//				String line = in.readLine();
-//				setNextLine(line);
-//			} while (currentLine != null && currentLine[0].equals(userQuestionID));
-//			
-//			sb.append("	</"+INSTANCE_C_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
-		} else if (task.equals(DataReader.INSTANCE_A_TASK)) {
-			sb.append("<"+ROOT_TAG+">")
-			  .append(System.getProperty("line.separator"))
-			  .append("	<"+INSTANCE_A_TAG+">")
-			  .append(System.getProperty("line.separator"));
-
-			relatedQuestionID = current.attr(XML_ATT_REL_QID);
-			realtedQuestionSubject = current.getElementsByTag(XML_TAG_REL_QSUBJECT).get(0).ownText();
-			realtedQuestionBody = current.getElementsByTag(XML_TAG_REL_QBODY).get(0).ownText();
+		sb.append("			<"+BODY_TAG+">")
+		  .append(userQuestionBody)
+		  .append("</")
+		  .append(BODY_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"))
+		  .append("		</")
+		  .append(USER_QUESTION_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		
+		// GET THE REST OF INFO FOR THE REST OF INSTANCES		
+		for (Element myKk : questions) {
+			// There's always one single thread and the single thread has one single related question
+			Element relatedQ = myKk.getElementsByTag(XML_TAG_THREAD).first()
+									.getElementsByTag(XML_TAG_REL_Q).first();
+			String relatedQuestionID = relatedQ.attr(XML_ATT_REL_QID);
+			// TODO is this preprocesing necessary?
+			String realtedQuestionSubject = relatedQ.getElementsByTag(XML_TAG_REL_QSUBJECT)
+													.get(0).ownText().replaceAll(LINE_START, "\n");
+			String realtedQuestionBody = relatedQ.getElementsByTag(XML_TAG_REL_QBODY)
+													.get(0).ownText().replaceAll(LINE_START, "\n");
 			
 			sb.append("		<")
 			  .append(RELATED_QUESTION_TAG)
@@ -147,9 +176,7 @@ public class XmlSemeval2016CqaEn extends DataReader{
 			  .append(LANG_ATTRIBUTE)
 			  .append("=\"")
 			  .append(language)
-			  .append("\" ")
-			  .append(NUMBER_OF_CANDIDATES_ATTRIBUTE)
-			  .append("=\""+10+"\">")	// ABC this is very weird. Ask Salvatore
+			  .append("\" >")
 			  .append(System.getProperty("line.separator"));
 			
 			sb.append("			<")
@@ -168,17 +195,132 @@ public class XmlSemeval2016CqaEn extends DataReader{
 			  .append("</")
 			  .append(BODY_TAG)
 			  .append(">")
+			  .append(System.getProperty("line.separator"))
+			  .append("		</")
+			  .append(RELATED_QUESTION_TAG)
+			  .append(">")
+			  .append(System.getProperty("line.separator"));			
+		}
+		sb.append("	</"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
+		sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));	
+		
+		return sb.toString();
+	}
+	
+	private String produceCinstance(List<Element> questions) {
+		
+		Element userQ = questions.get(0).getElementsByTag(XML_TAG_ORG_Q).first();
+		String userQuestionID = userQ.attr(XML_ATT_ORG_QID);
+		String userQuestionSubject = userQ.getElementsByTag(XML_TAG_ORG_Q_SUBJECT).get(0).ownText();
+		String userQuestionBody = userQ.getElementsByTag(XML_TAG_ORG_Q_BODY).get(0).ownText();
+		
+		
+//		Elements questions = current.getElementsByTag(XML_TAG_REL_Q);
+//		String userQuestionID = current.attr(XML_ATT_ORG_QID);
+//		String userQuestionSubject = current.getElementsByTag(XML_TAG_ORG_Q_SUBJECT).get(0).ownText();
+//		String userQuestionBody = current.getElementsByTag(XML_TAG_ORG_Q_BODY).get(0).ownText();		
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("<")
+		  .append(ROOT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("	<")
+		  .append(INSTANCE_C_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));		
+		sb.append("		<")
+		  .append(USER_QUESTION_TAG)
+		  .append(" ")
+		  .append(ID_ATTRIBUTE)
+		  .append("=\"")
+		  .append(userQuestionID)
+		  .append("\" ")
+		  .append(LANG_ATTRIBUTE)
+		  .append("=\"")
+		  .append(language)
+		  .append("\" ")
+		  .append(NUMBER_OF_CANDIDATES_ATTRIBUTE)
+		  .append("=\"")
+		  .append(questions.size())
+		  .append("\">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("			<")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(userQuestionSubject)
+		  .append("</")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("			<")
+		  .append(BODY_TAG)
+		  .append(">")
+		  .append(userQuestionBody)
+		  .append("</")
+		  .append(BODY_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("		</")
+		  .append(USER_QUESTION_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+	
+		for  (Element myKk : questions) {
+			// Related question
+			// There's always one single thread and the single thread has one single related question
+			Element relatedQ = myKk.getElementsByTag(XML_TAG_THREAD).first()
+									.getElementsByTag(XML_TAG_REL_Q).first();
+			String relatedQuestionID = relatedQ.attr(XML_ATT_REL_QID);
+			// TODO is this preprocesing necessary?
+			String realtedQuestionSubject = relatedQ.getElementsByTag(XML_TAG_REL_QSUBJECT)
+													.get(0).ownText().replaceAll(LINE_START, "\n");
+			String realtedQuestionBody = relatedQ.getElementsByTag(XML_TAG_REL_QBODY)
+													.get(0).ownText().replaceAll(LINE_START, "\n");
+			
+			Elements comments = myKk.getElementsByTag(XML_TAG_THREAD).get(0).getElementsByTag(XML_TAG_REL_C);
+			
+			sb.append("		<")
+			  .append(RELATED_QUESTION_TAG)
+			  .append(" ")
+			  .append(ID_ATTRIBUTE)
+			  .append("=\"")
+			  .append(relatedQuestionID)
+			  .append("\" ")
+			  .append(LANG_ATTRIBUTE)
+			  .append("=\"")
+			  .append(language)
+			  .append("\" ")
+			  .append(NUMBER_OF_CANDIDATES_ATTRIBUTE)
+			  .append("=\"")
+			  .append(comments.size())
+			  .append("\">")
 			  .append(System.getProperty("line.separator"));
-			
-			
-			/////////
-			for (Element comment : current.getElementsByTag(XML_TAG_REL_C)) {
+			sb.append("			<")
+			  .append(SUBJECT_TAG)
+			  .append(">")
+			  .append(realtedQuestionSubject)
+			  .append("</")
+			  .append(SUBJECT_TAG)
+			  .append(">")
+			  .append(System.getProperty("line.separator"));
+			sb.append("			<")
+			  .append(BODY_TAG)
+			  .append(">")
+			  .append(realtedQuestionBody)
+			  .append("</")
+			  .append(BODY_TAG)
+			  .append(">")
+			  .append(System.getProperty("line.separator"));		
+		
+			for (Element comment : comments) {
 				String commentID = comment.attr(XML_ATT_REL_CID);
 				String commentBody = 
-						comment.getElementsByTag(XML_TAG_REL_CBODY).get(0).ownText().replaceAll(LINE_START, "\n");
- 						
+						comment.getElementsByTag(XML_TAG_REL_CBODY).get(0)
+								.ownText().replaceAll(LINE_START, "\n");
 				sb.append("			<")
-				  .append(COMMENT_TAG).append(" ")
+				  .append(COMMENT_TAG)
+				  .append(" ")
 				  .append(ID_ATTRIBUTE)
 				  .append("=\"")
 				  .append(commentID)
@@ -188,75 +330,167 @@ public class XmlSemeval2016CqaEn extends DataReader{
 				  .append(language)
 				  .append("\">")
 				  .append(commentBody)
-				  .append("</").append(COMMENT_TAG).append(">")
+				  .append("</")
+				  .append(COMMENT_TAG)
+				  .append(">")
 				  .append(System.getProperty("line.separator"));
-				
+			}
 			
-				//ALL THIS IS IGNORED IN THE CURRENT SETTING
-//				try {
-//					date = sdf.parse(comment.attr(XML_ATT_REL_CDATE));
-//				} catch (ParseException e) {
-//					System.out.format("Instead of the expected date, I get %s%n",  
-//							comment.attr("XML_ATT_REL_CDATE"));
-//					e.printStackTrace();
-//				}
-//				String cuserid = comment.attr(XML_ATT_REL_CUSERID);
-//				String cusername = comment.attr(XML_ATT_REL_CUSERNAME);
-//				String crelevance2org = comment.attr(XML_ATT_REL_CRELEVANCE2ORGQ);
-//				String crelevance2rel = comment.attr(XML_ATT_REL_CRELEVANCE2RELQ);
+			sb.append("		</")
+			  .append(RELATED_QUESTION_TAG)
+			  .append(">")
+			  .append(System.getProperty("line.separator"));
+		}
 
-			}			
-			////////
-			
-//			for (int i=6;i<currentLine.length;i+=2) {
-//				
-//				
-//			}
-//			sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
-//			
-//			String line = in.readLine();
-//			setNextLine(line);
-//			
-			sb.append("	</")
-			  .append(INSTANCE_A_TAG)
-			  .append(">")
-			  .append(System.getProperty("line.separator"));
-			sb.append("</")
-			  .append(ROOT_TAG)
-			  .append(">")
-			  .append(System.getProperty("line.separator"));
-		} if (task.equals(DataReader.INSTANCE_B_TASK)) {
-//			sb.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("	<"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
-//			userQuestionID = currentLine[0];
-//			userQuestionSubject = currentLine[1];
-//			userQuestionBody = currentLine[2];
-//			sb.append("		<"+USER_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+userQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+NUMBER_OF_CANDIDATES_ATTRIBUTE+"=\""+10+"\">"+System.getProperty("line.separator"));
-//			sb.append("			<"+SUBJECT_TAG+">"+userQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("			<"+BODY_TAG+">"+userQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("		</"+USER_QUESTION_TAG+">"+System.getProperty("line.separator"));
-//			
-//			do {
-//				relatedQuestionID = currentLine[3];
-//				realtedQuestionSubject = currentLine[4];
-//				realtedQuestionBody = currentLine[5];
-//				sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" >"+System.getProperty("line.separator"));
-//				sb.append("			<"+SUBJECT_TAG+">"+realtedQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
-//				sb.append("			<"+BODY_TAG+">"+realtedQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
-//				sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
-//				
-//				String line = in.readLine();
-//				setNextLine(line);
-//			} while (currentLine != null && currentLine[0].equals(userQuestionID));
-//			
-//			sb.append("	</"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
-//			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
-		} 
-				
+		sb.append("	</")
+		  .append(INSTANCE_C_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("</")
+		  .append(ROOT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		
 		return sb.toString();
+	}
+	
+	@Override
+	public String next() throws Exception {
+		
+		String sb = null;
+		
+		if (task.equals(DataReader.INSTANCE_A_TASK)) {			
+			sb = produceAinstance(QUESTION_ITERATOR.next());
+		} else {
+			// In this case it is necessary to iterate over multiple tags to grab all the instances			
+			List<Element> originalQuestions = new ArrayList<Element>();
+			Element current = QUESTION_ITERATOR.next();
+			originalQuestions.add(current);
+			String currentId = current.getElementsByTag(XML_TAG_ORG_Q).get(0).attr(XML_ATT_ORG_QID);
+			
+			while (hasNext()) {				
+				current = QUESTION_ITERATOR.next();
+				if (current.getElementsByTag(XML_TAG_ORG_Q).get(0).attr(XML_ATT_ORG_QID).equals(currentId)) { 
+					originalQuestions.add(current);					
+				} else {
+					QUESTION_ITERATOR.previous();
+					break;
+				}			
+			}
+			
+			if (task.equals(DataReader.INSTANCE_B_TASK)) {
+				sb = produceBinstance(originalQuestions);
+			} else {
+				sb = produceCinstance(originalQuestions);
+			}
+		} 
+		
+				
+		return sb;
 
 		
 		///////////
+	}
+	
+	private String produceAinstance(Element current) {		
+		Elements questions = current.getElementsByTag(XML_TAG_REL_Q);
+		Elements comments = current.getElementsByTag(XML_TAG_REL_C);
+		
+		String relatedQuestionID = questions.get(0).attr(XML_ATT_REL_QID);
+		String realtedQuestionSubject = questions.get(0).getElementsByTag(XML_TAG_REL_QSUBJECT).get(0).ownText();
+		String realtedQuestionBody = questions.get(0).getElementsByTag(XML_TAG_REL_QBODY).get(0).ownText();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("<"+ROOT_TAG+">")
+		  .append(System.getProperty("line.separator"))
+		  .append("	<"+INSTANCE_A_TAG+">")
+		  .append(System.getProperty("line.separator"));		
+		
+		sb.append("		<")
+		  .append(RELATED_QUESTION_TAG)
+		  .append(" ")
+		  .append(ID_ATTRIBUTE)
+		  .append("=\"")
+		  .append(relatedQuestionID)
+		  .append("\" ")
+		  .append(LANG_ATTRIBUTE)
+		  .append("=\"")
+		  .append(language)
+		  .append("\" ")
+		  .append(NUMBER_OF_CANDIDATES_ATTRIBUTE)
+		  .append("=\"")
+		  .append(comments.size())
+		  .append("\">")
+		  .append(System.getProperty("line.separator"));
+		
+		sb.append("			<")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(realtedQuestionSubject)
+		  .append("</")
+		  .append(SUBJECT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		
+		sb.append("			<")
+		  .append(BODY_TAG)
+		  .append(">")
+		  .append(realtedQuestionBody)
+		  .append("</")
+		  .append(BODY_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		
+		
+		/////////
+		for (Element comment : comments) {
+//			System.out.println(comment.attr(XML_ATT_REL_CID));
+			String commentID = comment.attr(XML_ATT_REL_CID);
+			String commentBody = 
+					comment.getElementsByTag(XML_TAG_REL_CBODY).get(0)
+							.ownText().replaceAll(LINE_START, "\n");
+					
+			sb.append("			<")
+			  .append(COMMENT_TAG).append(" ")
+			  .append(ID_ATTRIBUTE)
+			  .append("=\"")
+			  .append(commentID)
+			  .append("\" ")
+			  .append(LANG_ATTRIBUTE)
+			  .append("=\"")
+			  .append(language)
+			  .append("\">")
+			  .append(commentBody)
+			  .append("</").append(COMMENT_TAG).append(">")
+			  .append(System.getProperty("line.separator"));
+			
+		
+//			TODO ALL THIS IS IGNORED IN THE CURRENT SETTING
+//			try {
+//				date = sdf.parse(comment.attr(XML_ATT_REL_CDATE));
+//			} catch (ParseException e) {
+//				System.out.format("Instead of the expected date, I get %s%n",  
+//						comment.attr("XML_ATT_REL_CDATE"));
+//				e.printStackTrace();
+//			}
+//			String cuserid = comment.attr(XML_ATT_REL_CUSERID);
+//			String cusername = comment.attr(XML_ATT_REL_CUSERNAME);
+//			String crelevance2org = comment.attr(XML_ATT_REL_CRELEVANCE2ORGQ);
+//			String crelevance2rel = comment.attr(XML_ATT_REL_CRELEVANCE2RELQ);
+
+		}		
+		sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
+	
+		sb.append("	</")
+		  .append(INSTANCE_A_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		sb.append("</")
+		  .append(ROOT_TAG)
+		  .append(">")
+		  .append(System.getProperty("line.separator"));
+		
+		return sb.toString();
 	}
 
 }
