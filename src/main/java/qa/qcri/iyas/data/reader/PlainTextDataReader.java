@@ -20,12 +20,16 @@ package qa.qcri.iyas.data.reader;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.uima.UIMAException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 
 public class PlainTextDataReader extends DataReader {
 	
@@ -46,10 +50,14 @@ public class PlainTextDataReader extends DataReader {
 	}
 
 	@Override
-	protected void init() throws Exception, ResourceInitializationException {
-		in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-		String line = in.readLine();
-		setNextLine(line);
+	protected void init() throws ResourceInitializationException {
+		try {
+			in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+			String line = in.readLine();
+			setNextLine(line);
+		} catch (IOException e) {
+			throw new ResourceInitializationException(e);
+		}
 	}
 
 	@Override
@@ -63,12 +71,11 @@ public class PlainTextDataReader extends DataReader {
 
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
 		return currentLine != null;
 	}
 
 	@Override
-	public String next() throws IOException {
+	public String next() throws UIMAException  {
 		
 		String relatedQuestionID = null;
 		String realtedQuestionSubject = null;
@@ -104,8 +111,12 @@ public class PlainTextDataReader extends DataReader {
 				}
 				sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
 				
-				String line = in.readLine();
-				setNextLine(line);
+				try {
+					String line = in.readLine();
+					setNextLine(line);
+				} catch (IOException e) {
+					throw new ResourceProcessException(e);
+				}
 			} while (currentLine != null && currentLine[0].equals(userQuestionID));
 			
 			sb.append("	</"+INSTANCE_C_TAG+">"+System.getProperty("line.separator"));
@@ -127,8 +138,12 @@ public class PlainTextDataReader extends DataReader {
 			}
 			sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
 			
-			String line = in.readLine();
-			setNextLine(line);
+			try {
+				String line = in.readLine();
+				setNextLine(line);
+			} catch (IOException e) {
+				throw new ResourceProcessException(e);
+			}
 			
 			sb.append("	</"+INSTANCE_A_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
@@ -152,8 +167,12 @@ public class PlainTextDataReader extends DataReader {
 				sb.append("			<"+BODY_TAG+">"+realtedQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
 				sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
 				
-				String line = in.readLine();
-				setNextLine(line);
+				try {
+					String line = in.readLine();
+					setNextLine(line);
+				} catch (IOException e) {
+					throw new ResourceProcessException(e);
+				}
 			} while (currentLine != null && currentLine[0].equals(userQuestionID));
 			
 			sb.append("	</"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));

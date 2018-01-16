@@ -19,6 +19,7 @@
 package qa.qcri.iyas.data.reader;
 
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -72,13 +73,13 @@ public abstract class DataReader extends Resource_ImplBase {
 	protected String task;
 	
 	@Override
-	public void afterResourcesInitialized() {
+	public void afterResourcesInitialized() throws ResourceInitializationException {
 		try {
 			if (!task.matches(INSTANCE_A_TASK+"|"+INSTANCE_B_TASK+"|"+INSTANCE_C_TASK))
 				throw new ResourceInitializationException("Unknown task!",null);
 			init();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (UIMAException e) {
+			throw new ResourceInitializationException(e);
 		}
 	}
 	
@@ -95,9 +96,9 @@ public abstract class DataReader extends Resource_ImplBase {
 		return task;
 	}
 	
-	protected void init() throws Exception {}
-	protected void releaseResources() throws Exception {}
+	protected void init() throws ResourceInitializationException {}
+	protected void releaseResources() {}
 	public abstract boolean hasNext();
-	public abstract String next() throws Exception;
+	public abstract String next() throws UIMAException;
 	
 }

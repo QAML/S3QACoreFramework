@@ -18,8 +18,8 @@
  
 package qa.qcri.iyas.feature.similarity;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.SofaCapability;
@@ -53,9 +53,8 @@ public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
 			similarity.setValue(sim);
 			similarity.addToIndexes();
 			
-		} catch (CASException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (UIMAException e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 		
 	}

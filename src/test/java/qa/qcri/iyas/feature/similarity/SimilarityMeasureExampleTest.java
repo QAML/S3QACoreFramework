@@ -56,8 +56,8 @@ public class SimilarityMeasureExampleTest {
 						toURI()).getAbsolutePath());
 		AnalysisEngine aae = AnalysisEngineFactory.createEngine(descr);
 		
-		JCas jcas1 = JCasFactory.createText("text1", "en");
-		JCas jcas2 = JCasFactory.createText("text2", "en");
+		JCas jcas1 = JCasFactory.createText("The cat is black", "en");
+		JCas jcas2 = JCasFactory.createText("The cat is while", "en");
 		
 		aae.process(jcas1);
 		aae.process(jcas2);

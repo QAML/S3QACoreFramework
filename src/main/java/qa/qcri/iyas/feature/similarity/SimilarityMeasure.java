@@ -18,6 +18,7 @@
  
 package qa.qcri.iyas.feature.similarity;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -57,5 +58,5 @@ public abstract class SimilarityMeasure implements SharedResourceObject, Externa
 		// TODO Auto-generated method stub	
 	}
 	
-	public abstract double getSimilarityValue(JCas leftJCas, JCas rightJCas);
+	public abstract double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException;
 }
