@@ -23,6 +23,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 
 /**
  * This abstract class defines a data reader to be used by the {@link InputCollectionDataReader}. Any new data source can be made available by implementing this class. 
@@ -99,6 +100,6 @@ public abstract class DataReader extends Resource_ImplBase {
 	protected void init() throws ResourceInitializationException {}
 	protected void releaseResources() {}
 	public abstract boolean hasNext();
-	public abstract String next() throws UIMAException;
+	public abstract String next() throws ResourceProcessException;
 	
 }

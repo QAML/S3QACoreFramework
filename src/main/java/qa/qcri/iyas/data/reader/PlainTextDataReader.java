@@ -73,7 +73,7 @@ public class PlainTextDataReader extends DataReader {
 	}
 
 	@Override
-	public String next() throws UIMAException  {
+	public String next() throws ResourceProcessException  {
 		
 		String relatedQuestionID = null;
 		String realtedQuestionSubject = null;
