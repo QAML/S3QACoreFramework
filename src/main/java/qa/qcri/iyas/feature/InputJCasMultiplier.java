@@ -19,6 +19,7 @@
 package qa.qcri.iyas.feature;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
@@ -97,7 +98,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		}
 	}
 	
-	private void parseInstance(Element instance) throws ResourceConfigurationException, ResourceInitializationException, AnalysisEngineProcessException {
+	private void parseInstance(Element instance) throws AnalysisEngineProcessException {
 		if (instance.getName().equals(DataReader.INSTANCE_C_TAG)) {
 			Element userQuestion = instance.getChild(DataReader.USER_QUESTION_TAG);
 			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE_C));
@@ -182,10 +183,10 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			Element instance = root.getChildren().get(0);
 			parseInstance(instance);
 						
-		} catch (Exception e) {
+		} catch (IOException | JDOMException e) {
 			e.printStackTrace();
 			System.out.println(jcas.getDocumentText());
-			throw new AnalysisEngineProcessException(e.getMessage(),null);
+			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
