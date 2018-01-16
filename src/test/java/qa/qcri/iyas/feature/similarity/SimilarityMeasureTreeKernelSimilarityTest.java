@@ -38,6 +38,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import qa.qcri.iyas.type.Similarity;
 
 /**
@@ -56,12 +57,11 @@ public class SimilarityMeasureTreeKernelSimilarityTest {
 						toURI()).getAbsolutePath());
 		AnalysisEngine aae = AnalysisEngineFactory.createEngine(descr);
 		
-		JCas jcas1 = JCasFactory.createText("A cat is on the table", "en");
-		JCas jcas2 = JCasFactory.createText("The cat is on the table", "en");
-		
+		JCas jcas1 = JCasFactory.createText("The cat is white", "en");
+		JCas jcas2 = JCasFactory.createText("The cat is black", "en");
+				
 		aae.process(jcas1);
 		aae.process(jcas2);
-		
 		
 		AnalysisEngineDescription similarityTestAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				SimilarityMeasureTestAnnotator.class);
@@ -70,20 +70,24 @@ public class SimilarityMeasureTreeKernelSimilarityTest {
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"treeKernelSimilarity",
 				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
 				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
-				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
+				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, false,
 				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
 		JCas jcas = JCasFactory.createText("text3", "en");
-		CasCopier.copyCas(jcas1.getCas(), jcas.createView(SimilarityMeasureTestAnnotator.PRAM_LEFT).getCas(), false);
-		CasCopier.copyCas(jcas2.getCas(), jcas.createView(SimilarityMeasureTestAnnotator.PRAM_RIGHT).getCas(), false);
+		
+		CasCopier copier = new CasCopier(jcas1.getCas(),jcas.getCas());
+		copier.copyCasView(jcas1.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_LEFT), true);
+		
+		copier = new CasCopier(jcas2.getCas(),jcas.getCas());
+		copier.copyCasView(jcas2.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_RIGHT), true);
 		
 		ae.process(jcas);
 		
 		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
 			System.out.println(sim.getValue());
-			assertEquals(0.5, sim.getValue(),0);
+			assertEquals(6.6721654, sim.getValue(),0.0000001);
 		}
 	}
 
