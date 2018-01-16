@@ -132,7 +132,6 @@ public class RunClient {
 		
 		uimaAsEngine.initialize(appCtx);
 		
-
 		double start = System.currentTimeMillis();
 		uimaAsEngine.process();
 		double end = System.currentTimeMillis();

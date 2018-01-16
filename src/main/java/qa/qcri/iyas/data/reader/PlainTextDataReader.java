@@ -20,10 +20,8 @@ package qa.qcri.iyas.data.reader;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.uima.UIMAException;
@@ -178,7 +176,7 @@ public class PlainTextDataReader extends DataReader {
 			sb.append("	</"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
 		} 
-				
+
 		return sb.toString();
 	}
 
