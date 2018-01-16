@@ -11,6 +11,7 @@ import java.util.ListIterator;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -64,7 +65,8 @@ public class XmlSemeval2016CqaEn extends DataReader{
 	
 //	private String DOCUMENT; 
 
-	public void init() throws IOException, ResourceInitializationException {
+	public void init() throws ResourceInitializationException {
+		try {
 		byte[] encoded = Files.readAllBytes(Paths.get(file));
 		String contents = new String(encoded, ENCODING).replaceAll("(?i)<br[^>]*>", LINE_START).replaceAll("\n", LINE_START);
 		Document DOCUMENT = Jsoup.parse(contents);
@@ -93,6 +95,9 @@ public class XmlSemeval2016CqaEn extends DataReader{
 //				instances.add(globalElementToObject(question));
 //			}
 //		}
+		} catch (IOException e) {
+			throw new ResourceInitializationException(e);
+		}
 	}
 	
 	@Override
@@ -355,7 +360,7 @@ public class XmlSemeval2016CqaEn extends DataReader{
 	}
 	
 	@Override
-	public String next() throws Exception {
+	public String next() throws ResourceProcessException {
 		
 		String sb = null;
 		
