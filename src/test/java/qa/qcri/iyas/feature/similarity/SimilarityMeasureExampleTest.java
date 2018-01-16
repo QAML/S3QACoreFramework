@@ -61,8 +61,7 @@ public class SimilarityMeasureExampleTest {
 		
 		aae.process(jcas1);
 		aae.process(jcas2);
-		
-		
+			
 		AnalysisEngineDescription similarityTestAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				SimilarityMeasureTestAnnotator.class);
 		
@@ -83,8 +82,12 @@ public class SimilarityMeasureExampleTest {
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
 		JCas jcas = JCasFactory.createText("text3", "en");
-		CasCopier.copyCas(jcas1.getCas(), jcas.createView(SimilarityMeasureTestAnnotator.PRAM_LEFT).getCas(), false);
-		CasCopier.copyCas(jcas2.getCas(), jcas.createView(SimilarityMeasureTestAnnotator.PRAM_RIGHT).getCas(), false);
+		
+		CasCopier copier = new CasCopier(jcas1.getCas(),jcas.getCas());
+		copier.copyCasView(jcas1.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_LEFT), true);
+		
+		copier = new CasCopier(jcas2.getCas(),jcas.getCas());
+		copier.copyCasView(jcas2.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_RIGHT), true);
 		
 		ae.process(jcas);
 		
