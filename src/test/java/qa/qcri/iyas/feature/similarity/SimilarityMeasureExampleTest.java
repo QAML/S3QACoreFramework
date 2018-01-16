@@ -65,6 +65,15 @@ public class SimilarityMeasureExampleTest {
 		
 		AnalysisEngineDescription similarityTestAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				SimilarityMeasureTestAnnotator.class);
+		
+		/*
+		 * Binds the SimilarityMeasureExample to the SimilarityMeasureTestAnnotator. The paramaters are passed by
+		 * means of key-value pairs. In this case there are two parameters: SimilarityMeasureExample.PARAM_NAME_1,
+		 * just for the sake of example, and SimilarityMeasureExample.PARAM_NAME_FAKE_SIM_TO_GENERATE that specified the
+		 * value returned by SimilarityMeasureExample. These parameters do not any sense, they are used just for
+		 * showing how to bind a new implementation of SimilarityMeasure.
+		 * IMPORTANT: only this line of code must be changed to test other DataReader implementations.
+		 */
 		ExternalResourceFactory.bindResource(similarityTestAnnotatorAE_Descriptor,
 				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, SimilarityMeasureExample.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"similarityMeasureExample",
