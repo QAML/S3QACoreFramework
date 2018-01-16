@@ -30,8 +30,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
- * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class UserQuestion extends Annotation {
   /** @generated
@@ -104,7 +104,7 @@ public class UserQuestion extends Annotation {
    */
   public boolean getConcatenated() {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_concatenated == null)
-      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestion");
     return jcasType.ll_cas.ll_getBooleanValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_concatenated);}
     
   /** setter for concatenated - sets  
@@ -113,7 +113,7 @@ public class UserQuestion extends Annotation {
    */
   public void setConcatenated(boolean v) {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_concatenated == null)
-      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestion");
     jcasType.ll_cas.ll_setBooleanValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_concatenated, v);}    
    
     
@@ -126,7 +126,7 @@ public class UserQuestion extends Annotation {
    */
   public StringArray getCandidateViewNames() {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
     return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames)));}
     
   /** setter for candidateViewNames - sets  
@@ -135,7 +135,7 @@ public class UserQuestion extends Annotation {
    */
   public void setCandidateViewNames(StringArray v) {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
     jcasType.ll_cas.ll_setRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames, jcasType.ll_cas.ll_getFSRef(v));}    
     
   /** indexed getter for candidateViewNames - gets an indexed value - 
@@ -145,7 +145,7 @@ public class UserQuestion extends Annotation {
    */
   public String getCandidateViewNames(int i) {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);
     return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);}
 
@@ -156,7 +156,7 @@ public class UserQuestion extends Annotation {
    */
   public void setCandidateViewNames(int i, String v) { 
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);
     jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i, v);}
    
@@ -170,7 +170,7 @@ public class UserQuestion extends Annotation {
    */
   public String getID() {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_ID == null)
-      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.UserQuestion");
     return jcasType.ll_cas.ll_getStringValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_ID);}
     
   /** setter for ID - sets  
@@ -179,7 +179,7 @@ public class UserQuestion extends Annotation {
    */
   public void setID(String v) {
     if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_ID == null)
-      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.types.UserQuestion");
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.UserQuestion");
     jcasType.ll_cas.ll_setStringValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_ID, v);}    
   }
 

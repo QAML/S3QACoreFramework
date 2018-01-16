@@ -28,8 +28,8 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
- * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class UserQuestionBody extends QAAnnotation {
   /** @generated
@@ -102,7 +102,7 @@ public class UserQuestionBody extends QAAnnotation {
    */
   public int getNumberOfCandidates() {
     if (UserQuestionBody_Type.featOkTst && ((UserQuestionBody_Type)jcasType).casFeat_numberOfCandidates == null)
-      jcasType.jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.types.UserQuestionBody");
+      jcasType.jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.UserQuestionBody");
     return jcasType.ll_cas.ll_getIntValue(addr, ((UserQuestionBody_Type)jcasType).casFeatCode_numberOfCandidates);}
     
   /** setter for numberOfCandidates - sets  
@@ -111,7 +111,7 @@ public class UserQuestionBody extends QAAnnotation {
    */
   public void setNumberOfCandidates(int v) {
     if (UserQuestionBody_Type.featOkTst && ((UserQuestionBody_Type)jcasType).casFeat_numberOfCandidates == null)
-      jcasType.jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.types.UserQuestionBody");
+      jcasType.jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.UserQuestionBody");
     jcasType.ll_cas.ll_setIntValue(addr, ((UserQuestionBody_Type)jcasType).casFeatCode_numberOfCandidates, v);}    
    
     
@@ -124,7 +124,7 @@ public class UserQuestionBody extends QAAnnotation {
    */
   public boolean getConcatenated() {
     if (UserQuestionBody_Type.featOkTst && ((UserQuestionBody_Type)jcasType).casFeat_concatenated == null)
-      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.UserQuestionBody");
+      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestionBody");
     return jcasType.ll_cas.ll_getBooleanValue(addr, ((UserQuestionBody_Type)jcasType).casFeatCode_concatenated);}
     
   /** setter for concatenated - sets  
@@ -133,7 +133,7 @@ public class UserQuestionBody extends QAAnnotation {
    */
   public void setConcatenated(boolean v) {
     if (UserQuestionBody_Type.featOkTst && ((UserQuestionBody_Type)jcasType).casFeat_concatenated == null)
-      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.UserQuestionBody");
+      jcasType.jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestionBody");
     jcasType.ll_cas.ll_setBooleanValue(addr, ((UserQuestionBody_Type)jcasType).casFeatCode_concatenated, v);}    
   }
 

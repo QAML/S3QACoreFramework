@@ -1,0 +1,1 @@
+classpath*:descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml

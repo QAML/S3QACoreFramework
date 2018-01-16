@@ -57,6 +57,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.xml.sax.SAXException;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
@@ -69,18 +71,20 @@ import qa.qcri.iyas.feature.ProcessedJCASAggregator;
 
 public class Setup {
 	
-	public static final String ROOT_DESCRIPTORS_FOLDER = "resources/descriptors";
+	public static final String ROOT_MAIN_DESCRIPTORS_FOLDER = "src/main/resources/descriptors";
+	public static final String ROOT_TEST_DESCRIPTORS_FOLDER = "src/main/resources/descriptors";
 	
 	public static void createPrimitiveAnalysisEngine() throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, InvalidXMLException {
 		System.out.println("Generating XML description for InputCollectionDataReaderAE_Descriptor");
 		CollectionReaderDescription collectionReaderDescritor = CollectionReaderFactory.createReaderDescription(
 				InputCollectionDataReader.class);
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM,"/home/shared_files/workspace/Iyas.UIMA.Pipeline/data/dev.txt",
+				PlainTextDataReader.FILE_PARAM,"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt",
 				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescritor, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
-		collectionReaderDescritor.toXML(new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/data/readers/InputCollectionDataReaderAE_Descriptor.xml"));
+		collectionReaderDescritor.toXML(new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/data/reader/InputCollectionDataReaderAE_Descriptor.xml"));
+		collectionReaderDescritor.toXML(new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/data/reader/InputCollectionDataReaderAE_Descriptor.xml"));
 
 		
 		System.out.println("Generating XML description for InputJCasMultiplierAE_Descriptor");
@@ -90,7 +94,9 @@ public class Setup {
 				InputJCasMultiplier.PREPROCESSOR_EXTERNAL_RESOURCE, StandardPreprocessor.class,
 				InputJCasMultiplier.CONCATENATE_PARAM,"true");
 		inputJCasMultiplierAEDescriptor.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/InputJCasMultiplierAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/InputJCasMultiplierAE_Descriptor.xml"));
+		inputJCasMultiplierAEDescriptor.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/InputJCasMultiplierAE_Descriptor.xml"));
 	
 		
 		System.out.println("Generating XML description for ProcessedJCASAggregatorAE_Descriptor");
@@ -98,40 +104,50 @@ public class Setup {
 				ProcessedJCASAggregator.class);
 		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
 				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,"test");
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,"processedInstancesManager");
 		processedJCASAggregatorAEDescriptor.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/ProcessedJCASAggregatorAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ProcessedJCASAggregatorAE_Descriptor.xml"));
+		processedJCASAggregatorAEDescriptor.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ProcessedJCASAggregatorAE_Descriptor.xml"));
 		
 		System.out.println("Generating XML description for StandardSimpleFeatureExtractor primitives");
 		System.out.println("	Generating XML description for SegmenterAE_Descriptor");
 		AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(
-				StanfordSegmenter.class);
+				OpenNlpSegmenter.class);
 		segmenter.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/SegmenterAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/SegmenterAE_Descriptor.xml"));
+		segmenter.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/SegmenterAE_Descriptor.xml"));
 		
 		System.out.println("	Generating XML description for POSTaggerAE_Descriptor");
 		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(
-				StanfordPosTagger.class);
+				OpenNlpPosTagger.class);
 		posTagger.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/POSTaggerAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/POSTaggerAE_Descriptor.xml"));
+		posTagger.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/POSTaggerAE_Descriptor.xml"));
 		
 		System.out.println("	Generating XML description for LemmatizerAE_Descriptor");
 		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(
 				StanfordLemmatizer.class);
 		lemmatizer.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/LemmatizerAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/LemmatizerAE_Descriptor.xml"));
+		lemmatizer.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/LemmatizerAE_Descriptor.xml"));
 		
-		System.out.println("	Generating XML description for ChenkerAE_Descriptor");
+		System.out.println("	Generating XML description for ChunkerAE_Descriptor");
 		AnalysisEngineDescription chunker = AnalysisEngineFactory.createEngineDescription(
 				OpenNlpChunker.class);
 		chunker.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/ChenkerAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ChunkerAE_Descriptor.xml"));
+		chunker.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ChunkerAE_Descriptor.xml"));
 		
-		System.out.println("	Generating XML description for ParserAE_Descriptor");
-		AnalysisEngineDescription parser = AnalysisEngineFactory.createEngineDescription(
-				StanfordPosTagger.class);
-		parser.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/ParserAE_Descriptor.xml"));
+//		System.out.println("	Generating XML description for ParserAE_Descriptor");
+//		AnalysisEngineDescription parser = AnalysisEngineFactory.createEngineDescription(
+//				StanfordPosTagger.class);
+//		parser.toXML(
+//				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ParserAE_Descriptor.xml"));
 		
 	}
 	
@@ -146,147 +162,149 @@ public class Setup {
 		List<String> flowNames4 = new ArrayList<String>();
 		
 		Import segmenterAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		segmenterAEImport.setName("descriptors.qa.qcri.iyas.features.SegmenterAE_Descriptor");
-		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("StanfordSegmenter",
+		segmenterAEImport.setName("descriptors.qa.qcri.iyas.feature.SegmenterAE_Descriptor");
+		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("OpenNlpSegmenter",
 				segmenterAEImport);
-		flowNames4.add("StanfordSegmenter");
+		flowNames4.add("OpenNlpSegmenter");
 		
 		Import posTaggerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		posTaggerAEImport.setName("descriptors.qa.qcri.iyas.features.POSTaggerAE_Descriptor");
-		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("StanfordPosTagger",
+		posTaggerAEImport.setName("descriptors.qa.qcri.iyas.feature.POSTaggerAE_Descriptor");
+		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("OpenNlpPosTagger",
 				posTaggerAEImport);
-		flowNames4.add("StanfordPosTagger");
+		flowNames4.add("OpenNlpPosTagger");
 
 		Import lemmatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		lemmatizerAEImport.setName("descriptors.qa.qcri.iyas.features.LemmatizerAE_Descriptor");
+		lemmatizerAEImport.setName("descriptors.qa.qcri.iyas.feature.LemmatizerAE_Descriptor");
 		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("StanfordLemmatizer",
 				lemmatizerAEImport);
 		flowNames4.add("StanfordLemmatizer");
 
 		Import chunkerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		chunkerAEImport.setName("descriptors.qa.qcri.iyas.features.ChenkerAE_Descriptor");
+		chunkerAEImport.setName("descriptors.qa.qcri.iyas.feature.ChunkerAE_Descriptor");
 		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("OpenNlpChunker",
 				chunkerAEImport);
 		flowNames4.add("OpenNlpChunker");
 
-		Import parserAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		parserAEImport.setName("descriptors.qa.qcri.iyas.features.ParserAE_Descriptor");
-		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("StanfordParser",
-				parserAEImport);
-		flowNames4.add("StanfordParser");
+//		Import parserAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		parserAEImport.setName("descriptors.qa.qcri.iyas.feature.ParserAE_Descriptor");
+//		standardSimpleFeatureExtractorAAEDescriptor.getDelegateAnalysisEngineSpecifiersWithImports().put("StanfordParser",
+//				parserAEImport);
+//		flowNames4.add("StanfordParser");
 
 		FixedFlow fixedFlow4 = new FixedFlow_impl();
 	    fixedFlow4.setFixedFlow(flowNames4.toArray(new String[flowNames4.size()]));
 	    standardSimpleFeatureExtractorAAEDescriptor.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow4);
 
 	    standardSimpleFeatureExtractorAAEDescriptor.toXML(
-				new FileOutputStream(ROOT_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/features/StandardSimpleFeatureExtractorAAE_Descriptor.xml"));
+				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/StandardSimpleFeatureExtractorAAE_Descriptor.xml"));
+	    standardSimpleFeatureExtractorAAEDescriptor.toXML(
+				new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/StandardSimpleFeatureExtractorAAE_Descriptor.xml"));
 	    
 	    
-		System.out.println("Generating XML description for InputJCasMultiplierAAE_Descriptor");
-		AnalysisEngineDescription inputJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
-				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		inputJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		inputJCasMultiplierAAE.setPrimitive(false);
-
-		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
-		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		
-		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		inputJCasMultiplierAEImport.setName("descriptors.qa.qcri.iyas.features.InputJCasMultiplierAE_Descriptor");
-		inputJCasMultiplierAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAE", inputJCasMultiplierAEImport);
-		
-		List<String> flowNames1 = new ArrayList<String>();
-		flowNames1.add("InputJCasMultiplierAE");
-		
-		FixedFlow fixedFlow1 = new FixedFlow_impl();
-	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
-	    inputJCasMultiplierAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
-		
-	    inputJCasMultiplierAAE.toXML(
-				new FileOutputStream("resources/descriptors/qa/qcri/iyas/features/InputJCasMultiplierAAE_Descriptor.xml"));		
-		
-		
-
-		System.out.println("Generating XML description for ProcessedJCASAggregatorAAE_Descriptor");
-		AnalysisEngineDescription processedJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
-				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		processedJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		processedJCasMultiplierAAE.setPrimitive(false);
-
-		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
-		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		
-		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		processedJCasMultiplierAEImport.setName("descriptors.qa.qcri.iyas.features.ProcessedJCASAggregatorAE_Descriptor");
-		processedJCasMultiplierAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAE", processedJCasMultiplierAEImport);
-		
-		List<String> flowNames2 = new ArrayList<String>();
-		flowNames2.add("ProcessedJCASAggregatorAE");
-		
-		FixedFlow fixedFlow2 = new FixedFlow_impl();
-	    fixedFlow2.setFixedFlow(flowNames2.toArray(new String[flowNames2.size()]));
-	    processedJCasMultiplierAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow2);
-  
-	    processedJCasMultiplierAAE.toXML(
-				new FileOutputStream("resources/descriptors/qa/qcri/iyas/features/ProcessedJCASAggregatorAAE_Descriptor.xml"));		
-		
-		
-		
-	    System.out.println("Generating XML description for StandardPipelineAAE_Descriptor");
-	    Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
-	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
-		flowControllerDeclaration.setImport(flowControllerImport);
-		flowControllerDeclaration.setKey("FixedFlowController");
-		
-	    AnalysisEngineDescription standardPipelineAAE = AnalysisEngineFactory.createEngineDescription(
-				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		standardPipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		standardPipelineAAE.setPrimitive(false);
-
-		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
-		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		
-		standardPipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
-//		ConfigurationParameterDeclarations_impl
-		ConfigurationParameterDeclarations parameters = standardPipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
-		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
-		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		param.setType("String");
-		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		parameters.addConfigurationParameter(param);
-		ConfigurationParameterSettings settings = standardPipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
-		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
-		
-		Import inputJCasMultiplierAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		inputJCasMultiplierAAEImport.setName("descriptors.qa.qcri.iyas.features.InputJCasMultiplierAAE_Descriptor");
-		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE_Descriptor", inputJCasMultiplierAAEImport);
-		
-		Import standardSimpleFeatureExtractorAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		standardSimpleFeatureExtractorAAEImport.setName("descriptors.qa.qcri.iyas.features.StandardSimpleFeatureExtractorAAE_Descriptor");
-		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardSimpleFeatureExtractorAAE_Descriptor", standardSimpleFeatureExtractorAAEImport);
-		
-		Import processedJCasMultiplierAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		processedJCasMultiplierAAEImport.setName("descriptors.qa.qcri.iyas.features.ProcessedJCASAggregatorAAE_Descriptor");
-		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE_Descriptor", processedJCasMultiplierAAEImport);
-
-		List<String> flowNames3 = new ArrayList<String>();
-		flowNames3.add("InputJCasMultiplierAAE_Descriptor");
-		flowNames3.add("StandardSimpleFeatureExtractorAAE_Descriptor");
-		flowNames3.add("ProcessedJCASAggregatorAAE_Descriptor");
-		
-		FixedFlow fixedFlow3 = new FixedFlow_impl();
-	    fixedFlow3.setFixedFlow(flowNames3.toArray(new String[flowNames3.size()]));
-	    standardPipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow3);
-	    	    
-	    standardPipelineAAE.toXML(
-				new FileOutputStream("resources/descriptors/qa/qcri/iyas/StandardPipelineAAE_Descriptor.xml"));	
 	    
-//	    standardPipelineAAE.toXML(System.out);
+//		System.out.println("Generating XML description for InputJCasMultiplierAAE_Descriptor");
+//		AnalysisEngineDescription inputJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		inputJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		inputJCasMultiplierAAE.setPrimitive(false);
+//
+//		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+//		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		inputJCasMultiplierAEImport.setName("descriptors.qa.qcri.iyas.features.InputJCasMultiplierAE_Descriptor");
+//		inputJCasMultiplierAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAE", inputJCasMultiplierAEImport);
+//		
+//		List<String> flowNames1 = new ArrayList<String>();
+//		flowNames1.add("InputJCasMultiplierAE");
+//		
+//		FixedFlow fixedFlow1 = new FixedFlow_impl();
+//	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+//	    inputJCasMultiplierAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+//		
+//	    inputJCasMultiplierAAE.toXML(
+//				new FileOutputStream("resources/descriptors/qa/qcri/iyas/features/InputJCasMultiplierAAE_Descriptor.xml"));		
+//		
+//		
+//
+//		System.out.println("Generating XML description for ProcessedJCASAggregatorAAE_Descriptor");
+//		AnalysisEngineDescription processedJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		processedJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		processedJCasMultiplierAAE.setPrimitive(false);
+//
+//		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+//		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		processedJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		processedJCasMultiplierAEImport.setName("descriptors.qa.qcri.iyas.features.ProcessedJCASAggregatorAE_Descriptor");
+//		processedJCasMultiplierAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAE", processedJCasMultiplierAEImport);
+//		
+//		List<String> flowNames2 = new ArrayList<String>();
+//		flowNames2.add("ProcessedJCASAggregatorAE");
+//		
+//		FixedFlow fixedFlow2 = new FixedFlow_impl();
+//	    fixedFlow2.setFixedFlow(flowNames2.toArray(new String[flowNames2.size()]));
+//	    processedJCasMultiplierAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow2);
+//  
+//	    processedJCasMultiplierAAE.toXML(
+//				new FileOutputStream("resources/descriptors/qa/qcri/iyas/features/ProcessedJCASAggregatorAAE_Descriptor.xml"));		
+//		
+//		
+//		
+//	    System.out.println("Generating XML description for StandardPipelineAAE_Descriptor");
+//	    Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+//	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+//		flowControllerDeclaration.setImport(flowControllerImport);
+//		flowControllerDeclaration.setKey("FixedFlowController");
+//		
+//	    AnalysisEngineDescription standardPipelineAAE = AnalysisEngineFactory.createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		standardPipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		standardPipelineAAE.setPrimitive(false);
+//
+//		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+//		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		standardPipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		standardPipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+////		ConfigurationParameterDeclarations_impl
+//		ConfigurationParameterDeclarations parameters = standardPipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = standardPipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+//		
+//		Import inputJCasMultiplierAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		inputJCasMultiplierAAEImport.setName("descriptors.qa.qcri.iyas.features.InputJCasMultiplierAAE_Descriptor");
+//		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE_Descriptor", inputJCasMultiplierAAEImport);
+//		
+//		Import standardSimpleFeatureExtractorAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		standardSimpleFeatureExtractorAAEImport.setName("descriptors.qa.qcri.iyas.features.StandardSimpleFeatureExtractorAAE_Descriptor");
+//		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardSimpleFeatureExtractorAAE_Descriptor", standardSimpleFeatureExtractorAAEImport);
+//		
+//		Import processedJCasMultiplierAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		processedJCasMultiplierAAEImport.setName("descriptors.qa.qcri.iyas.features.ProcessedJCASAggregatorAAE_Descriptor");
+//		standardPipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE_Descriptor", processedJCasMultiplierAAEImport);
+//
+//		List<String> flowNames3 = new ArrayList<String>();
+//		flowNames3.add("InputJCasMultiplierAAE_Descriptor");
+//		flowNames3.add("StandardSimpleFeatureExtractorAAE_Descriptor");
+//		flowNames3.add("ProcessedJCASAggregatorAAE_Descriptor");
+//		
+//		FixedFlow fixedFlow3 = new FixedFlow_impl();
+//	    fixedFlow3.setFixedFlow(flowNames3.toArray(new String[flowNames3.size()]));
+//	    standardPipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow3);
+//	    	    
+//	    standardPipelineAAE.toXML(
+//				new FileOutputStream("resources/descriptors/qa/qcri/iyas/StandardPipelineAAE_Descriptor.xml"));	
+	    
 	
 	}
 	
@@ -295,7 +313,7 @@ public class Setup {
 		System.out.println("Generating XML description for StandardSimpleFeatureExtractorAAE_DeploymentDescriptor");
 		ServiceContext standardSimpleFeaturesContext = new ServiceContextImpl("FeatureExtraction", 
 							           "Feature Extraction",
-							           "descriptors.qa.qcri.iyas.features.StandardSimpleFeatureExtractorAAE_Descriptor", 
+							           "descriptors.qa.qcri.iyas.feature.StandardSimpleFeatureExtractorAAE_Descriptor", 
 							           "standardSimpleFeatureExtractorQueue", "tcp://localhost:61616");
 		
 //		ColocatedDelegateConfiguration ssfCldd1 = new ColocatedDelegateConfigurationImpl("de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter-0", new DelegateConfiguration[0]);
@@ -304,18 +322,22 @@ public class Setup {
 //		ColocatedDelegateConfiguration ssfCldd4 = new ColocatedDelegateConfigurationImpl("de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker-3", new DelegateConfiguration[0]);
 //		ColocatedDelegateConfiguration ssfCldd5 = new ColocatedDelegateConfigurationImpl("de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordParser-4", new DelegateConfiguration[0]);
 
-		ColocatedDelegateConfiguration ssfCldd1 = new ColocatedDelegateConfigurationImpl("StanfordSegmenter", new DelegateConfiguration[0]);
-		ColocatedDelegateConfiguration ssfCldd2 = new ColocatedDelegateConfigurationImpl("StanfordPosTagger", new DelegateConfiguration[0]);
+		ColocatedDelegateConfiguration ssfCldd1 = new ColocatedDelegateConfigurationImpl("OpenNlpSegmenter", new DelegateConfiguration[0]);
+		ColocatedDelegateConfiguration ssfCldd2 = new ColocatedDelegateConfigurationImpl("OpenNlpPosTagger", new DelegateConfiguration[0]);
 		ColocatedDelegateConfiguration ssfCldd3 = new ColocatedDelegateConfigurationImpl("StanfordLemmatizer", new DelegateConfiguration[0]);
 		ColocatedDelegateConfiguration ssfCldd4 = new ColocatedDelegateConfigurationImpl("OpenNlpChunker", new DelegateConfiguration[0]);
-		ColocatedDelegateConfiguration ssfCldd5 = new ColocatedDelegateConfigurationImpl("StanfordParser", new DelegateConfiguration[0]);
 
 		UimaASAggregateDeploymentDescriptor ssfdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(standardSimpleFeaturesContext,
-				ssfCldd1,ssfCldd2,ssfCldd3,ssfCldd4,ssfCldd5);
+				ssfCldd1,ssfCldd2,ssfCldd3,ssfCldd4);
 		
 		BufferedWriter out = new BufferedWriter(
 				new OutputStreamWriter(
-						new FileOutputStream("resources/descriptors/deployment/StandardSimpleFeatureExtractorAAE_DeploymentDescriptor.xml")));
+						new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/deployment/StandardSimpleFeatureExtractorAAE_DeploymentDescriptor.xml")));
+		out.write(ssfdd.toXML());
+		out.close();
+		out = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/deployment/StandardSimpleFeatureExtractorAAE_DeploymentDescriptor.xml")));
 		out.write(ssfdd.toXML());
 		out.close();
 		
@@ -341,7 +363,12 @@ public class Setup {
 		
 		out = new BufferedWriter(
 				new OutputStreamWriter(
-						new FileOutputStream("resources/descriptors/deployment/StandardPipelineAAE_DeploymentDescriptor.xml")));
+						new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/deployment/StandardPipelineAAE_DeploymentDescriptor.xml")));
+		out.write(spdd.toXML());
+		out.close();
+		out = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(ROOT_TEST_DESCRIPTORS_FOLDER+"/deployment/StandardPipelineAAE_DeploymentDescriptor.xml")));
 		out.write(spdd.toXML());
 		out.close();
 	}

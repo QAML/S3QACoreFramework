@@ -28,7 +28,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
  * @generated */
 public class RelatedQuestionBody_Type extends QAAnnotation_Type {
   /** @generated */
@@ -37,7 +37,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.types.RelatedQuestionBody");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.RelatedQuestionBody");
  
   /** @generated */
   final Feature casFeat_numberOfCandidates;
@@ -49,7 +49,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
    */ 
   public int getNumberOfCandidates(int addr) {
         if (featOkTst && casFeat_numberOfCandidates == null)
-      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.types.RelatedQuestionBody");
+      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.RelatedQuestionBody");
     return ll_cas.ll_getIntValue(addr, casFeatCode_numberOfCandidates);
   }
   /** @generated
@@ -58,7 +58,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
    */    
   public void setNumberOfCandidates(int addr, int v) {
         if (featOkTst && casFeat_numberOfCandidates == null)
-      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.types.RelatedQuestionBody");
+      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.RelatedQuestionBody");
     ll_cas.ll_setIntValue(addr, casFeatCode_numberOfCandidates, v);}
     
   
@@ -73,7 +73,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
    */ 
   public boolean getConcatenated(int addr) {
         if (featOkTst && casFeat_concatenated == null)
-      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.RelatedQuestionBody");
+      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.RelatedQuestionBody");
     return ll_cas.ll_getBooleanValue(addr, casFeatCode_concatenated);
   }
   /** @generated
@@ -82,7 +82,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
    */    
   public void setConcatenated(int addr, boolean v) {
         if (featOkTst && casFeat_concatenated == null)
-      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.types.RelatedQuestionBody");
+      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.RelatedQuestionBody");
     ll_cas.ll_setBooleanValue(addr, casFeatCode_concatenated, v);}
     
   

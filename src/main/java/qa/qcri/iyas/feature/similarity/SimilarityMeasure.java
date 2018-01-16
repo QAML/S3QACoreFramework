@@ -27,6 +27,16 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 
+/**
+ * Given two JCases, a {@link SimilarityMeasure} computes a similarity based on the content and the annotations in the JCases.
+ * Each concrete class of {@link SimilarityMeasure} must be thread-safe. Whenever a concrete class requires resources to be
+ * inizialized, such initializion must be done in {@link qa.qcri.iyas.feature.similarity.SimilarityMeasure#afterResourcesInitialized()}
+ * method. All parameters, for both resources initialization and similarity computation, must be declared as 
+ * @ConfigurationParameter. The parameters for the similarity computation, if any, cannot change over the time.
+ * 
+ * @author Salvatore Romeo
+ *
+ */
 public abstract class SimilarityMeasure implements SharedResourceObject, ExternalResourceAware {
 
 	@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
@@ -38,7 +48,7 @@ public abstract class SimilarityMeasure implements SharedResourceObject, Externa
 	}
 
 	@Override
-	public String getResourceName() {
+	public final String getResourceName() {
 		return this.resourceName;
 	}
 

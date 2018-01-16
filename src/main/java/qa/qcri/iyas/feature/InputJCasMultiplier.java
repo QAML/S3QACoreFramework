@@ -20,6 +20,7 @@ package qa.qcri.iyas.feature;
 
 import java.io.File;
 import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 import org.apache.uima.UimaContext;
@@ -164,9 +165,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		super.initialize(context);
 		XMLReaderJDOMFactory factory;
 		try {
-			factory = new XMLReaderXSDFactory(new File(DataReader.SCHEMA_PATH));
+			factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(DataReader.SCHEMA_PATH).toURI()));
 			saxBuilder = new SAXBuilder(factory);
-		} catch (JDOMException e) {
+		} catch (JDOMException | URISyntaxException e) {
 			e.printStackTrace();
 			throw new ResourceInitializationException(e.getMessage(), null);
 		}

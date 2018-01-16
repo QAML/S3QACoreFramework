@@ -70,13 +70,14 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	
 
 	
-	public static final String AGGREGATE_QUESTION_COMMENT_PAIRS = "aggregate-question-comment-pairs";//Subtask A
-	public static final String AGGREGATE_QUESTION_QUESTION_PAIRS = "aggregate-question-questions-pairs";//Subtask B
-	public static final String AGGREGATE_USERQUESTION_COMMENT_PAIRS = "aggregate-userquestion-comment-pairs";
-	public static final String AGGREGATE_THREADS = "aggregate-threads";
-	public static final String AGGREGATE_THREADS_AND_USER_QUESTIONS = "aggregate-threads-and-questions";
+//	public static final String AGGREGATE_QUESTION_COMMENT_PAIRS = "aggregate-question-comment-pairs";//Subtask A
+//	public static final String AGGREGATE_QUESTION_QUESTION_PAIRS = "aggregate-question-questions-pairs";//Subtask B
+//	public static final String AGGREGATE_USERQUESTION_COMMENT_PAIRS = "aggregate-userquestion-comment-pairs";
+//	public static final String AGGREGATE_THREADS = "aggregate-threads";
+//	public static final String AGGREGATE_THREADS_AND_USER_QUESTIONS = "aggregate-threads-and-questions";
 	
 	public final static String PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE = "processedInstancesManager";
+	
 	@ExternalResource(key = PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE)
 	private ProcessedInstancesManager processedInstancesManager;
 	

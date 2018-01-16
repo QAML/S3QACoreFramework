@@ -19,7 +19,18 @@
 package qa.qcri.iyas.data.preprocessing;
 
 import org.apache.uima.fit.component.Resource_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
+import qa.qcri.iyas.feature.InputJCasMultiplier;
+
+/**
+ * A {@link TextPreprocessor} is a resource that in charge of performing the required preprocessing for the text. 
+ * The {@link TextPreprocessor} is used by the {@link InputJCasMultiplier} to preprocess the text content for each 
+ * of the created JCases. Each implementation of this class must be thread-safe.
+ * 
+ * @author Salvatore Romeo
+ *
+ */
 public abstract class TextPreprocessor extends Resource_ImplBase {
 
 	@Override
@@ -32,7 +43,37 @@ public abstract class TextPreprocessor extends Resource_ImplBase {
 		
 	}
 	
-	public void init() throws Exception {}
-	public void close()  {}
+	@Override
+	public void destroy() {
+		try {
+			releaseResources();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Called by the framework, initializes the resources of this {@link TextPreprocessor}, if any. If a sub-class need some
+	 * parameter, each of them must be declared as {@link ConfigurationParameter}. Please refer to 
+	 * <a href="https://uima.apache.org/d/uimafit-current/tools.uimafit.book.html#ugr.tools.uimafit.configurationparameters">Apache uimaFIT Documentation</a> 
+	 * for the declaration and initialization of {@link ConfigurationParameter}s. {@link TextPreprocessor} provides empty
+	 * implementation for this method. Each implementation of this method must be thread-safe.
+	 * 
+	 * @throws Exception
+	 */
+	protected void init() throws Exception {}
+	
+	/**
+	 * Called by the framework, releases the resources binded at the initialization time. {@link TextPreprocessor} 
+	 * provides empty implementation for this method. Each implementation of this method must be thread-safe.
+	 */
+	protected void releaseResources()  {}
+	
+	/**
+	 * Performs the preprocessing on the specified text and returns the preprocessed one.
+	 * @param text text to preprocess
+	 * @param lang language of the text to preprocess
+	 * @return preprocessed text
+	 */
 	public abstract String preprocess(String text, String lang);
 }

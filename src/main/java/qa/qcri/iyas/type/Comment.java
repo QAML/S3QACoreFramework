@@ -28,8 +28,8 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
- * XML source: /home/shared_files/UIMA/workspace/cqa-uima-pipeline-all/cqa-uima-pipeline-core/resources/descriptors/qa/qcri/iyas/types/CQATypeSystemDescriptorFile.xml
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class Comment extends QAAnnotation {
   /** @generated
@@ -102,7 +102,7 @@ public class Comment extends QAAnnotation {
    */
   public String getQuestionID() {
     if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_questionID == null)
-      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.types.Comment");
+      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Comment_Type)jcasType).casFeatCode_questionID);}
     
   /** setter for questionID - sets  
@@ -111,7 +111,7 @@ public class Comment extends QAAnnotation {
    */
   public void setQuestionID(String v) {
     if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_questionID == null)
-      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.types.Comment");
+      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
     jcasType.ll_cas.ll_setStringValue(addr, ((Comment_Type)jcasType).casFeatCode_questionID, v);}    
   }
 

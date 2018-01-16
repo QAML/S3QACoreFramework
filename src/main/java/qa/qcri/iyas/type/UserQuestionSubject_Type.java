@@ -26,7 +26,7 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 
 /** 
- * Updated by JCasGen Mon Dec 11 14:36:21 AST 2017
+ * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
  * @generated */
 public class UserQuestionSubject_Type extends QAAnnotation_Type {
   /** @generated */
@@ -35,7 +35,7 @@ public class UserQuestionSubject_Type extends QAAnnotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.types.UserQuestionSubject");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.UserQuestionSubject");
 
 
 

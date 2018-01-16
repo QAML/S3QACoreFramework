@@ -34,6 +34,11 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 
+/**
+ * 
+ * @author Salvatore Romeo
+ *
+ */
 @OperationalProperties(outputsNewCases = true,multipleDeploymentAllowed = false)
 @TypeCapability(
 		outputs = {"qa.qcri.iyas.types.UserQuestionSubject",
@@ -44,7 +49,7 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 )
 public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	
-	public static final String INPUT_READER_PARAM = "InputFile";
+	public static final String INPUT_READER_PARAM = "InputReader";
 
 	@ExternalResource(key = INPUT_READER_PARAM)
 	private DataReader reader;
@@ -52,7 +57,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void close() {
 		try {
-			reader.close();
+			reader.releaseResources();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,7 +66,17 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void getNext(JCas jcas) throws IOException, CollectionException {
 		try {
-			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(DataReader.SCHEMA_PATH));
+			File schemaFile = null;
+			if (reader.getTask().equals(DataReader.INSTANCE_A_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_A_PATH).toURI());
+			else if (reader.getTask().equals(DataReader.INSTANCE_B_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_B_PATH).toURI());
+			else if (reader.getTask().equals(DataReader.INSTANCE_C_TASK))
+				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_C_PATH).toURI());
+			
+			
+			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
+					schemaFile);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
 
 			String nextStr = reader.next();
