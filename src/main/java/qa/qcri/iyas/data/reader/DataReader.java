@@ -46,10 +46,19 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String RELATED_QUESTION_COMMENTS_TAG = "related_question_comments";
 	public static final String SUBJECT_TAG = "subject";
 	public static final String BODY_TAG = "body";
+	public static final String CATEGORY_ATTRIBUTE = "category";
+	public static final String DATE_ATTRIBUTE = "date";
+	public static final String RANK_ATTRIBUTE = "rank";
 	public static final String COMMENT_TAG = "comment";
 	public static final String ID_ATTRIBUTE = "id";
 	public static final String LANG_ATTRIBUTE = "lang";
 	public static final String NUMBER_OF_CANDIDATES_ATTRIBUTE = "numberOfCandidates";
+	public static final String RELEVANCE_ATTRIBUTE = "relevance";
+	public static final String RELEVANCE_TO_USER_QUEST_ATTRIBUTE = "relevanceToUserQuestion";
+	public static final String RELEVANCE_TO_REL_QUEST_ATTRIBUTE = "relevanceToRelatedQuestion";
+	public static final String USER_ID_ATTRIBUTE = "userID";
+	public static final String USER_NAME_ATTRIBUTE = "userName";
+	
 	
 	public static final String SCHEMA_INSTANCE_A_PATH = "/schemas/cqa_instance_a_schema.xsd";
 	public static final String SCHEMA_INSTANCE_B_PATH = "/schemas/cqa_instance_b_schema.xsd";

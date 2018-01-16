@@ -17,6 +17,10 @@
 													<xs:extension base="xs:string">
 														<xs:attribute name="id" type="xs:string" use="required" />
 														<xs:attribute name="lang" type="xs:string" use="required" />
+														<xs:attribute name="relevance" type="xs:string" use="optional" />
+														<xs:attribute name="date" type="xs:dateTime" use="optional" />
+														<xs:attribute name="userID" type="xs:string" use="optional" />
+														<xs:attribute name="userName" type="xs:string" use="optional" />
 													</xs:extension>
 												</xs:simpleContent>
 											</xs:complexType>
@@ -25,6 +29,10 @@
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
 									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
+									<xs:attribute name="category" type="xs:string" use="optional" />
+									<xs:attribute name="date" type="xs:dateTime" use="optional" />
+									<xs:attribute name="userID" type="xs:string" use="optional" />
+									<xs:attribute name="userName" type="xs:string" use="optional" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -53,6 +61,12 @@
 									</xs:sequence>
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
+									<xs:attribute name="relevance" type="xs:string" use="optional" />
+									<xs:attribute name="category" type="xs:string" use="optional" />
+									<xs:attribute name="date" type="xs:dateTime" use="optional" />
+									<xs:attribute name="rank" type="xs:positiveInteger" use="optional" />
+									<xs:attribute name="userID" type="xs:string" use="optional" />
+									<xs:attribute name="userName" type="xs:string" use="optional" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
@@ -84,6 +98,11 @@
 													<xs:extension base="xs:string">
 														<xs:attribute name="id" type="xs:string" use="required" />
 														<xs:attribute name="lang" type="xs:string" use="required" />
+														<xs:attribute name="relevanceToUserQuestion" type="xs:string" use="optional" />
+														<xs:attribute name="relevanceToRelatedQuestion" type="xs:string" use="optional" />
+														<xs:attribute name="date" type="xs:dateTime" use="optional" />
+														<xs:attribute name="userID" type="xs:string" use="optional" />
+														<xs:attribute name="userName" type="xs:string" use="optional" />
 													</xs:extension>
 												</xs:simpleContent>
 											</xs:complexType>
@@ -92,6 +111,12 @@
 									<xs:attribute name="id" type="xs:string" use="required" />
 									<xs:attribute name="lang" type="xs:string" use="required" />
 									<xs:attribute name="numberOfCandidates" type="xs:integer" use="required" />
+									<xs:attribute name="relevance" type="xs:string" use="optional" />
+									<xs:attribute name="category" type="xs:string" use="optional" />
+									<xs:attribute name="date" type="xs:dateTime" use="optional" />
+									<xs:attribute name="rank" type="xs:positiveInteger" use="optional" />
+									<xs:attribute name="userID" type="xs:string" use="optional" />
+									<xs:attribute name="userName" type="xs:string" use="optional" />
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
