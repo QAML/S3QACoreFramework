@@ -67,34 +67,34 @@ public class XmlSemeval2016CqaEn extends DataReader{
 
 	public void init() throws ResourceInitializationException {
 		try {
-		byte[] encoded = Files.readAllBytes(Paths.get(file));
-		String contents = new String(encoded, ENCODING).replaceAll("(?i)<br[^>]*>", LINE_START).replaceAll("\n", LINE_START);
-		Document DOCUMENT = Jsoup.parse(contents);
-		
-		Elements questions;
-		if (task.equals(DataReader.INSTANCE_A_TASK)) {
-			//ABC this should allow us to read all the related questions instantaneously
-//			questions = DOCUMENT.getElementsByTag(XML_TAG_REL_Q);
-			questions = DOCUMENT.getElementsByTag(XML_TAG_THREAD);
-		} else  { // same applies for both B and C
-			questions = DOCUMENT.getElementsByTag(XML_TAG_ORG_Q);
-		} 
-//		int qNumber = 0;
-//		int totalQuestions = questions.size();
-		QUESTION_ITERATOR = questions.listIterator();
-
-//		for (Element question : questions) {
-////			qNumber++;
-//			CQAquestionThreadList tmp = globalElementToObject(question);
-//			if (instances.isEmpty()) {
-//				instances.add(globalElementToObject(question));
-//			} else if (instances.get(instances.size()-1).getOrgQuestion().getId()
-//					.equals(tmp.getOrgQuestion().getId())) {
-//				instances.get(instances.size()-1).addThread(tmp.getThread(0));
-//			} else {
-//				instances.add(globalElementToObject(question));
-//			}
-//		}
+			byte[] encoded = Files.readAllBytes(Paths.get(file));
+			String contents = new String(encoded, ENCODING).replaceAll("(?i)<br[^>]*>", LINE_START).replaceAll("\n", LINE_START);
+			Document DOCUMENT = Jsoup.parse(contents);
+			
+			Elements questions;
+			if (task.equals(DataReader.INSTANCE_A_TASK)) {
+				//ABC this should allow us to read all the related questions instantaneously
+	//			questions = DOCUMENT.getElementsByTag(XML_TAG_REL_Q);
+				questions = DOCUMENT.getElementsByTag(XML_TAG_THREAD);
+			} else  { // same applies for both B and C
+				questions = DOCUMENT.getElementsByTag(XML_TAG_ORG_Q);
+			} 
+	//		int qNumber = 0;
+	//		int totalQuestions = questions.size();
+			QUESTION_ITERATOR = questions.listIterator();
+	
+	//		for (Element question : questions) {
+	////			qNumber++;
+	//			CQAquestionThreadList tmp = globalElementToObject(question);
+	//			if (instances.isEmpty()) {
+	//				instances.add(globalElementToObject(question));
+	//			} else if (instances.get(instances.size()-1).getOrgQuestion().getId()
+	//					.equals(tmp.getOrgQuestion().getId())) {
+	//				instances.get(instances.size()-1).addThread(tmp.getThread(0));
+	//			} else {
+	//				instances.add(globalElementToObject(question));
+	//			}
+	//		}
 		} catch (IOException e) {
 			throw new ResourceInitializationException(e);
 		}
