@@ -67,9 +67,6 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String SCHEMA_INSTANCE_C_PATH = "/schemas/cqa_instance_c_schema.xsd";
 	public static final String SCHEMA_PATH = "/schemas/cqa_instance_schema.xsd";
 	
-//	@ConfigurationParameter(name = LANGUAGE_PARAM)
-//	protected String language;
-//	
 	@ConfigurationParameter(name = TASK_PARAM)
 	protected String task;
 	
