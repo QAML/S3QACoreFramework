@@ -25,9 +25,9 @@ import it.uniroma2.sag.kelp.kernel.DirectKernel;
 import it.uniroma2.sag.kelp.kernel.tree.PartialTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubSetTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubTreeKernel;
-import qa.qcri.iyas.data.tree.RichTree;
-import qa.qcri.iyas.data.tree.TokenTree;
-import qa.qcri.iyas.data.tree.TreeSerializer;
+import qa.qcri.iyas.feature.tree.RichTree;
+import qa.qcri.iyas.feature.tree.TokenTree;
+import qa.qcri.iyas.feature.tree.TreeSerializer;
 
 /**
  * Defines a similarity function between two JCas annotations based

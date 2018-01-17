@@ -1,4 +1,4 @@
-package qa.qcri.iyas.data.tree.nodes;
+package qa.qcri.iyas.feature.tree.node;
 
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 
