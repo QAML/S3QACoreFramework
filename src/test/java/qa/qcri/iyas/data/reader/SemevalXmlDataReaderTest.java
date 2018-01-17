@@ -51,7 +51,7 @@ import org.junit.runner.notification.Failure;
  * A JUnit test-case for the class {@link XmlSemeval2016CqaEn} to be used as test example for new implemented
  * {@link DataReader}.
  * 
- * @author Salvatore Romeo
+ * @author albarron (based on sromeo's test)
  *
  */
 public class SemevalXmlDataReaderTest {
