@@ -66,7 +66,8 @@ public class StandardComplexFeatureExtractor extends JCasAnnotator_ImplBase {
 				for (Annotation ann : jcas.getAnnotationIndex()) {
 					System.err.println(ann.toString());
 				}
-				throw new RuntimeException("The input CAS must have only one annotation!",null);
+				throw new AnalysisEngineProcessException(new IllegalArgumentException(
+						"The input CAS must have only one annotation!"));
 			}
 		}
 	}

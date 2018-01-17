@@ -38,6 +38,7 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.util.CasCreationUtils;
 
@@ -51,13 +52,15 @@ import qa.qcri.iyas.type.UserQuestionBody;
 import qa.qcri.iyas.type.UserQuestionSubject;
 
 abstract class AbstractProcessedInstance {
-	protected <T extends TOP> T getAnnotation(JCas jcas,Class<T> clazz) throws AnalysisEngineProcessException {
+	protected <T extends TOP> T getAnnotation(JCas jcas,Class<T> clazz) throws ResourceProcessException {
 		FSIterator<T> it = jcas.getAllIndexedFS(clazz);
 		if (!it.hasNext())
-			throw new AnalysisEngineProcessException("The specified JCas does not contain any "+clazz.getName()+" annotation",null);
+			throw new ResourceProcessException(new IllegalArgumentException(
+					"The specified JCas does not contain any "+clazz.getName()+" annotation"));
 		T annotation = it.next();
 		if (it.hasNext())
-			throw new AnalysisEngineProcessException("Only one annotation is expected "+clazz.getName(),null);
+			throw new ResourceProcessException(new IllegalArgumentException(
+					"Only one annotation is expected "+clazz.getName()));
 		
 		return annotation;
 	}
@@ -69,20 +72,21 @@ class ProcessedInstanceA extends AbstractProcessedInstance {
 	private JCas relatedQuestionBody;
 	private List<JCas> comments = new LinkedList<JCas>();
 	
-	public boolean addJCas(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
-		if (JCasUtil.exists(jcas, RelatedQuestionSubject.class))
-			setRelatedQuestionSubject(jcas);
-		else if (JCasUtil.exists(jcas, RelatedQuestionBody.class))
-			setRelatedQuestionBody(jcas);
-		else if (JCasUtil.exists(jcas, Comment.class))
-			setComment(jcas);
-		else
-			throw new AnalysisEngineProcessException("The specified JCas does not contain any of the expected annotations",null);
+	public boolean addJCas(JCas jcas) throws ResourceProcessException {
+			if (JCasUtil.exists(jcas, RelatedQuestionSubject.class))
+				setRelatedQuestionSubject(jcas);
+			else if (JCasUtil.exists(jcas, RelatedQuestionBody.class))
+				setRelatedQuestionBody(jcas);
+			else if (JCasUtil.exists(jcas, Comment.class))
+				setComment(jcas);
+			else
+				throw new ResourceProcessException(new IllegalArgumentException(
+						"The specified JCas does not contain any of the expected annotations"));
 		
 		return isReady();
 	}
 	
-	public void getAggregatedJCas(JCas jcas) throws AnalysisEngineProcessException, CASException {
+	public void getAggregatedJCas(JCas jcas) throws ResourceProcessException {
 		if (!isReady())
 			throw new AnalysisEngineProcessException("Not ready, some JCas is still missing",null);
 
@@ -116,34 +120,47 @@ class ProcessedInstanceA extends AbstractProcessedInstance {
 	}
 	
 	
-	public void setRelatedQuestionSubject(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionSubject(JCas jcas) throws ResourceProcessException {
 		getAnnotation(jcas, RelatedQuestionSubject.class);
 		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionSubject = cas.getJCas();
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionSubject = cas.getJCas();
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
+		
 	}
 	
-	public void setRelatedQuestionBody(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionBody(JCas jcas) throws ResourceProcessException {
 		getAnnotation(jcas, RelatedQuestionBody.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionBody = cas.getJCas();
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionBody = cas.getJCas();
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setComment(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setComment(JCas jcas) throws ResourceProcessException {
 		getAnnotation(jcas, Comment.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		comments.add(cas.getJCas());
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			comments.add(cas.getJCas());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public boolean isReady() throws AnalysisEngineProcessException {
+	public boolean isReady() throws ResourceProcessException {
 		if (relatedQuestionBody == null || (!concatenated) && relatedQuestionSubject == null)
 			return false;
 		
@@ -162,7 +179,7 @@ class ProcessedInstanceB extends AbstractProcessedInstance {
 	private Map<String,JCas> relatedQuestionSubjects = new HashMap<String,JCas>();
 	private Map<String,JCas> relatedQuestionBodies = new HashMap<String,JCas>();
 	
-	public boolean addJCas(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public boolean addJCas(JCas jcas) throws ResourceProcessException {
 		if (JCasUtil.exists(jcas, UserQuestionSubject.class))
 			setUserQuestionSubject(jcas);
 		else if (JCasUtil.exists(jcas, UserQuestionBody.class))
@@ -172,12 +189,13 @@ class ProcessedInstanceB extends AbstractProcessedInstance {
 		else if (JCasUtil.exists(jcas, RelatedQuestionBody.class))
 			setRelatedQuestionBody(jcas);
 		else
-			throw new AnalysisEngineProcessException("The specified JCas does not contain any of the expected annotations",null);
+			throw new ResourceProcessException(new IllegalArgumentException(
+					"The specified JCas does not contain any of the expected annotations"));
 		
 		return isReady();
 	}
 	
-	public void getAggregatedJCas(JCas jcas) throws AnalysisEngineProcessException, CASException {
+	public void getAggregatedJCas(JCas jcas) throws ResourceProcessException {
 		if (!isReady())
 			throw new AnalysisEngineProcessException("Not ready, some JCas is still missing",null);
 
@@ -198,7 +216,12 @@ class ProcessedInstanceB extends AbstractProcessedInstance {
 		
 		int i = 0;
 		for (String questionID : relatedQuestionBodies.keySet()) {
-			JCas relatedQuestView = jcas.createView(ProcessedInstancesManager.RELATED_QUESTION_VIEW+"-"+questionID);
+			JCas relatedQuestView;
+			try {
+				relatedQuestView = jcas.createView(ProcessedInstancesManager.RELATED_QUESTION_VIEW+"-"+questionID);
+			} catch (CASException e) {
+				throw new ResourceProcessException(e);
+			}
 			
 			RelatedQuestion relatedQuestion = new RelatedQuestion(relatedQuestView);
 			relatedQuestion.setConcatenated(concatenated);
@@ -220,46 +243,62 @@ class ProcessedInstanceB extends AbstractProcessedInstance {
 		
 	}
 	
-	public void setUserQuestionSubject(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setUserQuestionSubject(JCas jcas) throws ResourceProcessException {
 		getAnnotation(jcas, UserQuestionSubject.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		this.userQuestionSubject = cas.getJCas();
-		CasCopier.copyCas(jcas.getCas(), userQuestionSubject.getCas(), true);
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			this.userQuestionSubject = cas.getJCas();
+			CasCopier.copyCas(jcas.getCas(), userQuestionSubject.getCas(), true);
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setUserQuestionBody(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setUserQuestionBody(JCas jcas) throws ResourceProcessException {
 		UserQuestionBody body = getAnnotation(jcas, UserQuestionBody.class);
 		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		this.userQuestionBody = cas.getJCas();
-		this.concatenated = body.getConcatenated();
-		CasCopier.copyCas(jcas.getCas(), userQuestionBody.getCas(), true);
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			this.userQuestionBody = cas.getJCas();
+			this.concatenated = body.getConcatenated();
+			CasCopier.copyCas(jcas.getCas(), userQuestionBody.getCas(), true);
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setRelatedQuestionSubject(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionSubject(JCas jcas) throws ResourceProcessException {
 		RelatedQuestionSubject subject = getAnnotation(jcas, RelatedQuestionSubject.class);
 		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionSubjects.put(subject.getID(), cas.getJCas());
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionSubjects.put(subject.getID(), cas.getJCas());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 		
 	}
 	
-	public void setRelatedQuestionBody(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionBody(JCas jcas) throws ResourceProcessException {
 		RelatedQuestionBody body = getAnnotation(jcas, RelatedQuestionBody.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionBodies.put(body.getID(), cas.getJCas());
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionBodies.put(body.getID(), cas.getJCas());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 
 	}
 
-	public boolean isReady() throws AnalysisEngineProcessException {
+	public boolean isReady() throws ResourceProcessException {
 		if (userQuestionBody == null || (!concatenated) && userQuestionSubject == null)
 			return false;
 		
@@ -280,7 +319,7 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 	private Map<String,JCas> relatedQuestionBodies = new HashMap<String,JCas>();
 	private Map<String, List<JCas>> comments = new HashMap<String, List<JCas>>();
 	
-	public boolean addJCas(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public boolean addJCas(JCas jcas) throws ResourceProcessException {
 		if (JCasUtil.exists(jcas, UserQuestionSubject.class))
 			setUserQuestionSubject(jcas);
 		else if (JCasUtil.exists(jcas, UserQuestionBody.class))
@@ -292,12 +331,13 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 		else if (JCasUtil.exists(jcas, Comment.class))
 			setComment(jcas);
 		else
-			throw new AnalysisEngineProcessException("The specified JCas does not contain any of the expected annotations",null);
+			throw new ResourceProcessException(new IllegalArgumentException(
+					"The specified JCas does not contain any of the expected annotations"));
 		
 		return isReady();
 	}
 	
-	public void getAggregatedJCas(JCas jcas) throws AnalysisEngineProcessException, CASException {
+	public void getAggregatedJCas(JCas jcas) throws ResourceProcessException {
 		if (!isReady())
 			throw new AnalysisEngineProcessException("Not ready, some JCas is still missing",null);
 
@@ -318,7 +358,12 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 		
 		int i = 0;
 		for (String questionID : relatedQuestionBodies.keySet()) {
-			JCas relatedQuestView = jcas.createView(ProcessedInstancesManager.RELATED_QUESTION_VIEW+"-"+questionID);
+			JCas relatedQuestView;
+			try {
+				relatedQuestView = jcas.createView(ProcessedInstancesManager.RELATED_QUESTION_VIEW+"-"+questionID);
+			} catch (CASException e) {
+				throw new ResourceProcessException(e);
+			}
 			
 			RelatedQuestionBody relQuestBody = getAnnotation(relatedQuestionBodies.get(questionID), RelatedQuestionBody.class);
 
@@ -353,64 +398,84 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 		
 	}
 	
-	public void setUserQuestionSubject(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setUserQuestionSubject(JCas jcas) throws ResourceProcessException {
 		getAnnotation(jcas, UserQuestionSubject.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		this.userQuestionSubject = cas.getJCas();
-		CasCopier.copyCas(jcas.getCas(), userQuestionSubject.getCas(), true);
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			this.userQuestionSubject = cas.getJCas();
+			CasCopier.copyCas(jcas.getCas(), userQuestionSubject.getCas(), true);
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setUserQuestionBody(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setUserQuestionBody(JCas jcas) throws ResourceProcessException {
 		UserQuestionBody body = getAnnotation(jcas, UserQuestionBody.class);
 		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		this.userQuestionBody = cas.getJCas();
-		this.concatenated = body.getConcatenated();
-		CasCopier.copyCas(jcas.getCas(), userQuestionBody.getCas(), true);
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			this.userQuestionBody = cas.getJCas();
+			this.concatenated = body.getConcatenated();
+			CasCopier.copyCas(jcas.getCas(), userQuestionBody.getCas(), true);
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setRelatedQuestionSubject(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionSubject(JCas jcas) throws ResourceProcessException {
 		RelatedQuestionSubject subject = getAnnotation(jcas, RelatedQuestionSubject.class);
 		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionSubjects.put(subject.getID(), cas.getJCas());
-		
-		if (comments.get(subject.getID()) == null)
-			comments.put(subject.getID(), new LinkedList<JCas>());
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionSubjects.put(subject.getID(), cas.getJCas());
+			
+			if (comments.get(subject.getID()) == null)
+				comments.put(subject.getID(), new LinkedList<JCas>());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setRelatedQuestionBody(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setRelatedQuestionBody(JCas jcas) throws ResourceProcessException {
 		RelatedQuestionBody body = getAnnotation(jcas, RelatedQuestionBody.class);
 
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		relatedQuestionBodies.put(body.getID(), cas.getJCas());
-		
-		if (comments.get(body.getID()) == null)
-			comments.put(body.getID(), new LinkedList<JCas>());
+		try {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			relatedQuestionBodies.put(body.getID(), cas.getJCas());
+			
+			if (comments.get(body.getID()) == null)
+				comments.put(body.getID(), new LinkedList<JCas>());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public void setComment(JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public void setComment(JCas jcas) throws ResourceProcessException {
 		Comment comment = getAnnotation(jcas, Comment.class);
 
-		String split[] = comment.getID().split("_");
-		String questionID = split[0]+"_"+split[1];
-		if (comments.get(questionID) == null)
-			comments.put(questionID, new LinkedList<JCas>());
-		
-		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
-				null, null);
-		CasCopier.copyCas(jcas.getCas(), cas, true);
-		comments.get(questionID).add(cas.getJCas());
+		try {
+			String split[] = comment.getID().split("_");
+			String questionID = split[0]+"_"+split[1];
+			if (comments.get(questionID) == null)
+				comments.put(questionID, new LinkedList<JCas>());
+			
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			CasCopier.copyCas(jcas.getCas(), cas, true);
+			comments.get(questionID).add(cas.getJCas());
+		} catch (ResourceInitializationException | CASException e) {
+			throw new ResourceProcessException(e);
+		}
 	}
 	
-	public boolean isReady() throws AnalysisEngineProcessException {
+	public boolean isReady() throws ResourceProcessException {
 		if (userQuestionBody == null || (!concatenated) && userQuestionSubject == null)
 			return false;
 		
@@ -447,7 +512,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 	private Map<String,ProcessedInstanceB> instancesB = new HashMap<String,ProcessedInstanceB>();
 	private Map<String,ProcessedInstanceC> instancesC = new HashMap<String,ProcessedInstanceC>();
 	
-	public boolean addJCasToInstanceA(String id,JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public boolean addJCasToInstanceA(String id,JCas jcas) throws ResourceProcessException {
 		synchronized (instancesA) {
 			if (instancesA.get(id) == null)
 				instancesA.put(id, new ProcessedInstanceA());
@@ -456,7 +521,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 		}
 	}
 	
-	public void getJCasForInstanceA(String id, JCas jcas, boolean remove) throws AnalysisEngineProcessException, CASException {
+	public void getJCasForInstanceA(String id, JCas jcas, boolean remove) throws ResourceProcessException {
 		synchronized (instancesA) {
 			instancesA.get(id).getAggregatedJCas(jcas);
 			if (remove)
@@ -464,7 +529,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 		}
 	}
 	
-	public boolean addJCasToInstanceB(String id,JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public boolean addJCasToInstanceB(String id,JCas jcas) throws ResourceProcessException {
 		synchronized (instancesB) {
 			if (instancesB.get(id) == null)
 				instancesB.put(id, new ProcessedInstanceB());
@@ -473,7 +538,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 		}
 	}
 	
-	public void getJCasForInstanceB(String id, JCas jcas, boolean remove) throws AnalysisEngineProcessException, CASException {
+	public void getJCasForInstanceB(String id, JCas jcas, boolean remove) throws ResourceProcessException {
 		synchronized (instancesB) {
 			instancesB.get(id).getAggregatedJCas(jcas);
 			if (remove)
@@ -481,7 +546,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 		}
 	}
 	
-	public boolean addJCasToInstanceC(String id,JCas jcas) throws AnalysisEngineProcessException, CASException, ResourceInitializationException {
+	public boolean addJCasToInstanceC(String id,JCas jcas) throws ResourceProcessException {
 		synchronized (instancesC) {
 			if (instancesC.get(id) == null)
 				instancesC.put(id, new ProcessedInstanceC());
@@ -490,7 +555,7 @@ public class ProcessedInstancesManager implements SharedResourceObject,ExternalR
 		}
 	}
 	
-	public void getJCasForInstanceC(String id, JCas jcas, boolean remove) throws AnalysisEngineProcessException, CASException {
+	public void getJCasForInstanceC(String id, JCas jcas, boolean remove) throws ResourceProcessException {
 		synchronized (instancesC) {
 			instancesC.get(id).getAggregatedJCas(jcas);
 			if (remove)

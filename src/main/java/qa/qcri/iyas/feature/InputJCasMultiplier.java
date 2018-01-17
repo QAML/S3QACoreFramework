@@ -351,7 +351,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				else if (currentElements.getFirst().element.getName().equals(DataReader.RELATED_QUESTION_TAG))
 					status = Status.RELATED_QUESTION_SUBJECT;
 			} else {
-				throw new IllegalStateException(status+" "+next.element.getName());
+				throw new AnalysisEngineProcessException(status+" "+next.element.getName(),null);
 			}
 		} else {
 			if (status == Status.USER_QUESTION_SUBJECT && next.element.getName().equals(DataReader.USER_QUESTION_TAG)) {
@@ -384,7 +384,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				else if (currentElements.getFirst().element.getName().equals(DataReader.RELATED_QUESTION_TAG))
 					status = Status.RELATED_QUESTION_SUBJECT;
 			} else {
-				throw new IllegalStateException(status+" "+next.element.getName());
+				throw new AnalysisEngineProcessException(status+" "+next.element.getName(),null);
 			}
 		}
 		

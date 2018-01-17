@@ -22,7 +22,6 @@ import java.util.LinkedList;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
@@ -31,7 +30,7 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 
 import qa.qcri.iyas.type.Comment;
 import qa.qcri.iyas.type.InstanceA;
@@ -151,13 +150,8 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 					processedInstancesManager.getJCasForInstanceC(userQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
-			} catch (CASException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-			} catch (ResourceInitializationException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-
+			} catch (ResourceProcessException e) {
+				throw new AnalysisEngineProcessException(e);
 			}
 		} else if (JCasUtil.exists(jcas, InstanceA.class)) {
 			String relatedQuestionID = getRelatedQuestionID(jcas);
@@ -168,13 +162,8 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 					processedInstancesManager.getJCasForInstanceA(relatedQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
-			} catch (CASException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-			} catch (ResourceInitializationException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-
+			} catch (ResourceProcessException e) {
+				throw new AnalysisEngineProcessException(e);
 			}
 		} else if (JCasUtil.exists(jcas, InstanceB.class)) {
 			String userQuestionID = getUserQuestionID(jcas);
@@ -185,13 +174,8 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 					processedInstancesManager.getJCasForInstanceB(userQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
-			} catch (CASException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-			} catch (ResourceInitializationException e) {
-				e.printStackTrace();
-				throw new AnalysisEngineProcessException(e.getMessage(),null);
-
+			} catch (ResourceProcessException e) {
+				throw new AnalysisEngineProcessException(e);
 			}
 		}
 	}
