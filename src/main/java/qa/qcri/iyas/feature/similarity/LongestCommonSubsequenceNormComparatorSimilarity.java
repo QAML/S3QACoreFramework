@@ -17,46 +17,36 @@
 package qa.qcri.iyas.feature.similarity;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
 import com.google.common.base.Joiner;
 
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
-import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.GreedyStringTiling;
+import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.LongestCommonSubsequenceNormComparator;
 import qa.qcri.iyas.data.tree.nodes.RichNode;
 
 
 /**
  * Defines a similarity function between two JCas annotations and computes
- * greedy string tiling.
- * The similarity itself has one parameter only, PARAM_NAME_TILE_LENGTH. 
- * However, since it operates on a String which results from a concatenation
- * of tokens, the parameters of the class extracting tokens need to be passed (before
- * PARAM_NAME_TILE_LENGTH), see class {@link SimilarityMeasureWithStringExtraction}
- * for details on such parameters.  
- * For an example of usage check the test class {@link GreedyStringTilingSimilarityTest}.    
+ * Longest common subsequence normalized with respect to the first string.  
+ * The similarity itself has no parameters. However, since it operates on a String which 
+ * results from a concatenation  of tokens, the parameters of the class extracting such 
+ * tokens need to be passed, see class {@link SimilarityMeasureWithStringExtraction}
+ * for details. 
+ * For an example of usage, check the test class {@link LongestCommonSubsequenceNormComparatorSimilarityTest}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class GreedyStringTilingSimilarity extends SimilarityMeasureWithStringExtraction {
-	
-	/**
-	 * 
-	 */
-	public static final String PARAM_NAME_TILE_LENGTH = "tileLength";
+public class LongestCommonSubsequenceNormComparatorSimilarity extends SimilarityMeasureWithStringExtraction {
 			
-	@ConfigurationParameter(name = PARAM_NAME_TILE_LENGTH, defaultValue="3")
-	private int tileLength;
-		
 	private static final String PARAMETER_LIST = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });
 		
 	@Override
 	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException {
 
-		GreedyStringTiling sim = new GreedyStringTiling(tileLength);
+		LongestCommonSubsequenceNormComparator sim = new LongestCommonSubsequenceNormComparator();
 		
 		double similarity;
 		String tokenListLeftJcas = getTokenString(leftJCas, PARAMETER_LIST);
@@ -65,7 +55,7 @@ public class GreedyStringTilingSimilarity extends SimilarityMeasureWithStringExt
 		try {
 			similarity = sim.getSimilarity(tokenListLeftJcas, tokenListRightJcas);
 		} catch (SimilarityException e) {
-			throw new UIMAException(new IllegalStateException("ERROR while computing GreedyStringTiling"
+			throw new UIMAException(new IllegalStateException("ERROR while computing LongestCommonSubsequenceNormComparator"
 					+ " similarity on strings " + tokenListLeftJcas + " and " + tokenListLeftJcas));
 		}
 		return similarity;

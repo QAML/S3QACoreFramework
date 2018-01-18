@@ -42,17 +42,17 @@ import qa.qcri.iyas.data.preprocessing.Stopwords;
 import qa.qcri.iyas.type.Similarity;
 
 /**
- * A simple class to test class {@link GreedyStringTilingSimilarity}.
+ * A simple class to test class {@link WordNGramJaccardMeasureSimilarity}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class GreedyStringTilingSimilarityTest {
+public class WordNGramJaccardMeasureSimilarityTest {
 
 	@Test
 	public void testGetSimilarityValue() throws IOException, URISyntaxException, UIMAException {
 		AnalysisEngineDescription descr = AnalysisEngineFactory.createEngineDescriptionFromPath(
-				new File(GreedyStringTilingSimilarityTest.class.getResource(
+				new File(WordNGramJaccardMeasureSimilarityTest.class.getResource(
 						"/descriptors/qa/qcri/iyas/feature/StandardSimpleFeatureExtractorAAE_Descriptor.xml" ).
 						toURI()).getAbsolutePath());
 		AnalysisEngine aae = AnalysisEngineFactory.createEngine(descr);
@@ -66,11 +66,11 @@ public class GreedyStringTilingSimilarityTest {
 		AnalysisEngineDescription similarityTestAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				SimilarityMeasureTestAnnotator.class);
 		ExternalResourceFactory.bindResource(similarityTestAnnotatorAE_Descriptor,
-				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, GreedyStringTilingSimilarity.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,"greedyStringTilingSimilarity",
-				GreedyStringTilingSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-				GreedyStringTilingSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
-				GreedyStringTilingSimilarity.PARAM_NAME_TILE_LENGTH, 3);
+				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, WordNGramJaccardMeasureSimilarity.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,"wordNGramJaccardMeasureSimilarity",
+				WordNGramJaccardMeasureSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+				WordNGramJaccardMeasureSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+				WordNGramJaccardMeasureSimilarity.PARAM_NAME_NGRAM_LENGTH, 3);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
@@ -91,7 +91,7 @@ public class GreedyStringTilingSimilarityTest {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(GreedyStringTilingSimilarityTest.class);
+		Result result = JUnitCore.runClasses(WordNGramJaccardMeasureSimilarityTest.class);
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
