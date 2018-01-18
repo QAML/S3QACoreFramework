@@ -23,40 +23,36 @@ import org.apache.uima.jcas.JCas;
 import com.google.common.base.Joiner;
 
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
-import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.GreedyStringTiling;
+import de.tudarmstadt.ukp.similarity.algorithms.lexical.ngrams.WordNGramJaccardMeasure;
 import qa.qcri.iyas.data.tree.nodes.RichNode;
 
 
 /**
  * Defines a similarity function between two JCas annotations and computes
- * greedy string tiling.
- * The similarity itself has one parameter only, PARAM_NAME_TILE_LENGTH. 
- * However, since it operates on a String which results from a concatenation
- * of tokens, the parameters of the class extracting tokens need to be passed (before
- * PARAM_NAME_TILE_LENGTH), see class {@link SimilarityMeasureWithStringExtraction}
- * for details on such parameters.  
- * For an example of usage check the test class {@link GreedyStringTilingSimilarityTest}.    
+ * the Jaccard similarity coefficient between n-gram extracted from the list of tokens. 
+ * The similarity itself has one parameter, PARAM_NAME_NGRAM_LENGTH, which determines the length of the 
+ * n-grams on which the computation is based on. However, since it operates on a String which 
+ * results from a concatenation  of tokens, the parameters of the class extracting such 
+ * tokens need to be passed first, see class {@link SimilarityMeasureWithStringExtraction} for details. 
+ * For an example of usage, check the test class {@link WordNGramJaccardMeasureSimilarityTest}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class GreedyStringTilingSimilarity extends SimilarityMeasureWithStringExtraction {
-	
-	/**
-	 * 
-	 */
-	public static final String PARAM_NAME_TILE_LENGTH = "tileLength";
+public class WordNGramJaccardMeasureSimilarity extends SimilarityMeasureWithStringExtraction {
 			
-	@ConfigurationParameter(name = PARAM_NAME_TILE_LENGTH, defaultValue="3")
-	private int tileLength;
-		
 	private static final String PARAMETER_LIST = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });
-		
+	
+	public static final String PARAM_NAME_NGRAM_LENGTH = "ngramLength";
+	
+	@ConfigurationParameter(name = PARAM_NAME_NGRAM_LENGTH, mandatory=true)
+	private int ngramLength;
+	
 	@Override
 	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException {
 
-		GreedyStringTiling sim = new GreedyStringTiling(tileLength);
+		WordNGramJaccardMeasure sim = new WordNGramJaccardMeasure(ngramLength);
 		
 		double similarity;
 		String tokenListLeftJcas = getTokenString(leftJCas, PARAMETER_LIST);
@@ -65,8 +61,8 @@ public class GreedyStringTilingSimilarity extends SimilarityMeasureWithStringExt
 		try {
 			similarity = sim.getSimilarity(tokenListLeftJcas, tokenListRightJcas);
 		} catch (SimilarityException e) {
-			throw new UIMAException(new IllegalStateException("ERROR while computing GreedyStringTiling"
-					+ " similarity on strings " + tokenListLeftJcas + " and " + tokenListLeftJcas));
+			throw new UIMAException(new IllegalStateException("ERROR while computing WordNGramJaccardMeasure "
+					+ ngramLength + "-gram similarity on strings " + tokenListLeftJcas + " and " + tokenListLeftJcas));
 		}
 		return similarity;
 				

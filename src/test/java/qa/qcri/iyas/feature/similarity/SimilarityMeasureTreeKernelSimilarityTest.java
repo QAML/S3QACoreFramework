@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2017 Giovanni Da San Martino and Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
