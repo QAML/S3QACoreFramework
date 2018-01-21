@@ -33,14 +33,14 @@ import qa.qcri.iyas.data.tree.nodes.RichNode;
  * The similarity itself has one parameter only, PARAM_NAME_TILE_LENGTH. 
  * However, since it operates on a String which results from a concatenation
  * of tokens, the parameters of the class extracting tokens need to be passed (before
- * PARAM_NAME_TILE_LENGTH), see class {@link SimilarityMeasureWithStringExtraction}
+ * PARAM_NAME_TILE_LENGTH), see class {@link SimilarityMeasureWithTokenExtraction}
  * for details on such parameters.  
  * For an example of usage check the test class {@link GreedyStringTilingSimilarityTest}.    
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class GreedyStringTilingSimilarity extends SimilarityMeasureWithStringExtraction {
+public class GreedyStringTilingSimilarity extends SimilarityMeasureWithTokenExtraction {
 	
 	/**
 	 * 

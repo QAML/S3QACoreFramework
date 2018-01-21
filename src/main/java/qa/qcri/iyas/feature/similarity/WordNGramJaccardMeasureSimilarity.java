@@ -33,13 +33,13 @@ import qa.qcri.iyas.data.tree.nodes.RichNode;
  * The similarity itself has one parameter, PARAM_NAME_NGRAM_LENGTH, which determines the length of the 
  * n-grams on which the computation is based on. However, since it operates on a String which 
  * results from a concatenation  of tokens, the parameters of the class extracting such 
- * tokens need to be passed first, see class {@link SimilarityMeasureWithStringExtraction} for details. 
+ * tokens need to be passed first, see class {@link SimilarityMeasureWithTokenExtraction} for details. 
  * For an example of usage, check the test class {@link WordNGramJaccardMeasureSimilarityTest}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class WordNGramJaccardMeasureSimilarity extends SimilarityMeasureWithStringExtraction {
+public class WordNGramJaccardMeasureSimilarity extends SimilarityMeasureWithTokenExtraction {
 			
 	private static final String PARAMETER_LIST = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });

@@ -31,14 +31,14 @@ import qa.qcri.iyas.data.tree.nodes.RichNode;
  * Longest common subsequence normalized with respect to the first string.  
  * The similarity itself has no parameters. However, since it operates on a String which 
  * results from a concatenation  of tokens, the parameters of the class extracting such 
- * tokens need to be passed, see class {@link SimilarityMeasureWithStringExtraction}
+ * tokens need to be passed, see class {@link SimilarityMeasureWithTokenExtraction}
  * for details. 
  * For an example of usage, check the test class {@link LongestCommonSubsequenceNormComparatorSimilarityTest}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class LongestCommonSubsequenceNormComparatorSimilarity extends SimilarityMeasureWithStringExtraction {
+public class LongestCommonSubsequenceNormComparatorSimilarity extends SimilarityMeasureWithTokenExtraction {
 			
 	private static final String PARAMETER_LIST = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });

@@ -22,23 +22,23 @@ import org.apache.uima.jcas.JCas;
 import com.google.common.base.Joiner;
 
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
-import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.LongestCommonSubstringComparator;
+import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.CosineSimilarity;
 import qa.qcri.iyas.data.tree.nodes.RichNode;
 
 
 /**
- * Defines a similarity function between two JCas annotations and computes
- * Longest common substring. 
+ * Defines a cosine similarity function between two JCas annotations. 
+ *  
  * The similarity itself has no parameters. However, since it operates on a String which 
  * results from a concatenation  of tokens, the parameters of the class extracting such 
  * tokens need to be passed, see class {@link SimilarityMeasureWithTokenExtraction}
  * for details. 
- * For an example of usage, check the test class {@link LongestCommonSubstringComparatorSimilarityTest}.
+ * For an example of usage, check the test class {@link CosineSimilarityTest}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class LongestCommonSubstringComparatorSimilarity extends SimilarityMeasureWithTokenExtraction {
+public class CosineTokenSimilarity extends SimilarityMeasureWithTokenExtraction {
 			
 	private static final String PARAMETER_LIST = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });
@@ -46,7 +46,7 @@ public class LongestCommonSubstringComparatorSimilarity extends SimilarityMeasur
 	@Override
 	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException {
 
-		LongestCommonSubstringComparator sim = new LongestCommonSubstringComparator();
+		CosineSimilarity sim = new CosineSimilarity();
 		
 		double similarity;
 		String tokenListLeftJcas = getTokenString(leftJCas, PARAMETER_LIST);
@@ -55,7 +55,7 @@ public class LongestCommonSubstringComparatorSimilarity extends SimilarityMeasur
 		try {
 			similarity = sim.getSimilarity(tokenListLeftJcas, tokenListRightJcas);
 		} catch (SimilarityException e) {
-			throw new UIMAException(new IllegalStateException("ERROR while computing LongestCommonSubstringComparator"
+			throw new UIMAException(new IllegalStateException("ERROR while computing Cosine"
 					+ " similarity on strings " + tokenListLeftJcas + " and " + tokenListLeftJcas));
 		}
 		return similarity;
