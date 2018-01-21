@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature;
+package qa.qcri.iyas.util;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,13 +89,14 @@ class ProcessedInstanceA extends AbstractProcessedInstance {
 	public void getAggregatedJCas(JCas jcas) throws ResourceProcessException {
 		if (!isReady())
 			throw new AnalysisEngineProcessException("Not ready, some JCas is still missing",null);
-
+		
 		RelatedQuestionBody relQuestBody = getAnnotation(relatedQuestionBody, RelatedQuestionBody.class);
 		
 		RelatedQuestion relatedQuestion = new RelatedQuestion(jcas);
 		relatedQuestion.setConcatenated(concatenated);
 		relatedQuestion.setCandidateViewNames(new StringArray(jcas, relQuestBody.getNumberOfCandidates()));
 		relatedQuestion.setID(relQuestBody.getID());
+		
 		
 		CasCopier copier = new CasCopier(relatedQuestionBody.getCas(), jcas.getCas());
 		copier.copyCasView(jcas.getCas().createView(ProcessedInstancesManager.RELATED_QUESTION_BODY_VIEW), true);
@@ -496,7 +497,9 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 	}
 }
 
-public class ProcessedInstancesManager implements SharedResourceObject,ExternalResourceAware {
+//TODO make the class more robust checking status of in classes ProcessedInstanceA, ProcessedInstanceB and ProcessedInstanceC
+//(Expected annotation, IDs coherence etc)
+public class ProcessedInstancesManager implements SharedResourceObject, ExternalResourceAware {
 	
 	public static final String USER_QUESTION_BODY_VIEW = "UserQuestionBodyView";
 	public static final String USER_QUESTION_SUBJECT_VIEW = "UserQuestionSubjectView";

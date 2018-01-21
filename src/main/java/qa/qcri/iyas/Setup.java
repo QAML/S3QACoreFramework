@@ -66,8 +66,8 @@ import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 import qa.qcri.iyas.feature.InputJCasMultiplier;
-import qa.qcri.iyas.feature.ProcessedInstancesManager;
 import qa.qcri.iyas.feature.ProcessedJCASAggregator;
+import qa.qcri.iyas.util.ProcessedInstancesManager;
 
 public class Setup {
 	

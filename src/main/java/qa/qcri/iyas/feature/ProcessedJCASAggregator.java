@@ -41,6 +41,7 @@ import qa.qcri.iyas.type.RelatedQuestionBody;
 import qa.qcri.iyas.type.RelatedQuestionSubject;
 import qa.qcri.iyas.type.UserQuestionBody;
 import qa.qcri.iyas.type.UserQuestionSubject;
+import qa.qcri.iyas.util.ProcessedInstancesManager;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)
 @TypeCapability(
@@ -59,21 +60,9 @@ import qa.qcri.iyas.type.UserQuestionSubject;
 				   "qa.qcri.iyas.types.Comment"}
 )
 public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
-	
-	
-	
 
-	
 	//TODO insert ID format check
 	//TODO release the CASes in case of error
-	
-
-	
-//	public static final String AGGREGATE_QUESTION_COMMENT_PAIRS = "aggregate-question-comment-pairs";//Subtask A
-//	public static final String AGGREGATE_QUESTION_QUESTION_PAIRS = "aggregate-question-questions-pairs";//Subtask B
-//	public static final String AGGREGATE_USERQUESTION_COMMENT_PAIRS = "aggregate-userquestion-comment-pairs";
-//	public static final String AGGREGATE_THREADS = "aggregate-threads";
-//	public static final String AGGREGATE_THREADS_AND_USER_QUESTIONS = "aggregate-threads-and-questions";
 	
 	public final static String PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE = "processedInstancesManager";
 	
@@ -139,6 +128,7 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 		return qaAnn.getID().split("_")[0]+"_"+qaAnn.getID().split("_")[1];
 	}
 	
+	//TODO: add release if the JCas are not automatically released when an exception occurs
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		if (JCasUtil.exists(jcas, InstanceC.class)) {
