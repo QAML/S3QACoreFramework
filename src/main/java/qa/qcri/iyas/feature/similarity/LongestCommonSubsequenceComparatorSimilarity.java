@@ -16,6 +16,8 @@
  */
 package qa.qcri.iyas.feature.similarity;
 
+import java.util.Collection;
+
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 
@@ -28,7 +30,8 @@ import qa.qcri.iyas.data.tree.nodes.RichNode;
 
 /**
  * Defines a similarity function between two JCas annotations and computes
- * Longest common subsequence. 
+ * Longest common subsequence at character level. 
+ *  
  * The similarity itself has no parameters. However, since it operates on a String which 
  * results from a concatenation  of tokens, the parameters of the class extracting such 
  * tokens need to be passed, see class {@link SimilarityMeasureWithTokenExtraction}

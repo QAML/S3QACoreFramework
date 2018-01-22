@@ -29,8 +29,11 @@ import qa.qcri.iyas.data.tree.nodes.RichNode;
 
 /**
  * Defines a similarity function between two JCas annotations and computes
- * greedy string tiling.
- * The similarity itself has one parameter only, PARAM_NAME_TILE_LENGTH. 
+ * greedy string tiling. 
+ * 
+ * The similarity itself has one parameter only, PARAM_NAME_TILE_LENGTH, which specify
+ * the minimum length for a valid match (if the maximum matching substring is less than
+ * PARAM_NAME_TILE_LENGTH, the similarity returns 0). 
  * However, since it operates on a String which results from a concatenation
  * of tokens, the parameters of the class extracting tokens need to be passed (before
  * PARAM_NAME_TILE_LENGTH), see class {@link SimilarityMeasureWithTokenExtraction}
