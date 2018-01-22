@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Giovanni Da San Martino and Salvatore Romeo
+ * Copyright 2017 Giovanni Da San Martino, Salvatore Romeo and Alberto Barron-Cedeno
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ public class CosineBowSimilarityTest {
 						toURI()).getAbsolutePath());
 		AnalysisEngine aae = AnalysisEngineFactory.createEngine(descr);
 		
-		JCas jcas1 = JCasFactory.createText("The cat is black", "en");
-		JCas jcas2 = JCasFactory.createText("The cat is white", "en");
+		JCas jcas1 = JCasFactory.createText("The cat runs fast", "en");
+		JCas jcas2 = JCasFactory.createText("The cat runs quick", "en");
 		
 		aae.process(jcas1);
 		aae.process(jcas2);
@@ -69,10 +69,10 @@ public class CosineBowSimilarityTest {
 				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, CosineBowSimilarity.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"cosineBowSimilarity",
 				CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-				CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+				CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
 				CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, 1,
 				CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, 3,
-				CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+				CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_POSTAGS);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
@@ -88,7 +88,7 @@ public class CosineBowSimilarityTest {
 		
 		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
 			System.out.println(sim.getValue());
-			assertEquals(1, sim.getValue(),0.0000001);
+			assertEquals(0.66666666, sim.getValue(),0.0000001);
 		}
 	}
 

@@ -16,6 +16,8 @@
  */
 package qa.qcri.iyas.feature.similarity;
 
+import java.util.Collection;
+
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 
@@ -49,8 +51,8 @@ public class CosineTokenSimilarity extends SimilarityMeasureWithTokenExtraction 
 		CosineSimilarity sim = new CosineSimilarity();
 		
 		double similarity;
-		String tokenListLeftJcas = getTokenString(leftJCas, PARAMETER_LIST);
-		String tokenListRightJcas = getTokenString(rightJCas, PARAMETER_LIST);
+		Collection<String> tokenListLeftJcas = getTokenList(leftJCas, PARAMETER_LIST);
+		Collection<String> tokenListRightJcas = getTokenList(rightJCas, PARAMETER_LIST);
 		
 		try {
 			similarity = sim.getSimilarity(tokenListLeftJcas, tokenListRightJcas);

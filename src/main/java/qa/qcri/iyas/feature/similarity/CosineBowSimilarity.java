@@ -58,12 +58,11 @@ public class CosineBowSimilarity extends SimilarityMeasureWithBowExtraction {
 	@Override
 	public double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException {
 		
-		BowProvider bowProvider1 = getBowProvider(leftJCas, paramenterList); 
-		BowProvider bowProvider2 = getBowProvider(rightJCas, paramenterList);
+		BowProvider bowProvider = getBowProvider(paramenterList);
 		NormalizedDotProductMetric metric = new NormalizedDotProductMetric();
 		
-		FeatureVector fv1 = bowProvider1.getFeatureVector(getTokenList(leftJCas, paramenterList));
-		FeatureVector fv2 = bowProvider2.getFeatureVector(getTokenList(leftJCas, paramenterList));
+		FeatureVector fv1 = bowProvider.getFeatureVector(getTokenList(leftJCas, paramenterList));
+		FeatureVector fv2 = bowProvider.getFeatureVector(getTokenList(rightJCas, paramenterList));
 		
 		double distance = metric.distance(fv1, fv2);
 		

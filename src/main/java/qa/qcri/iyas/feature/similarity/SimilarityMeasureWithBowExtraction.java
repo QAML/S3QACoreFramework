@@ -68,7 +68,7 @@ public abstract class SimilarityMeasureWithBowExtraction extends SimilarityMeasu
 	@ConfigurationParameter(name = PARAM_NAME_MAX_N_GRAM_SIZE, mandatory=true)
 	protected int maxNGramSize;
 	
-	protected BowProvider getBowProvider(JCas cas, String parameterList) {
+	protected BowProvider getBowProvider(String parameterList) {
 		
 		Alphabet alphabet = new Alphabet(); //what is this? Do we ever invoke it with parameters?
 		BowProvider bowProvider = null;

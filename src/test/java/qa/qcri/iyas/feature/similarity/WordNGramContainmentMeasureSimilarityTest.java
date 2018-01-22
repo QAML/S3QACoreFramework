@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Giovanni Da San Martino and Salvatore Romeo
+ * Copyright 2017 Giovanni Da San Martino, Salvatore Romeo and Alberto Barron-Cedeno
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class WordNGramContainmentMeasureSimilarityTest {
 				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, WordNGramContainmentMeasureSimilarity.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"wordNGramContainmentMeasureSimilarity",
 				WordNGramContainmentMeasureSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-				WordNGramContainmentMeasureSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+				WordNGramContainmentMeasureSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
 				WordNGramContainmentMeasureSimilarity.PARAM_NAME_NGRAM_LENGTH, 3);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
@@ -86,7 +86,7 @@ public class WordNGramContainmentMeasureSimilarityTest {
 		
 		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
 			System.out.println(sim.getValue());
-			assertEquals(1, sim.getValue(),0.0000001);
+			assertEquals(0.5, sim.getValue(),0.0000001);
 		}
 	}
 

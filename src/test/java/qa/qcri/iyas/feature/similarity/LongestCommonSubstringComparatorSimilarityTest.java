@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Giovanni Da San Martino and Salvatore Romeo
+ * Copyright 2017 Giovanni Da San Martino, Salvatore Romeo and Alberto Barron-Cedeno
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class LongestCommonSubstringComparatorSimilarityTest {
 				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, LongestCommonSubstringComparatorSimilarity.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"longestCommonSubstringComparatorSimilarity",
 				LongestCommonSubstringComparatorSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-				LongestCommonSubstringComparatorSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true);
+				LongestCommonSubstringComparatorSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
@@ -85,7 +85,7 @@ public class LongestCommonSubstringComparatorSimilarityTest {
 		
 		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
 			System.out.println(sim.getValue());
-			assertEquals(1, sim.getValue(),0.0000001);
+			assertEquals(0.6875, sim.getValue(),0.0000001);
 		}
 	}
 
