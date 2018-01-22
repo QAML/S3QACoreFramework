@@ -31,8 +31,8 @@ import com.google.common.collect.Lists;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.data.tree.nodes.RichNode;
-import qa.qcri.iyas.data.tree.nodes.RichTokenNode;
+import qa.qcri.iyas.feature.tree.node.RichNode;
+import qa.qcri.iyas.feature.tree.node.RichTokenNode;
 
 /**
  * The class extends {@link SimilarityMeasure} adding a method to extract the list of tokens from a JCas and return
@@ -80,34 +80,10 @@ public abstract class SimilarityMeasureWithTokenExtraction extends SimilarityMea
 		}
 
 		return tokens;
-//		
-//		return Lists.newArrayList(representations.getA().split(" "))
 	}
 		
 	protected String getTokenString(JCas cas, String parameterList) {
 		
-//		List<RichTokenNode> richTokens = new ArrayList<>();
-//		for (Token token : JCasUtil.select(cas, Token.class)) {
-//			RichTokenNode richTokenNode = new RichTokenNode(token);
-//			richTokens.add(richTokenNode);
-//		}
-//		
-//		if(removeStopwords) {
-//			Iterator<RichTokenNode> i = richTokens.iterator();
-//			while(i.hasNext()) {
-//				RichTokenNode token = i.next();
-//				if(this.stopwordsObject.contains(token.getRepresentation(RichNode.OUTPUT_PAR_TOKEN_LOWERCASE))) {
-//					i.remove();
-//				}
-//			}
-//		}
-//		
-//		List<String> tokens = new ArrayList<>();
-//		for (RichTokenNode token : richTokens) {
-//			tokens.add(token.getRepresentation(parameterList));
-//		}
-//		
-//		return Joiner.on(" ").join(tokens);
 		return Joiner.on(" ").join(getTokenList(cas, parameterList));
 	}
 		

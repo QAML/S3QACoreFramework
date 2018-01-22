@@ -17,22 +17,10 @@
 
 package qa.qcri.iyas.feature.similarity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.util.JCasUtil;
-import org.apache.uima.jcas.JCas;
-
-import com.google.common.base.Joiner;
-
 import cc.mallet.types.Alphabet;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import qa.qcri.iyas.data.preprocessing.BowProvider;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.data.tree.nodes.RichNode;
-import qa.qcri.iyas.data.tree.nodes.RichTokenNode;
 
 /**
  * The class extends {@link SimilarityMeasure} adding a method to extract the bag-of-word representation from a JCas. 
@@ -42,8 +30,6 @@ import qa.qcri.iyas.data.tree.nodes.RichTokenNode;
  *
  */
 public abstract class SimilarityMeasureWithBowExtraction extends SimilarityMeasureWithTokenExtraction {
-
-	//(this.alphabet, parameterList, from, to, new Stopwords())
 	
 	public static final String PARAM_NAME_STOPWORDS_OBJECT = "stopwordsObject";
 	
@@ -53,8 +39,6 @@ public abstract class SimilarityMeasureWithBowExtraction extends SimilarityMeasu
 	
 	public static final String PARAM_NAME_MAX_N_GRAM_SIZE = "";
 	
-	public static final String PARAM_NAME_ALPHABET = ""; //
-
 	
 	@ConfigurationParameter(name = PARAM_NAME_STOPWORDS_OBJECT)
 	protected Stopwords stopwordsObject;
@@ -70,7 +54,7 @@ public abstract class SimilarityMeasureWithBowExtraction extends SimilarityMeasu
 	
 	protected BowProvider getBowProvider(String parameterList) {
 		
-		Alphabet alphabet = new Alphabet(); //what is this? Do we ever invoke it with parameters?
+		Alphabet alphabet = new Alphabet(); 
 		BowProvider bowProvider = null;
 		
 		if (removeStopwords) {

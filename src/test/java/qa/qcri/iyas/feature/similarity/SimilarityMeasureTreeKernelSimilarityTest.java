@@ -37,8 +37,6 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import qa.qcri.iyas.type.Similarity;
 
 /**

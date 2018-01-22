@@ -7,8 +7,8 @@ import java.util.List;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.data.tree.nodes.RichChunkNode;
-import qa.qcri.iyas.data.tree.nodes.RichTokenNode;
+import qa.qcri.iyas.feature.tree.node.RichChunkNode;
+import qa.qcri.iyas.feature.tree.node.RichTokenNode;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
