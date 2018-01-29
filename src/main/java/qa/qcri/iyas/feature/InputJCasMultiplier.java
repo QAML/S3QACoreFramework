@@ -99,27 +99,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	}
 	
 	private void parseInstance(Element instance) throws AnalysisEngineProcessException {
-		if (instance.getName().equals(DataReader.INSTANCE_C_TAG)) {
-			Element userQuestion = instance.getChild(DataReader.USER_QUESTION_TAG);
-			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE_C));
-			
-			String userQuestionID = userQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
-			if (userQuestionID.split("_").length != 1)
-				throw new AnalysisEngineProcessException("The user question ID does not satisfy the requirements",null);
-			for (Element relatedQuestion : instance.getChildren(DataReader.RELATED_QUESTION_TAG)) {
-				String relatedQuestionID = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
-				if (relatedQuestionID.split("_").length != 2 || !relatedQuestionID.startsWith(userQuestionID))
-					throw new AnalysisEngineProcessException("The related question ID does not satisfy the requirements",null);
-				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE_C));
-				for (Element comment : relatedQuestion.getChildren(DataReader.COMMENT_TAG)) {
-					String commentID = comment.getAttributeValue(DataReader.ID_ATTRIBUTE);
-					if (commentID.split("_").length != 3 || !commentID.startsWith(relatedQuestionID))
-						throw new AnalysisEngineProcessException("The comment question ID does not satisfy the requirements",null);
-					currentElements.addLast(new MyElement(comment,TypeOfInstance.INSTANCE_C));
-				}
-			}
-			status = Status.USER_QUESTION_SUBJECT;
-		} else if (instance.getName().equals(DataReader.INSTANCE_A_TAG)) {
+		if (instance.getName().equals(DataReader.INSTANCE_A_TAG)) {
 			Element relatedQuestion = instance.getChild(DataReader.RELATED_QUESTION_TAG);
 			String relatedQuestionID = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 			if (relatedQuestionID.split("_").length != 2)
@@ -144,6 +124,26 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				if (relatedQuestionID.split("_").length != 2 || !relatedQuestionID.startsWith(userQuestionID))
 					throw new AnalysisEngineProcessException("The related question ID does not satisfy the requirements",null);
 				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE_B));
+			}
+			status = Status.USER_QUESTION_SUBJECT;
+		} else if (instance.getName().equals(DataReader.INSTANCE_C_TAG)) {
+			Element userQuestion = instance.getChild(DataReader.USER_QUESTION_TAG);
+			currentElements.addLast(new MyElement(userQuestion,TypeOfInstance.INSTANCE_C));
+			
+			String userQuestionID = userQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
+			if (userQuestionID.split("_").length != 1)
+				throw new AnalysisEngineProcessException("The user question ID does not satisfy the requirements",null);
+			for (Element relatedQuestion : instance.getChildren(DataReader.RELATED_QUESTION_TAG)) {
+				String relatedQuestionID = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
+				if (relatedQuestionID.split("_").length != 2 || !relatedQuestionID.startsWith(userQuestionID))
+					throw new AnalysisEngineProcessException("The related question ID does not satisfy the requirements",null);
+				currentElements.addLast(new MyElement(relatedQuestion,TypeOfInstance.INSTANCE_C));
+				for (Element comment : relatedQuestion.getChildren(DataReader.COMMENT_TAG)) {
+					String commentID = comment.getAttributeValue(DataReader.ID_ATTRIBUTE);
+					if (commentID.split("_").length != 3 || !commentID.startsWith(relatedQuestionID))
+						throw new AnalysisEngineProcessException("The comment question ID does not satisfy the requirements",null);
+					currentElements.addLast(new MyElement(comment,TypeOfInstance.INSTANCE_C));
+				}
 			}
 			status = Status.USER_QUESTION_SUBJECT;
 		}

@@ -1505,14 +1505,14 @@ systems.&lt;/p&gt;
         <externalResourceDependency>
             <key>processedInstancesManager</key>
             <description/>
-            <interfaceName>qa.qcri.iyas.feature.ProcessedInstancesManager</interfaceName>
+            <interfaceName>qa.qcri.iyas.util.ProcessedInstancesManager</interfaceName>
             <optional>false</optional>
         </externalResourceDependency>
     </externalResourceDependencies>
     <resourceManagerConfiguration>
         <externalResources>
             <externalResource>
-                <name>qa.qcri.iyas.feature.ProcessedInstancesManager-2</name>
+                <name>qa.qcri.iyas.util.ProcessedInstancesManager-2</name>
                 <description/>
                 <configurableDataResourceSpecifier>
                     <url/>
@@ -1531,19 +1531,19 @@ systems.&lt;/p&gt;
                             <nameValuePair>
                                 <name>__UIMAFIT_RESOURCE_NAME__</name>
                                 <value>
-                                    <string>qa.qcri.iyas.feature.ProcessedInstancesManager-2</string>
+                                    <string>qa.qcri.iyas.util.ProcessedInstancesManager-2</string>
                                 </value>
                             </nameValuePair>
                         </configurationParameterSettings>
                     </resourceMetaData>
                 </configurableDataResourceSpecifier>
-                <implementationName>qa.qcri.iyas.feature.ProcessedInstancesManager</implementationName>
+                <implementationName>qa.qcri.iyas.util.ProcessedInstancesManager</implementationName>
             </externalResource>
         </externalResources>
         <externalResourceBindings>
             <externalResourceBinding>
                 <key>processedInstancesManager</key>
-                <resourceName>qa.qcri.iyas.feature.ProcessedInstancesManager-2</resourceName>
+                <resourceName>qa.qcri.iyas.util.ProcessedInstancesManager-2</resourceName>
             </externalResourceBinding>
         </externalResourceBindings>
     </resourceManagerConfiguration>

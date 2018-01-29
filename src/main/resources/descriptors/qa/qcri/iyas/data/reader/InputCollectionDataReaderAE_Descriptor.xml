@@ -1507,7 +1507,7 @@ systems.&lt;/p&gt;
                 <customResourceSpecifier>
                     <resourceClassName>qa.qcri.iyas.data.reader.PlainTextDataReader</resourceClassName>
                     <parameters>
-                        <parameter name="file" value="/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt2"/>
+                        <parameter name="file" value="/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt"/>
                         <parameter name="task" value="instance_b"/>
                         <parameter name="__UIMAFIT_RESOURCE_NAME__" value="qa.qcri.iyas.data.reader.PlainTextDataReader-0"/>
                     </parameters>

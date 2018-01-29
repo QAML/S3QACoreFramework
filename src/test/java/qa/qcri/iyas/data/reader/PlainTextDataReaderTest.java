@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class PlainTextDataReaderTest {
 		 * IMPORTANT: only this line of code must be changed to test other DataReader implementations.
 		 */
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM,"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt",
+				PlainTextDataReader.FILE_PARAM, PlainTextDataReaderTest.class.getResource("/data/PlainText/dev_.txt").getPath(),
 				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_A_TASK);
 		
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
@@ -110,7 +110,7 @@ public class PlainTextDataReaderTest {
 		 * IMPORTANT: only this line of code must be changed to test other DataReader implementations.
 		 */
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM,"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt",
+				PlainTextDataReader.FILE_PARAM,PlainTextDataReaderTest.class.getResource("/data/PlainText/dev_.txt").getPath(),
 				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
 		
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
@@ -152,7 +152,7 @@ public class PlainTextDataReaderTest {
 		 * IMPORTANT: only this line of code must be changed to test other DataReader implementations.
 		 */
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM,"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/data/dev.txt",
+				PlainTextDataReader.FILE_PARAM,PlainTextDataReaderTest.class.getResource("/data/PlainText/dev_.txt").getPath(),
 				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_C_TASK);
 		
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
