@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Giovanni Da San Martino and Salvatore Romeo
+ * Copyright 2017 Giovanni Da San Martino, Salvatore Romeo and Alberto Barron-Cedeno
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,39 +37,40 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+
+import qa.qcri.iyas.data.preprocessing.Stopwords;
 import qa.qcri.iyas.type.Similarity;
 
 /**
- * A simple class to test a {@link TreeKernelSimilarity}.
+ * A simple class to test class {@link WordNGramContainmentMeasureSimilarity}.
  * 
  * @author Giovanni Da San Martino
  *
  */
-public class SimilarityMeasureTreeKernelSimilarityTest {
+public class WordNGramContainmentMeasureSimilarityTest {
 
 	@Test
 	public void testGetSimilarityValue() throws IOException, URISyntaxException, UIMAException {
 		AnalysisEngineDescription descr = AnalysisEngineFactory.createEngineDescriptionFromPath(
-				new File(SimilarityMeasureTreeKernelSimilarityTest.class.getResource(
+				new File(WordNGramContainmentMeasureSimilarityTest.class.getResource(
 						"/descriptors/qa/qcri/iyas/feature/StandardSimpleFeatureExtractorAAE_Descriptor.xml" ).
 						toURI()).getAbsolutePath());
 		AnalysisEngine aae = AnalysisEngineFactory.createEngine(descr);
 		
-		JCas jcas1 = JCasFactory.createText("The cat is white", "en");
-		JCas jcas2 = JCasFactory.createText("The cat is black", "en");
-				
+		JCas jcas1 = JCasFactory.createText("The cat is black", "en");
+		JCas jcas2 = JCasFactory.createText("The cat is white", "en");
+		
 		aae.process(jcas1);
 		aae.process(jcas2);
-		
+				
 		AnalysisEngineDescription similarityTestAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				SimilarityMeasureTestAnnotator.class);
 		ExternalResourceFactory.bindResource(similarityTestAnnotatorAE_Descriptor,
-				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, TreeKernelSimilarity.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,"treeKernelSimilarity",
-				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
-				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
-				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, false,
-				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
+				SimilarityMeasureTestAnnotator.PARAM_SIMILARITY_RESOURCE, WordNGramContainmentMeasureSimilarity.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,"wordNGramContainmentMeasureSimilarity",
+				WordNGramContainmentMeasureSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+				WordNGramContainmentMeasureSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
+				WordNGramContainmentMeasureSimilarity.PARAM_NAME_NGRAM_LENGTH, 3);
 		
 		AnalysisEngine ae = AnalysisEngineFactory.createEngine(similarityTestAnnotatorAE_Descriptor);
 		
@@ -85,12 +86,12 @@ public class SimilarityMeasureTreeKernelSimilarityTest {
 		
 		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
 			System.out.println(sim.getValue());
-			assertEquals(6.6721654, sim.getValue(),0.0000001);
+			assertEquals(0.5, sim.getValue(),0.0000001);
 		}
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(SimilarityMeasureTreeKernelSimilarityTest.class);
+		Result result = JUnitCore.runClasses(WordNGramContainmentMeasureSimilarityTest.class);
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
