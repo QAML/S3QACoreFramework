@@ -70,7 +70,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		
 		if (this.comments.size() > body.getNumberOfCandidates())
 			throw new UIMAException(new IllegalStateException(
-					"More comments than expeted are already been received."));
+					"More comments than expeted have already been received."));
 		
 		System.out.println("Received "+body.getID()+"'s body");
 		
@@ -211,14 +211,14 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 				!relatedQuestionID.equals(getAnnotation(relatedQuestionBodyJCas, RelatedQuestionBody.class).getID()))
 			throw new UIMAException(new IllegalArgumentException("The ID of the input related question subject is not "
 					+ "consistent with the already received related question body."));
-		
-		if (!comments.isEmpty()) {
-			String commentID = getAnnotation(comments.get(0), Comment.class).getID();
-			String split[] = commentID.split("_");
-			String id = split[0]+"_"+split[1];
-			if (!relatedQuestionID.equals(id))
-				throw new UIMAException(new IllegalArgumentException("The ID of the input related question subject is not "
-						+ "consistent with the already comments."));
+		else
+			if (!comments.isEmpty()) {
+				String commentID = getAnnotation(comments.get(0), Comment.class).getID();
+				String split[] = commentID.split("_");
+				String id = split[0]+"_"+split[1];
+				if (!relatedQuestionID.equals(id))
+					throw new UIMAException(new IllegalArgumentException("The ID of the input related question subject is not "
+							+ "consistent with the already comments."));
 		}
 	}
 	
