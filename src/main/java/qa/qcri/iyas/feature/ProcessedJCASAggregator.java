@@ -154,7 +154,7 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 					processedInstancesManager.getJCasForInstanceB(userQuestionID, readyJCas, true);
 					pendingJCases.addLast(readyJCas);
 				}
-			} catch (ResourceProcessException e) {
+			} catch (UIMAException e) {
 				throw new AnalysisEngineProcessException(e);
 			}
 		} else if (JCasUtil.exists(jcas, InstanceC.class)) {

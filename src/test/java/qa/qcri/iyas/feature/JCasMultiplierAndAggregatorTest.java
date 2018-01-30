@@ -58,13 +58,19 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+import org.uimafit.util.JCasUtil;
 
 import qa.qcri.iyas.DescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
+import qa.qcri.iyas.data.reader.PlainTextDataReaderTest;
 import qa.qcri.iyas.type.RelatedQuestion;
+import qa.qcri.iyas.type.UserQuestion;
 import qa.qcri.iyas.util.AggregatedJCasManager;
 
 class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
@@ -75,7 +81,89 @@ class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
 	
 	public MyStatusCallbackListenerTaskA(Map<String,Map<String,String>> m) throws JDOMException, URISyntaxException {
 		inputInstances = new HashSet<>();
-		XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(DataReader.SCHEMA_INSTANCE_A_PATH).toURI()));
+		XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(
+				DataReader.SCHEMA_INSTANCE_A_PATH).toURI()));
+		builder = new SAXBuilder(factory);
+		maps = m;
+	}
+	
+	@Override
+	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
+		try {
+			if (!aStatus.getStatusMessage().equals("success")) {
+				fail(aStatus.getStatusMessage());
+			} else {
+				AnnotationIndex<Annotation> annotations = cas.getJCas().getAnnotationIndex();
+				if (annotations.size() > 1) {
+					fail("Only an annotation is expected: "+annotations.toString());
+				} else {
+					if (JCasUtil.exists(cas.getJCas(), RelatedQuestion.class)) {
+						RelatedQuestion cqaAnnotation = JCasUtil.select(cas.getJCas(), RelatedQuestion.class).iterator().next();
+						String subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW).getDocumentText();
+						String body = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW).getDocumentText();
+						
+						Map<String,String> map = maps.get(cqaAnnotation.getID());
+						
+						if (map.get("subject_"+cqaAnnotation.getID()).equals(subject)) {
+							map.remove("subject_"+cqaAnnotation.getID());
+							System.out.println("Removed "+"subject_"+cqaAnnotation.getID());
+						}
+						
+						if (map.get("body_"+cqaAnnotation.getID()).equals(body)) {
+							map.remove("body_"+cqaAnnotation.getID());
+							System.out.println("Removed "+"body_"+cqaAnnotation.getID());
+						}
+						
+						for (String cid : cqaAnnotation.getCandidateViewNames().toArray()) {
+							String comment = cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid).getDocumentText();
+							if (map.get("comment_"+cid).equals(comment)) {
+								map.remove("comment_"+cid);
+								System.out.println("Removed "+"comment_"+cid);
+							}
+						}
+						
+						if (map.isEmpty()) {
+							maps.remove(cqaAnnotation.getID());
+							System.out.println(cqaAnnotation.getID()+" complete");
+						} else
+							fail("The received aggregated JCas is not complete.");
+					} 
+					
+					if (JCasUtil.exists(cas.getJCas(), DocumentAnnotation.class)) {
+						String content = cas.getDocumentText();
+						boolean b = inputInstances.remove(content);
+						if (!b)
+							fail("Received a not expected CAS.");
+						
+						Document instance = builder.build(new StringReader(cas.getDocumentText()));
+						String id = instance.getRootElement().getChild(DataReader.INSTANCE_A_TAG)
+								.getChild(DataReader.RELATED_QUESTION_TAG).getAttributeValue(DataReader.ID_ATTRIBUTE);
+						
+						System.out.println("Removed "+id);
+					}
+				}
+			}
+		} catch (CASException | JDOMException | IOException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	public Set<String> getInputInstances() {
+		return inputInstances;
+	}
+}
+
+class MyStatusCallbackListenerTaskB extends UimaAsBaseCallbackListener {
+	
+	private Set<String> inputInstances;
+	private SAXBuilder builder;
+	private Map<String,Map<String,String>> maps;
+	
+	public MyStatusCallbackListenerTaskB(Map<String,Map<String,String>> m) throws JDOMException, URISyntaxException {
+		inputInstances = new HashSet<>();
+		XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(
+				DataReader.SCHEMA_INSTANCE_B_PATH).toURI()));
 		builder = new SAXBuilder(factory);
 		maps = m;
 	}
@@ -91,10 +179,10 @@ class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
 					fail("Only an annotation is expected: "+annotations.toString());
 				} else {
 					Annotation annotation = annotations.iterator().next();
-					if (annotation instanceof RelatedQuestion) {
-						RelatedQuestion cqaAnnotation = (RelatedQuestion)annotation;
-						String subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW).getDocumentText();
-						String body = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW).getDocumentText();
+					if (JCasUtil.exists(cas.getJCas(), UserQuestion.class)) {
+						UserQuestion cqaAnnotation = JCasUtil.select(cas.getJCas(), UserQuestion.class).iterator().next();
+						String subject = cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW).getDocumentText();
+						String body = cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW).getDocumentText();
 						
 						Map<String,String> map = maps.get(cqaAnnotation.getID());
 						
@@ -104,28 +192,34 @@ class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
 						if (map.get("body_"+cqaAnnotation.getID()).equals(body))
 							map.remove("body_"+cqaAnnotation.getID());
 						
-						for (String cid : cqaAnnotation.getCandidateViewNames().toArray()) {
-							String comment = cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid).getDocumentText();
-							if (map.get("comment_"+cid).equals(comment))
-								map.remove("comment_"+cid);
+						for (String rid : cqaAnnotation.getCandidateViewNames().toArray()) {
+							String rel_subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+rid).getDocumentText();
+							if (map.get("rel_subject_"+rid).equals(rel_subject))
+								map.remove("rel_subject_"+rid);
+							
+							String rel_body = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW+"-"+rid).getDocumentText();
+							if (map.get("rel_body_"+rid).equals(rel_body))
+								map.remove("rel_body_"+rid);
 						}
 						
-						if (map.isEmpty())
+						if (map.isEmpty()) {
+							maps.remove(cqaAnnotation.getID());
 							System.out.println(cqaAnnotation.getID()+" complete");
+						} 
 						else
 							fail("The received aggregated JCas is not complete.");
-					} else if (annotation instanceof DocumentAnnotation) {
+					}
+					
+					if (annotation instanceof DocumentAnnotation) {
 						boolean b = inputInstances.remove(cas.getDocumentText());
 						if (!b)
 							fail("Received a not expected CAS.");
 						
 						Document instance = builder.build(new StringReader(cas.getDocumentText()));
-						String id = instance.getRootElement().getChild(DataReader.INSTANCE_A_TAG)
-								.getChild(DataReader.RELATED_QUESTION_TAG).getAttributeValue(DataReader.ID_ATTRIBUTE);
+						String id = instance.getRootElement().getChild(DataReader.INSTANCE_B_TAG)
+								.getChild(DataReader.USER_QUESTION_TAG).getAttributeValue(DataReader.ID_ATTRIBUTE);
 						
 						System.out.println("Removed "+id);
-					} else {
-						fail("An unexpected annotation has been received: "+annotation);
 					}
 				}
 			}
@@ -143,27 +237,36 @@ class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
 public class JCasMultiplierAndAggregatorTest {
 	
 	private static Map<String,Map<String,String>> mapsA = new HashMap<String,Map<String,String>>();
+	private static Map<String,Map<String,String>> mapsB = new HashMap<String,Map<String,String>>();
 	
 	private String generateInputTestFile() throws IOException {
 		StandardPreprocessor sp = new StandardPreprocessor();
 		File file = new File("test_input.txt");
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		for (int k=1;k<=1;k++) {
+		for (int k=1;k<=3;k++) {
 			String qid = "Q"+k;
 			String org_subject = "This is the subject of original question "+qid;
 			String org_body = "This is the body of original question "+qid;
-			for (int i=1;i<=2;i++) {
+			
+			Map<String,String> mapB = new HashMap<String,String>();
+			mapB.put("subject_"+qid, sp.preprocess(org_subject,"en"));
+			mapB.put("body_"+qid, sp.preprocess(org_body,"en"));
+			
+			for (int i=1;i<=7;i++) {
 				out.write(qid+"	"+org_subject+"	"+org_body);
 				String rid = qid+"_R"+i;
 				String rel_subject = "This is the subject of related question "+rid;
 				String rel_body = "This is the body of related question "+rid;
 				out.write("	"+rid+"	"+rel_subject+"	"+rel_body);
 				
+				mapB.put("rel_subject_"+rid, sp.preprocess(rel_subject,"en"));
+				mapB.put("rel_body_"+rid, sp.preprocess(rel_body,"en"));
+				
 				Map<String,String> mapA = new HashMap<String,String>();
 				mapA.put("subject_"+rid, sp.preprocess(rel_subject,"en"));
 				mapA.put("body_"+rid, sp.preprocess(rel_body,"en"));
 				
-				for (int j=1;j<=10;j++) {
+				for (int j=1;j<=5;j++) {
 					String cid = rid+"_C"+j;
 					String comment = "This comment "+cid;
 					out.write("	"+cid+"	"+comment);
@@ -173,19 +276,31 @@ public class JCasMultiplierAndAggregatorTest {
 				
 				mapsA.put(rid, mapA);
 			}
+			mapsB.put(qid, mapB);
 		}
 		out.close();
 		
 		return file.getAbsolutePath();
 	}
 	
-	private CollectionReaderDescription getCollectionReaderDescriptor() throws ResourceInitializationException, IOException {
-		String file = generateInputTestFile();
+	private CollectionReaderDescription getCollectionReaderDescriptorTaskA(String file) throws ResourceInitializationException, IOException {
 		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
 				InputCollectionDataReader.class);
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
 				PlainTextDataReader.FILE_PARAM, file,
 				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_A_TASK);
+		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
+				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+		
+		return collectionReaderDescr;
+	}
+	
+	private CollectionReaderDescription getCollectionReaderDescriptorTaskB(String file) throws ResourceInitializationException, IOException {
+		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+				InputCollectionDataReader.class);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
+				PlainTextDataReader.FILE_PARAM, file,
+				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -204,6 +319,8 @@ public class JCasMultiplierAndAggregatorTest {
 				new File(JCasMultiplierAndAggregatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		DescriptorGenerator.generatePipelineAAEDeploymentDescriptor(
 				new File(JCasMultiplierAndAggregatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		
+		String file = generateInputTestFile();
 		
 		String inputJCasMultiplierAEDescriptor = 
 				new File(JCasMultiplierAndAggregatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
@@ -233,28 +350,65 @@ public class JCasMultiplierAndAggregatorTest {
 		appCtx2.put(UimaAsynchronousEngine.ENDPOINT, "myQueueName");
 		appCtx2.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
-		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor());
-//		uimaAsEngine2.setCollectionReader(collectionReader);
-		
-		MyStatusCallbackListenerTaskA listener = new MyStatusCallbackListenerTaskA(mapsA);
-		uimaAsEngine2.addStatusCallbackListener(listener);
+		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(file));
+		MyStatusCallbackListenerTaskA listenerA = new MyStatusCallbackListenerTaskA(mapsA);
+		uimaAsEngine2.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine2.initialize(appCtx2);
 		
-		double start = System.currentTimeMillis();
-		while (collectionReader.hasNext()) {
+		double startA = System.currentTimeMillis();
+		while (collectionReaderA.hasNext()) {
 			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 					null, null);
-			collectionReader.getNext(cas);
-			listener.getInputInstances().add(cas.getDocumentText());
+			collectionReaderA.getNext(cas);
+			listenerA.getInputInstances().add(cas.getDocumentText());
 			uimaAsEngine2.sendCAS(cas);
 		}
 		uimaAsEngine2.collectionProcessingComplete();
-		double end = System.currentTimeMillis();
-		double seconds = (end - start)/1000;
-		System.out.println(seconds+" seconds");
+		double endA = System.currentTimeMillis();
+		double secondsA = (endA - startA)/1000;
+		System.out.println(secondsA+" seconds");
+		
+		if (!mapsA.isEmpty())
+			fail("Not all the CASes have been processed.");
 		
 		uimaAsEngine2.stop();
+
+		
+		UimaAsynchronousEngine uimaAsEngine3 = new BaseUIMAAsynchronousEngine_impl();
+
+		Map<String,Object> appCtx3 = new HashMap<String,Object>();
+		appCtx3.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx3.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx3.put(UimaAsynchronousEngine.ServerUri, "tcp://localhost:61616");
+		appCtx3.put(UimaAsynchronousEngine.ENDPOINT, "myQueueName");
+		appCtx3.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		
+		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(file));
+		MyStatusCallbackListenerTaskB listenerB = new MyStatusCallbackListenerTaskB(mapsB);
+		uimaAsEngine3.addStatusCallbackListener(listenerB);	
+		
+		uimaAsEngine3.initialize(appCtx3);
+		
+		double startB = System.currentTimeMillis();
+		while (collectionReaderB.hasNext()) {
+			CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
+					null, null);
+			collectionReaderB.getNext(cas);
+			listenerB.getInputInstances().add(cas.getDocumentText());
+			uimaAsEngine3.sendCAS(cas);
+		}
+		uimaAsEngine3.collectionProcessingComplete();
+		double endB = System.currentTimeMillis();
+		double secondsB = (endB - startB)/1000;
+		System.out.println(secondsB+" seconds");
+		
+		if (!mapsB.isEmpty())
+			fail("Not all the CASes have been processed.");
+		
+		uimaAsEngine3.stop();
+		
+		Thread.sleep(100);
 		
 		for (String id : IDs)
 			uimaAsEngine1.undeploy(id);
@@ -263,7 +417,14 @@ public class JCasMultiplierAndAggregatorTest {
 		broker.stop();
 	}
 	
-	public static void main(String args[]) throws Exception {
-		new JCasMultiplierAndAggregatorTest().multiplierTest();
+//	public static void main(String args[]) throws Exception {
+//		new JCasMultiplierAndAggregatorTest().multiplierTest();
+//	}
+	
+	public static void main(String[] args) {
+		Result result = JUnitCore.runClasses(JCasMultiplierAndAggregatorTest.class);
+		for (Failure failure : result.getFailures()) {
+			System.out.println(failure.toString());
+		}
 	}
 }
