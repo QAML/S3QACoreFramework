@@ -18,8 +18,8 @@
  
 package qa.qcri.iyas.util;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.cas.CAS;
@@ -39,13 +39,13 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 	private boolean concatenated;
 	private JCas relatedQuestionSubjectJCas;
 	private JCas relatedQuestionBodyJCas;
-	private List<JCas> comments;
+	private Map<String,JCas> comments;
 	
 	public AggregatedJCasManagerTaskA() {
 		this.concatenated = false;
 		this.relatedQuestionSubjectJCas = null;
 		this.relatedQuestionBodyJCas = null;
-		this.comments = new LinkedList<JCas>();
+		this.comments = new HashMap<>();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		
 		//Called also to check that there is only a RelatedQuestionBody as QAAnnotation
 		RelatedQuestionBody body = getAnnotation(relatedQuestionBody,RelatedQuestionBody.class);
-		validateRelatedQuestioBodyID(body);
+		validateRelatedQuestionBodyID(body);
 		
 		if (this.relatedQuestionSubjectJCas != null && body.getConcatenated())
 			throw new UIMAException(new IllegalStateException(
@@ -72,7 +72,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 			throw new UIMAException(new IllegalStateException(
 					"More comments than expeted have already been received."));
 		
-		System.out.println("Received "+body.getID()+"'s body");
+//		System.out.println("Received "+body.getID()+"'s body");
 		
 		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 				null, null);
@@ -91,24 +91,24 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 	 * @throws UIMAException
 	 */
 	public synchronized boolean setRelatedQuestionSubjectView(JCas relatedQuestionSubject) throws UIMAException {
-		if (relatedQuestionSubjectJCas != null)
+		if (this.relatedQuestionSubjectJCas != null)
 			throw new UIMAException(new IllegalStateException(
 					"Related question subject has already been set."));
 		
-		if (concatenated)
+		if (this.concatenated)
 			throw new UIMAException(new IllegalStateException(
 					"Related question subject is not allowed to be set since the flag \"concatenated\" is true."));
 		
 		//Called also to check that there is only a RelatedQuestionSubject as QAAnnotation
 		RelatedQuestionSubject subject = getAnnotation(relatedQuestionSubject,RelatedQuestionSubject.class);
-		validateRelatedQuestioSubjectID(subject);
+		validateRelatedQuestionSubjectID(subject);
 			
-		System.out.println("Received "+subject.getID()+"'s subject");
+//		System.out.println("Received "+subject.getID()+"'s subject");
 
 		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 				null, null);
 		CasCopier.copyCas(relatedQuestionSubject.getCas(), cas, true);
-		relatedQuestionSubjectJCas = cas.getJCas();
+		this.relatedQuestionSubjectJCas = cas.getJCas();
 		
 		return isReady();
 	}
@@ -116,7 +116,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 	public synchronized boolean addCommentView(JCas comment) throws UIMAException {
 		if (this.relatedQuestionBodyJCas != null) {
 			RelatedQuestionBody body = getAnnotation(this.relatedQuestionBodyJCas,RelatedQuestionBody.class);
-			if (body.getNumberOfCandidates() == comments.size()) {
+			if (body.getNumberOfCandidates() == this.comments.size()) {
 				throw new UIMAException(new IllegalStateException(
 					"The number of expected comments has already been reached."));
 			}
@@ -126,12 +126,16 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		Comment comm = getAnnotation(comment,Comment.class);
 		validateCommentID(comm);
 		
-		System.out.println("Received comment "+comm.getID());
+		if (comments.get(comm.getID()) != null)
+			throw new UIMAException(new IllegalStateException(
+					"The comment "+comm.getID()+" has already been reached."));
+		
+//		System.out.println("Received comment "+comm.getID());
 		
 		CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 				null, null);
 		CasCopier.copyCas(comment.getCas(), cas, true);
-		this.comments.add(cas.getJCas());
+		this.comments.put(comm.getID(), cas.getJCas());
 		
 		return isReady();
 	}
@@ -144,7 +148,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		RelatedQuestionBody relQuestBody = getAnnotation(this.relatedQuestionBodyJCas, RelatedQuestionBody.class);
 		
 		RelatedQuestion relatedQuestion = new RelatedQuestion(jcas);
-		relatedQuestion.setConcatenated(concatenated);
+		relatedQuestion.setConcatenated(this.concatenated);
 		relatedQuestion.setCandidateViewNames(new StringArray(jcas, relQuestBody.getNumberOfCandidates()));
 		relatedQuestion.setID(relQuestBody.getID());
 		
@@ -152,19 +156,17 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		CasCopier copier = new CasCopier(this.relatedQuestionBodyJCas.getCas(), jcas.getCas());
 		copier.copyCasView(this.relatedQuestionBodyJCas.getCas(), jcas.getCas().createView(RELATED_QUESTION_BODY_VIEW), true);
 		
-		if (!concatenated) {
+		if (!this.concatenated) {
 			copier = new CasCopier(this.relatedQuestionSubjectJCas.getCas(), jcas.getCas());
 			copier.copyCasView(this.relatedQuestionSubjectJCas.getCas(), jcas.getCas().createView(RELATED_QUESTION_SUBJECT_VIEW), true);
 		}
 		
 		int j = 0;
-		for (JCas commentJCas : comments) {
-			Comment comment = getAnnotation(commentJCas, Comment.class);
+		for (String commentID : this.comments.keySet()) {
+			copier = new CasCopier(this.comments.get(commentID).getCas(), jcas.getCas());
+			copier.copyCasView(this.comments.get(commentID).getCas(), jcas.getCas().createView(COMMENT_VIEW+"-"+commentID), true);
 			
-			copier = new CasCopier(commentJCas.getCas(), jcas.getCas());
-			copier.copyCasView(commentJCas.getCas(), jcas.getCas().createView(COMMENT_VIEW+"-"+comment.getID()), true);
-			
-			relatedQuestion.getCandidateViewNames().set(j++,comment.getID());
+			relatedQuestion.getCandidateViewNames().set(j++,commentID);
 		}
 		
 		relatedQuestion.addToIndexes();
@@ -182,7 +184,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		return true;
 	}
 	
-	private void validateRelatedQuestioBodyID(RelatedQuestionBody relatedQuestionBody) throws UIMAException {		
+	private void validateRelatedQuestionBodyID(RelatedQuestionBody relatedQuestionBody) throws UIMAException {		
 		String relatedQuestionID = relatedQuestionBody.getID();
 		if (relatedQuestionID.split("_").length != 2)
 			throw new UIMAException(new IllegalArgumentException("Malformed ID."));
@@ -193,7 +195,7 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 					+ "consistent with the already received related question subject."));
 		else 
 			if (!this.comments.isEmpty()) {
-			String commentID = getAnnotation(this.comments.get(0), Comment.class).getID();
+			String commentID = getAnnotation(this.comments.values().iterator().next(), Comment.class).getID();
 			String split[] = commentID.split("_");
 			String id = split[0]+"_"+split[1];
 			if (!relatedQuestionID.equals(id))
@@ -202,18 +204,18 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		}
 	}
 	
-	private void validateRelatedQuestioSubjectID(RelatedQuestionSubject relatedQuestionSubject) throws UIMAException {		
+	private void validateRelatedQuestionSubjectID(RelatedQuestionSubject relatedQuestionSubject) throws UIMAException {		
 		String relatedQuestionID = relatedQuestionSubject.getID();
 		if (relatedQuestionID.split("_").length != 2)
 			throw new UIMAException(new IllegalArgumentException("Malformed ID."));
 		
-		if (relatedQuestionBodyJCas != null &&
+		if (this.relatedQuestionBodyJCas != null &&
 				!relatedQuestionID.equals(getAnnotation(relatedQuestionBodyJCas, RelatedQuestionBody.class).getID()))
 			throw new UIMAException(new IllegalArgumentException("The ID of the input related question subject is not "
 					+ "consistent with the already received related question body."));
 		else
-			if (!comments.isEmpty()) {
-				String commentID = getAnnotation(comments.get(0), Comment.class).getID();
+			if (!this.comments.isEmpty()) {
+				String commentID = getAnnotation(this.comments.values().iterator().next(), Comment.class).getID();
 				String split[] = commentID.split("_");
 				String id = split[0]+"_"+split[1];
 				if (!relatedQuestionID.equals(id))
@@ -229,20 +231,21 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		
 		String relatedQuestionID = split[0]+"_"+split[1];
 		
-		if (relatedQuestionBodyJCas != null && 
-				!relatedQuestionID.equals(getAnnotation(relatedQuestionBodyJCas, RelatedQuestionBody.class).getID()))
+		if (this.relatedQuestionBodyJCas != null && 
+				!relatedQuestionID.equals(getAnnotation(this.relatedQuestionBodyJCas, RelatedQuestionBody.class).getID()))
+			throw new UIMAException(new IllegalArgumentException("The ID of the input comment is not "
+					+ "consistent with the already received related question body."));
+		
+		if (this.relatedQuestionSubjectJCas != null &&
+				!relatedQuestionID.equals(getAnnotation(this.relatedQuestionSubjectJCas, RelatedQuestionSubject.class).getID()))
 			throw new UIMAException(new IllegalArgumentException("The ID of the input comment is not "
 					+ "consistent with the already received related question subject."));
 		
-		if (relatedQuestionSubjectJCas != null &&
-				!relatedQuestionID.equals(getAnnotation(relatedQuestionSubjectJCas, RelatedQuestionSubject.class).getID()))
-			throw new UIMAException(new IllegalArgumentException("The ID of the input comment is not "
-					+ "consistent with the already received related question subject."));
-		
-		if (!comments.isEmpty()) {
-			String commentID = getAnnotation(comments.get(0), Comment.class).getID();
+		if (!this.comments.isEmpty()) {
+			String commentID = getAnnotation(this.comments.values().iterator().next(), Comment.class).getID();
 			String split2[] = commentID.split("_");
-			if (!relatedQuestionID.equals(split2[0]+"_"+split2[1]))
+			String id = split2[0]+"_"+split2[1];
+			if (!relatedQuestionID.equals(id))
 				throw new UIMAException(new IllegalArgumentException("The ID of the input comment is not "
 						+ "consistent with the already received comments. Received ID "+relatedQuestionID+", expected ID "+(split2[0]+"_"+split2[1])));
 		}

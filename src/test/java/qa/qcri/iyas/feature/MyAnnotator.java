@@ -18,20 +18,15 @@
  
 package qa.qcri.iyas.feature;
 
-import java.util.Iterator;
-
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import qa.qcri.iyas.type.QAAnnotation;
 
 public class MyAnnotator extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-				long wait = (long)(Math.random()*10000);
+				long wait = (long)(Math.random()*1000);
 		try {
 			Thread.sleep(wait);
 		} catch (InterruptedException e) {

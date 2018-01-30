@@ -22,12 +22,17 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 public class PlainTextDataReader extends DataReader {
 	
@@ -119,6 +124,8 @@ public class PlainTextDataReader extends DataReader {
 			
 			sb.append("	</"+INSTANCE_C_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
+			
+			return sb.toString();
 		} else if (task.equals(DataReader.INSTANCE_A_TASK)) {
 			sb.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));
 			sb.append("	<"+INSTANCE_A_TAG+">"+System.getProperty("line.separator"));
@@ -126,9 +133,10 @@ public class PlainTextDataReader extends DataReader {
 			relatedQuestionID = currentLine[3];
 			realtedQuestionSubject = currentLine[4];
 			realtedQuestionBody = currentLine[5];
-			sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+NUMBER_OF_CANDIDATES_ATTRIBUTE+"=\""+10+"\">"+System.getProperty("line.separator"));
+			sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+NUMBER_OF_CANDIDATES_ATTRIBUTE+"=\""+((currentLine.length-6)/2)+"\">"+System.getProperty("line.separator"));
 			sb.append("			<"+SUBJECT_TAG+">"+realtedQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
 			sb.append("			<"+BODY_TAG+">"+realtedQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
+			
 			for (int i=6;i<currentLine.length;i+=2) {
 				String commentID = currentLine[i];
 				String comment = currentLine[i+1];
@@ -145,6 +153,8 @@ public class PlainTextDataReader extends DataReader {
 			
 			sb.append("	</"+INSTANCE_A_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
+			
+			return sb.toString();
 		} if (task.equals(DataReader.INSTANCE_B_TASK)) {
 			sb.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));
 			sb.append("	<"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
@@ -156,6 +166,7 @@ public class PlainTextDataReader extends DataReader {
 			sb.append("			<"+BODY_TAG+">"+userQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
 			sb.append("		</"+USER_QUESTION_TAG+">"+System.getProperty("line.separator"));
 			
+			int candidates = 0;
 			do {
 				relatedQuestionID = currentLine[3];
 				realtedQuestionSubject = currentLine[4];
@@ -171,13 +182,25 @@ public class PlainTextDataReader extends DataReader {
 				} catch (IOException e) {
 					throw new ResourceProcessException(e);
 				}
+				candidates++;
 			} while (currentLine != null && currentLine[0].equals(userQuestionID));
 			
 			sb.append("	</"+INSTANCE_B_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
-		} 
-
-		return sb.toString();
+			
+			String xml = sb.toString();
+			SAXBuilder builder = new SAXBuilder();
+			try {
+				Document document = builder.build(new StringReader(xml));
+				document.getRootElement().getChild(INSTANCE_B_TAG).getChild(USER_QUESTION_TAG).setAttribute(NUMBER_OF_CANDIDATES_ATTRIBUTE, ""+candidates);
+				XMLOutputter xmlOut = new XMLOutputter();
+				return xmlOut.outputString(document);
+			} catch (JDOMException | IOException e) {
+				throw new ResourceProcessException(e);
+			}
+		}
+		
+		return null;
 	}
 
 
