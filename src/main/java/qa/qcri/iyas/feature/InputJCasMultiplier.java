@@ -33,7 +33,6 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -84,7 +83,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 	private TextPreprocessor preprocessor = null;
 	
 	@ConfigurationParameter(name = CONCATENATE_PARAM, defaultValue = "false", mandatory = false)
-	private boolean concatenateSubjectAndBody;
+	private Boolean concatenateSubjectAndBody;
 	
 	private class MyElement {
 		public TypeOfInstance typeOfInstance;
@@ -149,18 +148,6 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		}
 	}
 	
-	public String concatenateBodyAndSubject(String subject,String body) {
-		if (body.toLowerCase().startsWith(subject.toLowerCase())) {
-			return body;
-		}
-		if (body.length() > 0) {
-			if (Character.isUpperCase(body.charAt(0))) {
-				return subject+ ". " + body; 
-		    }
-		}
-		return subject+ " " + body;
-	}
-	
 	@Override
 	public void initialize(final UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
@@ -202,7 +189,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		String subject = preprocessor.preprocess(userQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(userQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
-		String question = concatenateBodyAndSubject(subject, body);
+		String question = preprocessor.concatenateBodyAndSubject(subject, body);
 		
 		JCas questionJCas = getEmptyJCas();
 		questionJCas.setDocumentLanguage(lang);
@@ -257,7 +244,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		String subject = preprocessor.preprocess(relatedQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
-		String question = concatenateBodyAndSubject(subject, body);
+		String question = preprocessor.concatenateBodyAndSubject(subject, body);
 		
 		JCas questionJCas = getEmptyJCas();
 		questionJCas.setDocumentLanguage(lang);

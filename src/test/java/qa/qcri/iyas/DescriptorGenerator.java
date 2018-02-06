@@ -86,14 +86,14 @@ public class DescriptorGenerator {
 		
 	}
 	
-	public static void generateInputJCasMultiplierAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	public static void generateInputJCasMultiplierAAEDescriptor(String root_folder,boolean concatenate) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/test").mkdirs();
 		System.out.println("Generating XML description for InputJCasMultiplierAE_Descriptor");
 		AnalysisEngineDescription inputJCasMultiplierAEDescriptor = AnalysisEngineFactory.createEngineDescription(
-				InputJCasMultiplier.class);
+				InputJCasMultiplier.class,
+				InputJCasMultiplier.CONCATENATE_PARAM,new Boolean(concatenate));
 		ExternalResourceFactory.bindResource(inputJCasMultiplierAEDescriptor,
-				InputJCasMultiplier.PREPROCESSOR_EXTERNAL_RESOURCE, StandardPreprocessor.class,
-				InputJCasMultiplier.CONCATENATE_PARAM,"true");
+				InputJCasMultiplier.PREPROCESSOR_EXTERNAL_RESOURCE, StandardPreprocessor.class);
 		inputJCasMultiplierAEDescriptor.toXML(
 				new FileOutputStream(root_folder+"/test/InputJCasMultiplierAE_Descriptor.xml"));
 	

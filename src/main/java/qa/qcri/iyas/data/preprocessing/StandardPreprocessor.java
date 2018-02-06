@@ -163,6 +163,18 @@ public class StandardPreprocessor extends TextPreprocessor {
 //		return string.replaceAll("[\r \t\f"+ noBreakSpace +"\r]+", " ").replaceAll("(( )*\n( )*)+", "\n").trim();
 //	}
 	
+	public String concatenateBodyAndSubject(String subject,String body) {
+		if (body.toLowerCase().startsWith(subject.toLowerCase())) {
+			return body;
+		}
+		if (body.length() > 0) {
+			if (Character.isUpperCase(body.charAt(0))) {
+				return subject+ ". " + body; 
+		    }
+		}
+		return subject+ " " + body;
+	}
+	
 	/**
 	 * Performs the preprocessing on the specified text and returns the preprocessed one.
 	 * @param text text to preprocess

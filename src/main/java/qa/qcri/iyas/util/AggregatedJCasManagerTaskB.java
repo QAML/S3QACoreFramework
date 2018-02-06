@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
-import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
+import org.uimafit.util.JCasUtil;
 
+import qa.qcri.iyas.type.InstanceB;
 import qa.qcri.iyas.type.RelatedQuestion;
 import qa.qcri.iyas.type.RelatedQuestionBody;
 import qa.qcri.iyas.type.RelatedQuestionSubject;
@@ -50,6 +50,10 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 			throw new UIMAException(new IllegalStateException(
 					"User question body has already been set."));
 		
+		if (!JCasUtil.exists(userQuestionBody, InstanceB.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceB annotation."));
+		
 		//Called also to check that there is only a UserQuestionBody as QAAnnotation
 		UserQuestionBody body = getAnnotation(userQuestionBody,UserQuestionBody.class);
 		validateUserQuestionBodyID(body);
@@ -74,6 +78,8 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 		this.userQuestionBodyJCas = cas.getJCas();
 		this.concatenated = body.getConcatenated();
 		
+		JCasUtil.select(cas.getJCas(), InstanceB.class).iterator().next().removeFromIndexes(cas.getJCas());
+		
 		return isReady();
 	}
 	
@@ -93,6 +99,10 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 			throw new UIMAException(new IllegalStateException(
 					"User question subject is not allowed to be set since the flag \"concatenated\" is true."));
 		
+		if (!JCasUtil.exists(userQuestionSubject, InstanceB.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an Instance	b annotation."));
+		
 		//Called also to check that there is only a RelatedQuestionSubject as QAAnnotation
 		UserQuestionSubject subject = getAnnotation(userQuestionSubject,UserQuestionSubject.class);
 		validateUserQuestioSubjectID(subject);
@@ -103,6 +113,8 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 				null, null);
 		CasCopier.copyCas(userQuestionSubject.getCas(), cas, true);
 		this.userQuestionSubjectJCas = cas.getJCas();
+		
+		JCasUtil.select(cas.getJCas(), InstanceB.class).iterator().next().removeFromIndexes(cas.getJCas());
 		
 		return isReady();
 	}
@@ -115,6 +127,10 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 					"The number of expected candidate question bodies has already been reached."));
 			}
 		}
+		
+		if (!JCasUtil.exists(candidateQuestionBody, InstanceB.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceB annotation."));
 		
 		//Called also to check that there is only a Comment as QAAnnotation
 		RelatedQuestionBody candidateBody = getAnnotation(candidateQuestionBody,RelatedQuestionBody.class);
@@ -131,6 +147,8 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 		CasCopier.copyCas(candidateQuestionBody.getCas(), cas, true);
 		this.candidateQuestionBodies.put(candidateBody.getID(),cas.getJCas());
 		
+		JCasUtil.select(cas.getJCas(), InstanceB.class).iterator().next().removeFromIndexes(cas.getJCas());
+		
 		return isReady();
 	}
 	
@@ -142,6 +160,10 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 					"The number of expected candidate question subjects has already been reached."));
 			}
 		}
+		
+		if (!JCasUtil.exists(candidateQuestionSubject, InstanceB.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceB annotation."));
 		
 		//Called also to check that there is only a Comment as QAAnnotation
 		RelatedQuestionSubject candidateSubject = getAnnotation(candidateQuestionSubject,RelatedQuestionSubject.class);
@@ -157,6 +179,8 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 				null, null);
 		CasCopier.copyCas(candidateQuestionSubject.getCas(), cas, true);
 		this.candidateQuestionSubjects.put(candidateSubject.getID(),cas.getJCas());
+		
+		JCasUtil.select(cas.getJCas(), InstanceB.class).iterator().next().removeFromIndexes(cas.getJCas());
 		
 		return isReady();
 	}
@@ -207,6 +231,8 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 		}
 		
 		userQuestion.addToIndexes();
+		InstanceB instanceB = new InstanceB(jcas);
+		instanceB.addToIndexes();
 	}
 
 	@Override

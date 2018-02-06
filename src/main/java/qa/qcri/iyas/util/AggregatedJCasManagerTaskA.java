@@ -28,8 +28,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
+import org.uimafit.util.JCasUtil;
 
 import qa.qcri.iyas.type.Comment;
+import qa.qcri.iyas.type.InstanceA;
 import qa.qcri.iyas.type.RelatedQuestion;
 import qa.qcri.iyas.type.RelatedQuestionBody;
 import qa.qcri.iyas.type.RelatedQuestionSubject;
@@ -60,6 +62,10 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 			throw new UIMAException(new IllegalStateException(
 					"Related question body has already been set."));
 		
+		if (!JCasUtil.exists(relatedQuestionBody, InstanceA.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceA annotation."));
+		
 		//Called also to check that there is only a RelatedQuestionBody as QAAnnotation
 		RelatedQuestionBody body = getAnnotation(relatedQuestionBody,RelatedQuestionBody.class);
 		validateRelatedQuestionBodyID(body);
@@ -80,6 +86,8 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		this.relatedQuestionBodyJCas = cas.getJCas();
 		this.concatenated = body.getConcatenated();
 		
+		JCasUtil.select(cas.getJCas(), InstanceA.class).iterator().next().removeFromIndexes(cas.getJCas());
+		
 		return isReady();
 	}
 	
@@ -99,6 +107,10 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 			throw new UIMAException(new IllegalStateException(
 					"Related question subject is not allowed to be set since the flag \"concatenated\" is true."));
 		
+		if (!JCasUtil.exists(relatedQuestionSubject, InstanceA.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceA annotation."));
+		
 		//Called also to check that there is only a RelatedQuestionSubject as QAAnnotation
 		RelatedQuestionSubject subject = getAnnotation(relatedQuestionSubject,RelatedQuestionSubject.class);
 		validateRelatedQuestionSubjectID(subject);
@@ -109,6 +121,8 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 				null, null);
 		CasCopier.copyCas(relatedQuestionSubject.getCas(), cas, true);
 		this.relatedQuestionSubjectJCas = cas.getJCas();
+		
+		JCasUtil.select(cas.getJCas(), InstanceA.class).iterator().next().removeFromIndexes(cas.getJCas());
 		
 		return isReady();
 	}
@@ -121,6 +135,10 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 					"The number of expected comments has already been reached."));
 			}
 		}
+		
+		if (!JCasUtil.exists(comment, InstanceA.class))
+			throw new UIMAException(new IllegalStateException(
+					"The input JCas is supposed to contain an InstanceA annotation."));
 		
 		//Called also to check that there is only a Comment as QAAnnotation
 		Comment comm = getAnnotation(comment,Comment.class);
@@ -136,6 +154,8 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 				null, null);
 		CasCopier.copyCas(comment.getCas(), cas, true);
 		this.comments.put(comm.getID(), cas.getJCas());
+		
+		JCasUtil.select(cas.getJCas(), InstanceA.class).iterator().next().removeFromIndexes(cas.getJCas());
 		
 		return isReady();
 	}
@@ -170,6 +190,8 @@ public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 		}
 		
 		relatedQuestion.addToIndexes();
+		InstanceA instanceA = new InstanceA(jcas);
+		instanceA.addToIndexes();
 	}
 	
 	@Override
