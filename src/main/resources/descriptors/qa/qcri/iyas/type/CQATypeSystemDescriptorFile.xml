@@ -99,7 +99,7 @@
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>candidateViewNames</name>
+          <name>candidateIDs</name>
           <description/>
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
@@ -121,7 +121,7 @@
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
         <featureDescription>
-          <name>candidateViewNames</name>
+          <name>candidateIDs</name>
           <description/>
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
