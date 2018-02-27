@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class Similarity extends Annotation {

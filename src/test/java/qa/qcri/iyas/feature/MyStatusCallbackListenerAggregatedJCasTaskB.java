@@ -30,14 +30,14 @@ import qa.qcri.iyas.type.InstanceB;
 import qa.qcri.iyas.type.UserQuestion;
 import qa.qcri.iyas.util.AggregatedJCasManager;
 
-public class MyStatusCallbackListenerTaskB extends UimaAsBaseCallbackListener {
+public class MyStatusCallbackListenerAggregatedJCasTaskB extends UimaAsBaseCallbackListener {
 	
 	private Set<String> inputInstances;
 	private SAXBuilder builder;
 	private Map<String,Map<String,String>> maps;
 	private boolean concatenate;
 	
-	public MyStatusCallbackListenerTaskB(Map<String,Map<String,String>> m,boolean concatenate) throws JDOMException, URISyntaxException {
+	public MyStatusCallbackListenerAggregatedJCasTaskB(Map<String,Map<String,String>> m,boolean concatenate) throws JDOMException, URISyntaxException {
 		inputInstances = new HashSet<>();
 		XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(
 				DataReader.SCHEMA_INSTANCE_B_PATH).toURI()));
@@ -106,7 +106,7 @@ public class MyStatusCallbackListenerTaskB extends UimaAsBaseCallbackListener {
 						if (map.get("body_"+cqaAnnotation.getID()).equals(body))
 							map.remove("body_"+cqaAnnotation.getID());
 						
-						for (String rid : cqaAnnotation.getCandidateViewNames().toArray()) {
+						for (String rid : cqaAnnotation.getCandidateIDs().toArray()) {
 							if (!concatenate) {
 								String rel_subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+rid).getDocumentText();
 								if (map.get("rel_subject_"+rid).equals(rel_subject))

@@ -22,6 +22,11 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 
+/**
+ * A simple annotator to simulate different processing time for the CASes.
+ * @author Salvatore Romeo
+ *
+ */
 public class MyAnnotator extends JCasAnnotator_ImplBase {
 
 	@Override

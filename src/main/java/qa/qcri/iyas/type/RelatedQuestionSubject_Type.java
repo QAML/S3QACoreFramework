@@ -26,7 +26,7 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 
 /** 
- * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
  * @generated */
 public class RelatedQuestionSubject_Type extends QAAnnotation_Type {
   /** @generated */

@@ -1,21 +1,3 @@
-/**
- * Copyright 2018 Salvatore Romeo
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *     
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *  
- */
- 
- 
 package qa.qcri.iyas.feature;
 
 import static org.junit.Assert.fail;
@@ -52,12 +34,12 @@ import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 
-public class JCasMultiplierAndAggregatorConcatenatedTest {
+public class JCasPairGeneratorTest {
 	
 	private static Map<String,Map<String,String>> mapsA = new HashMap<String,Map<String,String>>();
 	private static Map<String,Map<String,String>> mapsB = new HashMap<String,Map<String,String>>();
 	
-	private String generateInputTestFile(boolean concatenate) throws IOException {
+	private String generateInputTestFile() throws IOException {
 		StandardPreprocessor sp = new StandardPreprocessor();
 		File file = new File("test_input.txt");
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -67,14 +49,7 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 			String org_body = "This is the body of original question "+qid;
 			
 			Map<String,String> mapB = new HashMap<String,String>();
-			if (concatenate) {
-				mapB.put("body_"+qid, sp.concatenateBodyAndSubject(
-						sp.preprocess(org_subject,"en"),
-						sp.preprocess(org_body,"en")));
-			} else {
-				mapB.put("subject_"+qid, sp.preprocess(org_subject,"en"));
-				mapB.put("body_"+qid, sp.preprocess(org_body,"en"));
-			}
+			
 			for (int i=1;i<=7;i++) {
 				out.write(qid+"	"+org_subject+"	"+org_body);
 				String rid = qid+"_R"+i;
@@ -82,31 +57,27 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 				String rel_body = "This is the body of related question "+rid;
 				out.write("	"+rid+"	"+rel_subject+"	"+rel_body);
 				
-				if (concatenate) {
-					mapB.put("rel_body_"+rid, sp.concatenateBodyAndSubject(
-							sp.preprocess(rel_subject,"en"),
-							sp.preprocess(rel_body,"en")));
-				} else {
-					mapB.put("rel_subject_"+rid, sp.preprocess(rel_subject,"en"));
-					mapB.put("rel_body_"+rid, sp.preprocess(rel_body,"en"));
-				}
+				
+				mapB.put("left_"+rid, sp.concatenateBodyAndSubject(
+						sp.preprocess(org_subject,"en"),
+						sp.preprocess(org_body,"en")));
+				
+				mapB.put("right_"+rid, sp.concatenateBodyAndSubject(
+						sp.preprocess(rel_subject,"en"),
+						sp.preprocess(rel_body,"en")));
 				
 				Map<String,String> mapA = new HashMap<String,String>();
-				
-				if (concatenate) {
-					mapA.put("body_"+rid, sp.concatenateBodyAndSubject(
-							sp.preprocess(rel_subject,"en"), 
-							sp.preprocess(rel_body,"en")));
-				} else {
-					mapA.put("subject_"+rid, sp.preprocess(rel_subject,"en"));
-					mapA.put("body_"+rid, sp.preprocess(rel_body,"en"));
-				}
 				
 				for (int j=1;j<=5;j++) {
 					String cid = rid+"_C"+j;
 					String comment = "This comment "+cid;
 					out.write("	"+cid+"	"+comment);
-					mapA.put("comment_"+cid, sp.preprocess(comment,"en"));
+					
+					mapA.put("left_"+cid, sp.concatenateBodyAndSubject(
+							sp.preprocess(rel_subject,"en"), 
+							sp.preprocess(rel_body,"en")));
+					
+					mapA.put("right_"+cid, sp.preprocess(comment,"en"));
 				}
 				out.newLine();
 				
@@ -150,14 +121,35 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
 		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generatePipelineAAEDescriptor(
+		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
 				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generatePipelineAAEDeploymentDescriptor(
+		DescriptorGenerator.generatePipelineWithPairGeneratorAAEDescriptor(
+				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generatePipelineWithPairGeneratorAAEDeploymentDescriptor(
 				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 	}
+
+	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
+		String inputJCasMultiplierAEDescriptor = 
+				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
+						+ "/PipelineWithPairGeneratorAAE_DeploymentDescriptor.xml";
+		
+		// create a Map to hold required parameters
+		Map<String,Object> appCtx = new HashMap<String,Object>();
+		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		
+		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
+		
+		return id;
+	}
 	
-	private void runTestTaskA(boolean concatenate,String inputFile) throws Exception {
+	private void undeployPipeline(String id,UimaAsynchronousEngine uimaAsEngine) throws Exception {
+		uimaAsEngine.undeploy(id);
+	}
+	
+	private void runTestTaskA(String inputFile) throws Exception {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -168,7 +160,7 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(inputFile));
-		MyStatusCallbackListenerAggregatedJCasTaskA listenerA = new MyStatusCallbackListenerAggregatedJCasTaskA(mapsA,concatenate);
+		MyStatusCallbackListenerJCasPairTaskA listenerA = new MyStatusCallbackListenerJCasPairTaskA(mapsA, true);
 		uimaAsEngine.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -192,7 +184,7 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 			fail("Not all the Task A CASes have been processed.");
 	}
 	
-	private void runTestTaskB(boolean concatenate,String inputFile) throws Exception {
+	private void runTestTaskB(String inputFile) throws Exception {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -203,8 +195,8 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
-		MyStatusCallbackListenerAggregatedJCasTaskB listenerB = new MyStatusCallbackListenerAggregatedJCasTaskB(mapsB,concatenate);
-		uimaAsEngine.addStatusCallbackListener(listenerB);	
+		MyStatusCallbackListenerJCasPairTaskB listenerB = new MyStatusCallbackListenerJCasPairTaskB(mapsB, true);
+		uimaAsEngine.addStatusCallbackListener(listenerB);
 		
 		uimaAsEngine.initialize(appCtx);
 		
@@ -224,30 +216,11 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 		uimaAsEngine.stop();
 		
 		if (!mapsB.isEmpty())
-			fail("Not all the Task B CASes have been processed.");
-	}
-	
-	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		String inputJCasMultiplierAEDescriptor = 
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/PipelineAAE_DeploymentDescriptor.xml";
-		
-		// create a Map to hold required parameters
-		Map<String,Object> appCtx = new HashMap<String,Object>();
-		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
-		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
-		
-		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
-		
-		return id;
-	}
-	
-	private void undeployPipeline(String id,UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		uimaAsEngine.undeploy(id);
+			fail("Not all the Task A CASes have been processed.");
 	}
 	
 	@Test
-	public void multiplierTest() throws Exception {
+	public void test() throws Exception {
 		
 		BrokerService broker = new BrokerService();
 		broker.addConnector("tcp://localhost:61616");
@@ -258,9 +231,9 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 		generateAnalysisEngineDescritors(true);
 		String id = deployPipeline(uimaAsEngine);
 		
-		String file = generateInputTestFile(true);
-		runTestTaskA(true, file);
-		runTestTaskB(true, file);
+		String file = generateInputTestFile();
+		runTestTaskA(file);
+		runTestTaskB(file);
 		undeployPipeline(id,uimaAsEngine);
 
 		Thread.sleep(100);
@@ -269,13 +242,6 @@ public class JCasMultiplierAndAggregatorConcatenatedTest {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		new JCasMultiplierAndAggregatorConcatenatedTest().multiplierTest();
+		new JCasPairGeneratorTest().test();
 	}
-	
-//	public static void main(String[] args) {
-//		Result result = JUnitCore.runClasses(JCasMultiplierAndAggregatorTest.class);
-//		for (Failure failure : result.getFailures()) {
-//			System.out.println(failure.toString());
-//		}
-//	}
 }

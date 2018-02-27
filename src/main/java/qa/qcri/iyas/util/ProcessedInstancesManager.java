@@ -347,7 +347,7 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 		
 		UserQuestion userQuestion = new UserQuestion(jcas);
 		userQuestion.setConcatenated(concatenated);
-		userQuestion.setCandidateViewNames(new StringArray(jcas, userQuestBody.getNumberOfCandidates()));
+		userQuestion.setCandidateIDs(new StringArray(jcas, userQuestBody.getNumberOfCandidates()));
 		userQuestion.setID(userQuestBody.getID());
 		
 		CasCopier copier = new CasCopier(userQuestionBody.getCas(), jcas.getCas());
@@ -371,7 +371,7 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 
 			RelatedQuestion relatedQuestion = new RelatedQuestion(relatedQuestView);
 			relatedQuestion.setConcatenated(concatenated);
-			relatedQuestion.setCandidateViewNames(new StringArray(relatedQuestView, relQuestBody.getNumberOfCandidates()));
+			relatedQuestion.setCandidateIDs(new StringArray(relatedQuestView, relQuestBody.getNumberOfCandidates()));
 
 			copier = new CasCopier(relatedQuestionBodies.get(questionID).getCas(), jcas.getCas());
 			copier.copyCasView(jcas.getCas().createView(ProcessedInstancesManager.RELATED_QUESTION_BODY_VIEW+"-"+questionID), true);
@@ -388,11 +388,11 @@ class ProcessedInstanceC extends AbstractProcessedInstance {
 				copier = new CasCopier(commentJCas.getCas(), jcas.getCas());
 				copier.copyCasView(jcas.getCas().createView(ProcessedInstancesManager.COMMENT_VIEW+"-"+comment.getID()), true);
 				
-				relatedQuestion.getCandidateViewNames().set(j++,comment.getID());
+				relatedQuestion.getCandidateIDs().set(j++,comment.getID());
 			}
 			
 			relatedQuestion.addToIndexes();
-			userQuestion.getCandidateViewNames().set(i++, questionID);
+			userQuestion.getCandidateIDs().set(i++, questionID);
 
 		}
 		

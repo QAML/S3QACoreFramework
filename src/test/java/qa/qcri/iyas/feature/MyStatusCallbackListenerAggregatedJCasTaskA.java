@@ -29,14 +29,14 @@ import qa.qcri.iyas.type.InstanceA;
 import qa.qcri.iyas.type.RelatedQuestion;
 import qa.qcri.iyas.util.AggregatedJCasManager;
 
-public class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
+public class MyStatusCallbackListenerAggregatedJCasTaskA extends UimaAsBaseCallbackListener {
 	
 	private Set<String> inputInstances;
 	private SAXBuilder builder;
 	private Map<String,Map<String,String>> maps;
 	private boolean concatenate;
 	
-	public MyStatusCallbackListenerTaskA(Map<String,Map<String,String>> m,boolean concatenate) throws JDOMException, URISyntaxException {
+	public MyStatusCallbackListenerAggregatedJCasTaskA(Map<String,Map<String,String>> m,boolean concatenate) throws JDOMException, URISyntaxException {
 		inputInstances = new HashSet<>();
 		XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(
 				DataReader.SCHEMA_INSTANCE_A_PATH).toURI()));
@@ -109,7 +109,7 @@ public class MyStatusCallbackListenerTaskA extends UimaAsBaseCallbackListener {
 							System.out.println("Removed "+"body_"+cqaAnnotation.getID());
 						}
 						
-						for (String cid : cqaAnnotation.getCandidateViewNames().toArray()) {
+						for (String cid : cqaAnnotation.getCandidateIDs().toArray()) {
 							if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid), InstanceA.class))
 								fail("Unexpected InstanceA annotation");
 							String comment = cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid).getDocumentText();

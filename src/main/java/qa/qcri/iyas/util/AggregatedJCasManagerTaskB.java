@@ -1,5 +1,6 @@
 package qa.qcri.iyas.util;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 	private JCas userQuestionBodyJCas;
 	private Map<String,JCas> candidateQuestionSubjects;
 	private Map<String,JCas> candidateQuestionBodies;
-	
+	private JCas aggregatedJCas;
 	
 	public AggregatedJCasManagerTaskB() {
 		this.concatenated = false;
@@ -36,6 +37,56 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 		this.userQuestionBodyJCas = null;
 		candidateQuestionSubjects = new HashMap<String,JCas>();
 		candidateQuestionBodies = new HashMap<String,JCas>();
+	}
+	
+	public AggregatedJCasManagerTaskB(JCas jcas) throws UIMAException {
+		if (!JCasUtil.exists(jcas, InstanceB.class))
+			throw new UIMAException("No InstanceB annotation found.", null);
+		this.aggregatedJCas = jcas;
+		
+		Collection<UserQuestion> userQuestions = JCasUtil.select(aggregatedJCas, UserQuestion.class);
+		if (userQuestions.size() > 1)
+			throw new UIMAException("Only one UserQuestion annotation is allowed",null);
+		if (userQuestions.size() == 0)
+			throw new UIMAException("Expected one UserQuestion annotation",null);
+		
+		UserQuestion userQuestion = userQuestions.iterator().next();
+		
+		this.concatenated = userQuestion.getConcatenated();
+		if (!concatenated) {
+			if (!JCasUtil.exists(aggregatedJCas.getView(USER_QUESTION_SUBJECT_VIEW), UserQuestionSubject.class))
+				throw new UIMAException("RelatedQuestionSubject annotation not found", null);
+			this.userQuestionSubjectJCas = aggregatedJCas.getView(USER_QUESTION_SUBJECT_VIEW);
+		}
+		if (!JCasUtil.exists(aggregatedJCas.getView(USER_QUESTION_BODY_VIEW), UserQuestionBody.class))
+			throw new UIMAException("RelatedQuestionSubject annotation not found", null);
+		this.userQuestionBodyJCas = aggregatedJCas.getView(USER_QUESTION_BODY_VIEW);
+		
+		this.candidateQuestionSubjects = new HashMap<>();
+		this.candidateQuestionBodies = new HashMap<>();
+		
+		for (String qID : userQuestion.getCandidateIDs().toArray()) {
+			if (!concatenated) {
+				if (!JCasUtil.exists(aggregatedJCas.getView(RELATED_QUESTION_SUBJECT_VIEW+"-"+qID), RelatedQuestionSubject.class))
+					throw new UIMAException("RelatedQuestionSubject annotation not found", null);
+				candidateQuestionSubjects.put(qID, aggregatedJCas.getView(RELATED_QUESTION_SUBJECT_VIEW+"-"+qID));
+			}
+			if (!JCasUtil.exists(aggregatedJCas.getView(RELATED_QUESTION_BODY_VIEW+"-"+qID), RelatedQuestionBody.class))
+				throw new UIMAException("RelatedQuestionSubject annotation not found", null);
+			candidateQuestionBodies.put(qID, aggregatedJCas.getView(RELATED_QUESTION_BODY_VIEW+"-"+qID));
+		}
+	}
+	
+	public boolean isConcatenated() {
+		return concatenated;
+	}
+	
+	public JCas getUserQuestionBodyJCas() {
+		return userQuestionBodyJCas;
+	}
+	
+	public Collection<JCas> getCandidatesJCases() {
+		return this.candidateQuestionBodies.values();
 	}
 	
 	/**
@@ -186,7 +237,7 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 	}
 
 	@Override
-	public void getAggregatedJCas(JCas jcas) throws UIMAException {
+	public synchronized void getAggregatedJCas(JCas jcas) throws UIMAException {
 		if (!isReady())
 			throw new UIMAException(new IllegalStateException("Not ready, some JCas is still missing",null));
 
@@ -194,22 +245,25 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 		
 		UserQuestion userQuestion = new UserQuestion(jcas);
 		userQuestion.setConcatenated(this.concatenated);
-		userQuestion.setCandidateViewNames(new StringArray(jcas, userQuestBody.getNumberOfCandidates()));
+		userQuestion.setCandidateIDs(new StringArray(jcas, userQuestBody.getNumberOfCandidates()));
 		userQuestion.setID(userQuestBody.getID());
 		
 		CasCopier copier = new CasCopier(this.userQuestionBodyJCas.getCas(), jcas.getCas());
-		copier.copyCasView(this.userQuestionBodyJCas.getCas(), jcas.getCas().createView(ProcessedInstancesManager.USER_QUESTION_BODY_VIEW), true);
+		copier.copyCasView(this.userQuestionBodyJCas.getCas(), jcas.getCas().createView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW), true);
+		userQuestionBodyJCas.release();
 		
 		if (!this.concatenated) {
 			copier = new CasCopier(this.userQuestionSubjectJCas.getCas(), jcas.getCas());
-			copier.copyCasView(this.userQuestionSubjectJCas.getCas(), jcas.getCas().createView(ProcessedInstancesManager.USER_QUESTION_SUBJECT_VIEW), true);
+			copier.copyCasView(this.userQuestionSubjectJCas.getCas(),
+					jcas.getCas().createView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW), true);
+			userQuestionSubjectJCas.release();
 		}
 		
 		int i = 0;
 		for (String questionID : this.candidateQuestionBodies.keySet()) {
 			JCas relatedQuestView;
 			try {
-				relatedQuestView = jcas.createView(ProcessedInstancesManager.RELATED_QUESTION_VIEW+"-"+questionID);
+				relatedQuestView = jcas.createView(AggregatedJCasManager.RELATED_QUESTION_VIEW+"-"+questionID);
 			} catch (CASException e) {
 				throw new UIMAException(e);
 			}
@@ -218,15 +272,19 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 			relatedQuestion.setConcatenated(this.concatenated);
 			
 			copier = new CasCopier(this.candidateQuestionBodies.get(questionID).getCas(), jcas.getCas());
-			copier.copyCasView(this.candidateQuestionBodies.get(questionID).getCas(),jcas.getCas().createView(ProcessedInstancesManager.RELATED_QUESTION_BODY_VIEW+"-"+questionID), true);
+			copier.copyCasView(this.candidateQuestionBodies.get(questionID).getCas(),
+					jcas.getCas().createView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW+"-"+questionID), true);
+			this.candidateQuestionBodies.get(questionID).release();
 			
 			if (!this.concatenated) {
 				copier = new CasCopier(this.candidateQuestionSubjects.get(questionID).getCas(), jcas.getCas());
-				copier.copyCasView(this.candidateQuestionSubjects.get(questionID).getCas(), jcas.getCas().createView(ProcessedInstancesManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+questionID), true);
+				copier.copyCasView(this.candidateQuestionSubjects.get(questionID).getCas(),
+						jcas.getCas().createView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+questionID), true);
+				this.candidateQuestionSubjects.get(questionID).release();
 			}
 			
 			relatedQuestion.addToIndexes();
-			userQuestion.getCandidateViewNames().set(i++, questionID);
+			userQuestion.getCandidateIDs().set(i++, questionID);
 
 		}
 		
@@ -236,7 +294,7 @@ public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 	}
 
 	@Override
-	public boolean isReady() throws UIMAException {
+	public synchronized boolean isReady() throws UIMAException {
 		if (this.userQuestionBodyJCas == null || (!this.concatenated) && this.userQuestionSubjectJCas == null)
 			return false;
 		

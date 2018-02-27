@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.feature.InputJCasMultiplier;
+import qa.qcri.iyas.feature.JCasPairGenerator;
 import qa.qcri.iyas.feature.MyAnnotator;
 import qa.qcri.iyas.feature.ProcessedJCASAggregator;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
@@ -160,6 +161,40 @@ public class DescriptorGenerator {
 		
 	}
 	
+	public static void generateJCasPairGeneratorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/test").mkdirs();
+		System.out.println("Generating XML description for JCasPairGeneratorAE_Descriptor");
+		AnalysisEngineDescription jcasPairGeneratorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
+				JCasPairGenerator.class);
+		jcasPairGeneratorAEDescriptor.toXML(
+				new FileOutputStream(root_folder+"/test/JCasPairGeneratorAE_Descriptor.xml"));
+		
+		System.out.println("Generating XML description for JCasPairGeneratorAAE_Descriptor");
+		AnalysisEngineDescription jcasPairGeneratorAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		jcasPairGeneratorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		jcasPairGeneratorAAE.setPrimitive(false);
+
+		jcasPairGeneratorAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+		jcasPairGeneratorAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		jcasPairGeneratorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		Import jcasPairGeneratorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		jcasPairGeneratorAEImport.setName("descriptors.test.JCasPairGeneratorAE_Descriptor");
+		jcasPairGeneratorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("JCasPairGeneratorAE", jcasPairGeneratorAEImport);
+		
+		List<String> flowNames2 = new ArrayList<String>();
+		flowNames2.add("JCasPairGeneratorAE");
+		
+		FixedFlow fixedFlow2 = new FixedFlow_impl();
+	    fixedFlow2.setFixedFlow(flowNames2.toArray(new String[flowNames2.size()]));
+	    jcasPairGeneratorAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow2);
+  
+	    jcasPairGeneratorAAE.toXML(
+				new FileOutputStream(root_folder+"/test/JCasPairGeneratorAAE_Descriptor.xml"));		
+		
+	}
+	
 	public static void generatePipelineAAEDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		//Generates a AAE descriptor for the testing pipeline
@@ -270,6 +305,130 @@ public class DescriptorGenerator {
 		out = new BufferedWriter(
 				new OutputStreamWriter(
 						new FileOutputStream(root_folder+"/test/PipelineAAE_DeploymentDescriptor.xml")));
+		out.write(xmlOut.outputString(descriptor));
+		out.close();
+	}
+	
+	public static void generatePipelineWithPairGeneratorAAEDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
+		new File(root_folder+"/test").mkdirs();
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		param.setType("String");
+		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		parameters.addConfigurationParameter(param);
+		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+		
+		
+		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		inputJCasMultiplierAEImport.setName("descriptors.test.InputJCasMultiplierAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE", inputJCasMultiplierAEImport);
+		
+		Import myAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		myAnnotatorAEImport.setName("descriptors.test.MyAnnotatorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("MyAnnotatorAAE", myAnnotatorAEImport);
+		
+		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		processedJCasMultiplierAEImport.setName("descriptors.test.ProcessedJCASAggregatorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE", processedJCasMultiplierAEImport);
+		
+		Import jcasPairGeneratorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		jcasPairGeneratorAEImport.setName("descriptors.test.JCasPairGeneratorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("JCasPairGeneratorAAE", jcasPairGeneratorAEImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("InputJCasMultiplierAAE");
+		flowNames.add("MyAnnotatorAAE");
+		flowNames.add("ProcessedJCASAggregatorAAE");
+		flowNames.add("JCasPairGeneratorAAE");
+		
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/test/PipelineWithPairGeneratorAAE_Descriptor.xml").getAbsolutePath()));	
+	    
+	}
+	
+	public static void generatePipelineWithPairGeneratorAAEDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
+		new File(root_folder+"/test").mkdirs();
+		System.out.println("Generating XML description for PipelineWithPairGeneratorAAE_DeploymentDescriptor");
+		ServiceContext pipelineContext = new ServiceContextImpl("FeatureExtraction", 
+							           "PipelineWithPairGeneratorAAE_DeploymentDescriptor",
+							           "descriptors.test.PipelineWithPairGeneratorAAE_Descriptor", 
+							           "myQueueName", "tcp://localhost:61616");
+		pipelineContext.setCasPoolSize(10);
+		
+		
+		ColocatedDelegateConfiguration delegate1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
+		delegate1.setCasMultiplier(true);
+		delegate1.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate1});
+
+		ColocatedDelegateConfiguration delegate2 = new ColocatedDelegateConfigurationImpl("MyAnnotatorAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+		ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("MyAnnotatorAAE", new DelegateConfiguration[]{delegate2});
+		
+		ColocatedDelegateConfiguration delegate3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
+		delegate3.setCasMultiplier(true);
+		delegate3.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate3});
+		
+		ColocatedDelegateConfiguration delegate4 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAE", new DelegateConfiguration[0]);
+		delegate4.setCasMultiplier(true);
+		delegate4.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd4 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAAE", new DelegateConfiguration[]{delegate4});
+		
+		UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
+				pipelineContext,spCldd1,spCldd2,spCldd3,spCldd4);
+		
+		BufferedWriter out = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(root_folder+"/test/PipelineWithPairGeneratorAAE_DeploymentDescriptor.xml")));
+		out.write(spdd.toXML());
+		out.close();
+		
+		
+		SAXBuilder builder = new SAXBuilder();
+		Document descriptor = builder.build(new File(root_folder+"/test/PipelineWithPairGeneratorAAE_DeploymentDescriptor.xml"));
+		Element root = descriptor.getRootElement();
+		Element delegatesElement = root.getChild("deployment",root.getNamespace()).getChild("service",root.getNamespace())
+				.getChild("analysisEngine",root.getNamespace()).getChild("delegates",root.getNamespace());
+		Element myAnnotatorAAEElement = null;
+		for (Element delegate : delegatesElement.getChildren()) {
+			if (delegate.getAttributeValue("key").equals("MyAnnotatorAAE")) {
+				myAnnotatorAAEElement = delegate;
+				break;
+			}
+		}
+		Element myAnnotatorAEElement = myAnnotatorAAEElement.getChild("delegates",root.getNamespace())
+				.getChild("analysisEngine",root.getNamespace());
+		Element scaleout = new Element("scaleout", root.getNamespace());
+		scaleout.setAttribute("numberOfInstances", "10");
+		myAnnotatorAEElement.addContent(scaleout);
+		
+		XMLOutputter xmlOut = new XMLOutputter();
+		out = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(root_folder+"/test/PipelineWithPairGeneratorAAE_DeploymentDescriptor.xml")));
 		out.write(xmlOut.outputString(descriptor));
 		out.close();
 	}

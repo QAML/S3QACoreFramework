@@ -30,7 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sun Jan 14 10:24:26 AST 2018
+ * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
  * @generated */
 public class UserQuestion extends Annotation {
@@ -118,47 +118,47 @@ public class UserQuestion extends Annotation {
    
     
   //*--------------*
-  //* Feature: candidateViewNames
+  //* Feature: candidateIDs
 
-  /** getter for candidateViewNames - gets 
+  /** getter for candidateIDs - gets 
    * @generated
    * @return value of the feature 
    */
-  public StringArray getCandidateViewNames() {
-    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames)));}
+  public StringArray getCandidateIDs() {
+    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateIDs == null)
+      jcasType.jcas.throwFeatMissing("candidateIDs", "qa.qcri.iyas.type.UserQuestion");
+    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs)));}
     
-  /** setter for candidateViewNames - sets  
+  /** setter for candidateIDs - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setCandidateViewNames(StringArray v) {
-    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
-    jcasType.ll_cas.ll_setRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames, jcasType.ll_cas.ll_getFSRef(v));}    
+  public void setCandidateIDs(StringArray v) {
+    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateIDs == null)
+      jcasType.jcas.throwFeatMissing("candidateIDs", "qa.qcri.iyas.type.UserQuestion");
+    jcasType.ll_cas.ll_setRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs, jcasType.ll_cas.ll_getFSRef(v));}    
     
-  /** indexed getter for candidateViewNames - gets an indexed value - 
+  /** indexed getter for candidateIDs - gets an indexed value - 
    * @generated
    * @param i index in the array to get
    * @return value of the element at index i 
    */
-  public String getCandidateViewNames(int i) {
-    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);}
+  public String getCandidateIDs(int i) {
+    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateIDs == null)
+      jcasType.jcas.throwFeatMissing("candidateIDs", "qa.qcri.iyas.type.UserQuestion");
+    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs), i);
+    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs), i);}
 
-  /** indexed setter for candidateViewNames - sets an indexed value - 
+  /** indexed setter for candidateIDs - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setCandidateViewNames(int i, String v) { 
-    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateViewNames == null)
-      jcasType.jcas.throwFeatMissing("candidateViewNames", "qa.qcri.iyas.type.UserQuestion");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateViewNames), i, v);}
+  public void setCandidateIDs(int i, String v) { 
+    if (UserQuestion_Type.featOkTst && ((UserQuestion_Type)jcasType).casFeat_candidateIDs == null)
+      jcasType.jcas.throwFeatMissing("candidateIDs", "qa.qcri.iyas.type.UserQuestion");
+    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs), i);
+    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((UserQuestion_Type)jcasType).casFeatCode_candidateIDs), i, v);}
    
     
   //*--------------*

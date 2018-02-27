@@ -169,7 +169,7 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(inputFile));
-		MyStatusCallbackListenerTaskA listenerA = new MyStatusCallbackListenerTaskA(mapsA,concatenate);
+		MyStatusCallbackListenerAggregatedJCasTaskA listenerA = new MyStatusCallbackListenerAggregatedJCasTaskA(mapsA,concatenate);
 		uimaAsEngine.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -204,7 +204,7 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
-		MyStatusCallbackListenerTaskB listenerB = new MyStatusCallbackListenerTaskB(mapsB,concatenate);
+		MyStatusCallbackListenerAggregatedJCasTaskB listenerB = new MyStatusCallbackListenerAggregatedJCasTaskB(mapsB,concatenate);
 		uimaAsEngine.addStatusCallbackListener(listenerB);	
 		
 		uimaAsEngine.initialize(appCtx);
