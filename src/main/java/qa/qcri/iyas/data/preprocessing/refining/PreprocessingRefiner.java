@@ -28,8 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.SharedResourceObject;
 
-import qa.qcri.iyas.data.preprocessing.PreprocessingRefiningAnnotator;
-
 /**
  * Used by a {@link PreprocessingRefiningAnnotator}, adds additional information (meta-information) JCaes.
  * 

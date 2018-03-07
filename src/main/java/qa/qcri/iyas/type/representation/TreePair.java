@@ -10,7 +10,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Wed Mar 07 16:46:36 CET 2018
+ * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
 public class TreePair extends Represenation {
