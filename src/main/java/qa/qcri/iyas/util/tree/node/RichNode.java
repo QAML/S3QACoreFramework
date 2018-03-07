@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature.tree.node;
+package qa.qcri.iyas.util.tree.node;
 
 import java.util.List;
 import java.util.Map;

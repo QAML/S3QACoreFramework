@@ -7,13 +7,13 @@ import java.util.List;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.feature.tree.node.RichChunkNode;
-import qa.qcri.iyas.feature.tree.node.RichTokenNode;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringIterable;
+import qa.qcri.iyas.util.tree.node.RichChunkNode;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 /**
  * Generates n-grams FeatureVectors or FeatureSequences.

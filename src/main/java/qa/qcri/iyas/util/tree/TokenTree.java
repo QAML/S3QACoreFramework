@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature.tree;
+package qa.qcri.iyas.util.tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.maltparser.core.helper.HashMap;
 
-import qa.qcri.iyas.feature.tree.node.BaseRichNode;
-import qa.qcri.iyas.feature.tree.node.RichTokenNode;
+import qa.qcri.iyas.util.tree.node.BaseRichNode;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 /**
  * 

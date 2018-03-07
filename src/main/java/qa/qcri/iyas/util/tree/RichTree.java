@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature.tree;
+package qa.qcri.iyas.util.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,12 +36,12 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.constituent.Constituent;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
-import qa.qcri.iyas.feature.tree.node.BaseRichNode;
-import qa.qcri.iyas.feature.tree.node.RichChunkNode;
-import qa.qcri.iyas.feature.tree.node.RichConstituentNode;
-import qa.qcri.iyas.feature.tree.node.RichDependencyNode;
-import qa.qcri.iyas.feature.tree.node.RichNode;
-import qa.qcri.iyas.feature.tree.node.RichTokenNode;
+import qa.qcri.iyas.util.tree.node.BaseRichNode;
+import qa.qcri.iyas.util.tree.node.RichChunkNode;
+import qa.qcri.iyas.util.tree.node.RichConstituentNode;
+import qa.qcri.iyas.util.tree.node.RichDependencyNode;
+import qa.qcri.iyas.util.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 /**
  * 

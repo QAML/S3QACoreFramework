@@ -16,14 +16,14 @@
  */
  
  
-package qa.qcri.iyas.feature.tree;
+package qa.qcri.iyas.util.tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
 
-import qa.qcri.iyas.feature.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichNode;
 
 /**
  * 

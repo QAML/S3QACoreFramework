@@ -25,7 +25,7 @@ import com.google.common.base.Joiner;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.NormalizedDotProductMetric;
 import qa.qcri.iyas.data.preprocessing.BowProvider;
-import qa.qcri.iyas.feature.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichNode;
 
 
 /**

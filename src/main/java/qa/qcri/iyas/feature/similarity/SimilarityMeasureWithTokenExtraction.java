@@ -30,8 +30,8 @@ import com.google.common.base.Joiner;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.feature.tree.node.RichNode;
-import qa.qcri.iyas.feature.tree.node.RichTokenNode;
+import qa.qcri.iyas.util.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 /**
  * The class extends {@link SimilarityMeasure} adding a method to extract the list of tokens from a JCas and return

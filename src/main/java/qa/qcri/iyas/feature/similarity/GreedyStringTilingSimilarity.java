@@ -24,7 +24,7 @@ import com.google.common.base.Joiner;
 
 import de.tudarmstadt.ukp.similarity.algorithms.api.SimilarityException;
 import de.tudarmstadt.ukp.similarity.algorithms.lexical.string.GreedyStringTiling;
-import qa.qcri.iyas.feature.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichNode;
 
 
 /**
