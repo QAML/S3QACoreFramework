@@ -46,9 +46,9 @@ import qa.qcri.iyas.feature.tree.node.RichNode;
  */
 public class CosineBowSimilarity extends SimilarityMeasureWithBowExtraction {
 	
-	protected static final String PARAMETER_LIST_LEMMAS = Joiner.on(",").join(
+	public static final String PARAMETER_LIST_LEMMAS = Joiner.on(",").join(
 			new String[] { RichNode.OUTPUT_PAR_LEMMA, RichNode.OUTPUT_PAR_TOKEN_LOWERCASE });
-	protected static final String PARAMETER_LIST_POSTAGS = RichNode.OUTPUT_PAR_POSTAG;
+	public static final String PARAMETER_LIST_POSTAGS = RichNode.OUTPUT_PAR_POSTAG;
 	
 	public static final String PARAM_NAME_REPRESENTATION_TYPE = "paramenterList";
 	

@@ -1,24 +1,6 @@
-/**
- * Copyright 2017 Salvatore Romeo
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *     
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *  
- */
- 
- 
 
-/* First created by JCasGen Mon Dec 11 14:36:21 AST 2017 */
-package qa.qcri.iyas.type;
+/* First created by JCasGen Sun Mar 04 15:52:51 CET 2018 */
+package qa.qcri.iyas.type.cqa;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -29,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
+ * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
  * @generated */
 public class QAAnnotation_Type extends Annotation_Type {
   /** @generated */
@@ -38,7 +20,7 @@ public class QAAnnotation_Type extends Annotation_Type {
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.QAAnnotation");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.cqa.QAAnnotation");
  
   /** @generated */
   final Feature casFeat_ID;
@@ -50,7 +32,7 @@ public class QAAnnotation_Type extends Annotation_Type {
    */ 
   public String getID(int addr) {
         if (featOkTst && casFeat_ID == null)
-      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.cqa.QAAnnotation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_ID);
   }
   /** @generated
@@ -59,7 +41,7 @@ public class QAAnnotation_Type extends Annotation_Type {
    */    
   public void setID(int addr, String v) {
         if (featOkTst && casFeat_ID == null)
-      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
+      jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.cqa.QAAnnotation");
     ll_cas.ll_setStringValue(addr, casFeatCode_ID, v);}
     
   

@@ -19,18 +19,14 @@
 package qa.qcri.iyas.data.preprocessing;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceProcessException;
 
 import qa.qcri.iyas.data.preprocessing.refining.PreprocessingRefiner;
-import qa.qcri.iyas.type.RelatedQuestion;
-import qa.qcri.iyas.util.ProcessedInstancesManager;
+
 
 /**
  * A {@link PreprocessingRefiningAnnotator} adds additional information (meta-information) to the aggregated CASes.

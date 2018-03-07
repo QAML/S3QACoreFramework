@@ -26,8 +26,8 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.uimafit.util.JCasUtil;
 
 import qa.qcri.iyas.data.reader.DataReader;
-import qa.qcri.iyas.type.Comment;
-import qa.qcri.iyas.type.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
 
 public class MyStatusCallbackListenerJCasPairTaskA extends UimaAsBaseCallbackListener {
 	

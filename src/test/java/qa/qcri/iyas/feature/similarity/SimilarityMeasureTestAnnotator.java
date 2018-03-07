@@ -22,34 +22,29 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.type.Similarity;
+import qa.qcri.iyas.feature.JCasPairGenerator;
+import qa.qcri.iyas.type.feature.Similarity;
 
-@SofaCapability(
-		inputSofas = {"_InitialView","leftJCasView","rightJCasView"}
-)
 public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
 	
-	public static final String PRAM_LEFT = "leftJCasView";
-	public static final String PRAM_RIGHT = "rightJCasView";
+	public static final String LEFT_CAS_VIEW = JCasPairGenerator.LEFT_CAS_VIEW;
+	public static final String RIGHT_CAS_VIEW = JCasPairGenerator.RIGHT_CAS_VIEW;
 	public final static String PARAM_SIMILARITY_RESOURCE = "similarityMeasure";
 
 	@ExternalResource(key = PARAM_SIMILARITY_RESOURCE)
-	SimilarityMeasure similarityMeasure;
+	Feature similarityMeasure;
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			JCas leftJCas = jcas.getView("leftJCasView");
-			JCas rightJCas = jcas.getView("rightJCasView");
+//			JCas leftJCas = jcas.getView(LEFT_CAS_VIEW);
+//			JCas rightJCas = jcas.getView(RIGHT_CAS_VIEW);
 			
-			double sim = similarityMeasure.getSimilarityValue(leftJCas, rightJCas);
+			double sim = similarityMeasure.getValue(jcas);
 			
 			Similarity similarity = new Similarity(jcas.getView("_InitialView"));
-			similarity.setLeftViewName("leftJCasView");
-			similarity.setRightViewName("rightJCasView");
 			similarity.setValue(sim);
 			similarity.addToIndexes();
 			

@@ -27,7 +27,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import qa.qcri.iyas.data.preprocessing.Stopwords;

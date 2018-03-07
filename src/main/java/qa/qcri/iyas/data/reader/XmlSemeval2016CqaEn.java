@@ -77,10 +77,10 @@ public class XmlSemeval2016CqaEn extends DataReader{
 	private ListIterator<Element> QUESTION_ITERATOR;
 
 	
-	/**
-	 * String to keep track of the current original question (if necessary)
-	 */
-	private String CURRENT_ID = "NULL";
+//	/**
+//	 * String to keep track of the current original question (if necessary)
+//	 */
+//	private String CURRENT_ID = "NULL";
 	
 	/** This is specific to this reader because it is for the English dataset.
 	 * TODO find out if it is actually necessary 

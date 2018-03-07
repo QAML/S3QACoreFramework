@@ -31,11 +31,11 @@ import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.uimafit.util.JCasUtil;
 
-import qa.qcri.iyas.type.Comment;
-import qa.qcri.iyas.type.InstanceA;
-import qa.qcri.iyas.type.RelatedQuestion;
-import qa.qcri.iyas.type.RelatedQuestionBody;
-import qa.qcri.iyas.type.RelatedQuestionSubject;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.InstanceA;
+import qa.qcri.iyas.type.cqa.RelatedQuestion;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
 
 public class AggregatedJCasManagerTaskA extends AggregatedJCasManager {
 

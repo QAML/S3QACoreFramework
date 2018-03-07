@@ -6,9 +6,9 @@
     <vendor/>
   <types>
     <typeDescription>
-      <name>qa.qcri.iyas.type.UserQuestionBody</name>
+      <name>qa.qcri.iyas.type.cqa.UserQuestionBody</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.cqa.QAAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>numberOfCandidates</name>
@@ -23,9 +23,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.RelatedQuestionBody</name>
+      <name>qa.qcri.iyas.type.cqa.RelatedQuestionBody</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.cqa.QAAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>numberOfCandidates</name>
@@ -40,9 +40,9 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.Comment</name>
+      <name>qa.qcri.iyas.type.cqa.Comment</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.cqa.QAAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>questionID</name>
@@ -52,17 +52,17 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.UserQuestionSubject</name>
+      <name>qa.qcri.iyas.type.cqa.UserQuestionSubject</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.cqa.QAAnnotation</supertypeName>
       </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.RelatedQuestionSubject</name>
+      <name>qa.qcri.iyas.type.cqa.RelatedQuestionSubject</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.QAAnnotation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.cqa.QAAnnotation</supertypeName>
       </typeDescription>
   <typeDescription>
-      <name>qa.qcri.iyas.type.QAAnnotation</name>
+      <name>qa.qcri.iyas.type.cqa.QAAnnotation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -74,22 +74,22 @@
       </features>
     </typeDescription>
   <typeDescription>
-      <name>qa.qcri.iyas.type.InstanceA</name>
+      <name>qa.qcri.iyas.type.cqa.InstanceA</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.InstanceB</name>
+      <name>qa.qcri.iyas.type.cqa.InstanceB</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.InstanceC</name>
+      <name>qa.qcri.iyas.type.cqa.InstanceC</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
     </typeDescription>
   <typeDescription>
-      <name>qa.qcri.iyas.type.UserQuestion</name>
+      <name>qa.qcri.iyas.type.cqa.UserQuestion</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -111,7 +111,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>qa.qcri.iyas.type.RelatedQuestion</name>
+      <name>qa.qcri.iyas.type.cqa.RelatedQuestion</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -132,32 +132,5 @@
         </featureDescription>
       </features>
     </typeDescription>
-    <typeDescription>
-      <name>qa.qcri.iyas.type.Similarity</name>
-      <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>name</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>leftViewName</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>rightViewName</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>value</name>
-          <description/>
-          <rangeTypeName>uima.cas.Double</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-  </types>
+    </types>
 </typeSystemDescription>

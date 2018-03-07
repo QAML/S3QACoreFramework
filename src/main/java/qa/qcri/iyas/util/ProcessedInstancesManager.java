@@ -44,13 +44,13 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.util.CasCreationUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.util.CasCopier;
-import qa.qcri.iyas.type.Comment;
-import qa.qcri.iyas.type.RelatedQuestion;
-import qa.qcri.iyas.type.RelatedQuestionBody;
-import qa.qcri.iyas.type.RelatedQuestionSubject;
-import qa.qcri.iyas.type.UserQuestion;
-import qa.qcri.iyas.type.UserQuestionBody;
-import qa.qcri.iyas.type.UserQuestionSubject;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.RelatedQuestion;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
+import qa.qcri.iyas.type.cqa.UserQuestion;
+import qa.qcri.iyas.type.cqa.UserQuestionBody;
+import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 
 abstract class AbstractProcessedInstance {
 	protected <T extends TOP> T getAnnotation(JCas jcas,Class<T> clazz) throws ResourceProcessException {

@@ -14,13 +14,13 @@ import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.uimafit.util.JCasUtil;
 
-import qa.qcri.iyas.type.InstanceB;
-import qa.qcri.iyas.type.RelatedQuestion;
-import qa.qcri.iyas.type.RelatedQuestionBody;
-import qa.qcri.iyas.type.RelatedQuestionSubject;
-import qa.qcri.iyas.type.UserQuestion;
-import qa.qcri.iyas.type.UserQuestionBody;
-import qa.qcri.iyas.type.UserQuestionSubject;
+import qa.qcri.iyas.type.cqa.InstanceB;
+import qa.qcri.iyas.type.cqa.RelatedQuestion;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
+import qa.qcri.iyas.type.cqa.UserQuestion;
+import qa.qcri.iyas.type.cqa.UserQuestionBody;
+import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 
 public class AggregatedJCasManagerTaskB extends AggregatedJCasManager {
 	

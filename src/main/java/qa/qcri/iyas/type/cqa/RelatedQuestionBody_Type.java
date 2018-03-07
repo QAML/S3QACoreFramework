@@ -1,24 +1,6 @@
-/**
- * Copyright 2017 Salvatore Romeo
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *     
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *  
- */
- 
- 
 
-/* First created by JCasGen Mon Dec 11 14:36:21 AST 2017 */
-package qa.qcri.iyas.type;
+/* First created by JCasGen Sun Mar 04 15:52:51 CET 2018 */
+package qa.qcri.iyas.type.cqa;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -28,16 +10,16 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
+ * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
  * @generated */
-public class UserQuestionBody_Type extends QAAnnotation_Type {
+public class RelatedQuestionBody_Type extends QAAnnotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = UserQuestionBody.typeIndexID;
+  public final static int typeIndexID = RelatedQuestionBody.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.UserQuestionBody");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.cqa.RelatedQuestionBody");
  
   /** @generated */
   final Feature casFeat_numberOfCandidates;
@@ -49,7 +31,7 @@ public class UserQuestionBody_Type extends QAAnnotation_Type {
    */ 
   public int getNumberOfCandidates(int addr) {
         if (featOkTst && casFeat_numberOfCandidates == null)
-      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.UserQuestionBody");
+      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     return ll_cas.ll_getIntValue(addr, casFeatCode_numberOfCandidates);
   }
   /** @generated
@@ -58,7 +40,7 @@ public class UserQuestionBody_Type extends QAAnnotation_Type {
    */    
   public void setNumberOfCandidates(int addr, int v) {
         if (featOkTst && casFeat_numberOfCandidates == null)
-      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.UserQuestionBody");
+      jcas.throwFeatMissing("numberOfCandidates", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     ll_cas.ll_setIntValue(addr, casFeatCode_numberOfCandidates, v);}
     
   
@@ -73,7 +55,7 @@ public class UserQuestionBody_Type extends QAAnnotation_Type {
    */ 
   public boolean getConcatenated(int addr) {
         if (featOkTst && casFeat_concatenated == null)
-      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestionBody");
+      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     return ll_cas.ll_getBooleanValue(addr, casFeatCode_concatenated);
   }
   /** @generated
@@ -82,7 +64,7 @@ public class UserQuestionBody_Type extends QAAnnotation_Type {
    */    
   public void setConcatenated(int addr, boolean v) {
         if (featOkTst && casFeat_concatenated == null)
-      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.UserQuestionBody");
+      jcas.throwFeatMissing("concatenated", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     ll_cas.ll_setBooleanValue(addr, casFeatCode_concatenated, v);}
     
   
@@ -94,7 +76,7 @@ public class UserQuestionBody_Type extends QAAnnotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public UserQuestionBody_Type(JCas jcas, Type casType) {
+  public RelatedQuestionBody_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

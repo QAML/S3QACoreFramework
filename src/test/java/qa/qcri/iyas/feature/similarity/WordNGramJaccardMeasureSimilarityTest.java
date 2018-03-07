@@ -39,7 +39,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.type.Similarity;
+import qa.qcri.iyas.type.feature.Similarity;
 
 /**
  * A simple class to test class {@link WordNGramJaccardMeasureSimilarity}.
@@ -77,10 +77,10 @@ public class WordNGramJaccardMeasureSimilarityTest {
 		JCas jcas = JCasFactory.createText("text3", "en");
 		
 		CasCopier copier = new CasCopier(jcas1.getCas(),jcas.getCas());
-		copier.copyCasView(jcas1.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_LEFT), true);
+		copier.copyCasView(jcas1.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.LEFT_CAS_VIEW), true);
 		
 		copier = new CasCopier(jcas2.getCas(),jcas.getCas());
-		copier.copyCasView(jcas2.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.PRAM_RIGHT), true);
+		copier.copyCasView(jcas2.getCas().getView("_InitialView"), jcas.getCas().createView(SimilarityMeasureTestAnnotator.RIGHT_CAS_VIEW), true);
 		
 		ae.process(jcas);
 		

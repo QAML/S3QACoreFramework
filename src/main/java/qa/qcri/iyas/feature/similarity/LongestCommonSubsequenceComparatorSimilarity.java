@@ -16,8 +16,6 @@
  */
 package qa.qcri.iyas.feature.similarity;
 
-import java.util.Collection;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 

@@ -1,25 +1,7 @@
-/**
- * Copyright 2017 Salvatore Romeo
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *     
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *  
- */
- 
- 
 
 
-/* First created by JCasGen Mon Dec 11 14:36:21 AST 2017 */
-package qa.qcri.iyas.type;
+/* First created by JCasGen Sun Mar 04 15:52:51 CET 2018 */
+package qa.qcri.iyas.type.cqa;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
@@ -28,8 +10,8 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
- * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
+ * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
  * @generated */
 public class Comment extends QAAnnotation {
   /** @generated
@@ -102,7 +84,7 @@ public class Comment extends QAAnnotation {
    */
   public String getQuestionID() {
     if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_questionID == null)
-      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
+      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.cqa.Comment");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Comment_Type)jcasType).casFeatCode_questionID);}
     
   /** setter for questionID - sets  
@@ -111,7 +93,7 @@ public class Comment extends QAAnnotation {
    */
   public void setQuestionID(String v) {
     if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_questionID == null)
-      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.Comment");
+      jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.cqa.Comment");
     jcasType.ll_cas.ll_setStringValue(addr, ((Comment_Type)jcasType).casFeatCode_questionID, v);}    
   }
 

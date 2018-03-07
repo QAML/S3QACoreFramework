@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.uima.UIMAException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;

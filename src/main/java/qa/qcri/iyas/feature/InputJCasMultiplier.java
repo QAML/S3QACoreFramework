@@ -43,14 +43,14 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 
 import qa.qcri.iyas.data.preprocessing.TextPreprocessor;
 import qa.qcri.iyas.data.reader.DataReader;
-import qa.qcri.iyas.type.Comment;
-import qa.qcri.iyas.type.InstanceA;
-import qa.qcri.iyas.type.InstanceB;
-import qa.qcri.iyas.type.InstanceC;
-import qa.qcri.iyas.type.RelatedQuestionBody;
-import qa.qcri.iyas.type.RelatedQuestionSubject;
-import qa.qcri.iyas.type.UserQuestionBody;
-import qa.qcri.iyas.type.UserQuestionSubject;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.InstanceA;
+import qa.qcri.iyas.type.cqa.InstanceB;
+import qa.qcri.iyas.type.cqa.InstanceC;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
+import qa.qcri.iyas.type.cqa.UserQuestionBody;
+import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)
 @TypeCapability(

@@ -19,14 +19,9 @@
 package qa.qcri.iyas.feature.similarity;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.fit.component.ExternalResourceAware;
-import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.DataResource;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.SharedResourceObject;
+
+import qa.qcri.iyas.feature.JCasPairGenerator;
 
 /**
  * Given two JCases, a {@link SimilarityMeasure} computes a similarity based on the content and the annotations in the JCases.
@@ -38,24 +33,14 @@ import org.apache.uima.resource.SharedResourceObject;
  * @author Salvatore Romeo
  *
  */
-public abstract class SimilarityMeasure implements SharedResourceObject, ExternalResourceAware {
-
-	@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
-	private String resourceName;
+public abstract class SimilarityMeasure extends Feature {
 	
 	@Override
-	public void load(DataResource data) throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, data);
-	}
-
-	@Override
-	public final String getResourceName() {
-		return this.resourceName;
-	}
-
-	@Override
-	public void afterResourcesInitialized() throws ResourceInitializationException {
-		// TODO Auto-generated method stub	
+	public double getValue(JCas jcas) throws UIMAException {
+		JCas leftJCas = jcas.getView(JCasPairGenerator.LEFT_CAS_VIEW);
+		JCas rightJCas = jcas.getView(JCasPairGenerator.RIGHT_CAS_VIEW);
+		
+		return getSimilarityValue(leftJCas, rightJCas);
 	}
 	
 	public abstract double getSimilarityValue(JCas leftJCas, JCas rightJCas) throws UIMAException;

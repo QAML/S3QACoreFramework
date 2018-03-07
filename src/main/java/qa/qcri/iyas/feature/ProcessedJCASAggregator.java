@@ -33,15 +33,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceProcessException;
 
-import qa.qcri.iyas.type.Comment;
-import qa.qcri.iyas.type.InstanceA;
-import qa.qcri.iyas.type.InstanceB;
-import qa.qcri.iyas.type.InstanceC;
-import qa.qcri.iyas.type.QAAnnotation;
-import qa.qcri.iyas.type.RelatedQuestionBody;
-import qa.qcri.iyas.type.RelatedQuestionSubject;
-import qa.qcri.iyas.type.UserQuestionBody;
-import qa.qcri.iyas.type.UserQuestionSubject;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.InstanceA;
+import qa.qcri.iyas.type.cqa.InstanceB;
+import qa.qcri.iyas.type.cqa.InstanceC;
+import qa.qcri.iyas.type.cqa.QAAnnotation;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
+import qa.qcri.iyas.type.cqa.UserQuestionBody;
+import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)

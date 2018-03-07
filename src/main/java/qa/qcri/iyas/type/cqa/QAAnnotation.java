@@ -1,25 +1,7 @@
-/**
- * Copyright 2017 Salvatore Romeo
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *     
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *  
- */
- 
- 
 
 
-/* First created by JCasGen Mon Dec 11 14:36:21 AST 2017 */
-package qa.qcri.iyas.type;
+/* First created by JCasGen Sun Mar 04 15:52:51 CET 2018 */
+package qa.qcri.iyas.type.cqa;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
@@ -29,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sun Feb 25 15:10:21 AST 2018
- * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptorFile.xml
+ * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
  * @generated */
 public class QAAnnotation extends Annotation {
   /** @generated
@@ -103,7 +85,7 @@ public class QAAnnotation extends Annotation {
    */
   public String getID() {
     if (QAAnnotation_Type.featOkTst && ((QAAnnotation_Type)jcasType).casFeat_ID == null)
-      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.cqa.QAAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((QAAnnotation_Type)jcasType).casFeatCode_ID);}
     
   /** setter for ID - sets  
@@ -112,7 +94,7 @@ public class QAAnnotation extends Annotation {
    */
   public void setID(String v) {
     if (QAAnnotation_Type.featOkTst && ((QAAnnotation_Type)jcasType).casFeat_ID == null)
-      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.QAAnnotation");
+      jcasType.jcas.throwFeatMissing("ID", "qa.qcri.iyas.type.cqa.QAAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr, ((QAAnnotation_Type)jcasType).casFeatCode_ID, v);}    
   }
 

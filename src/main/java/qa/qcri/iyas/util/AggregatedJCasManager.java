@@ -25,7 +25,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.type.QAAnnotation;
+import qa.qcri.iyas.type.cqa.QAAnnotation;
 
 public abstract class AggregatedJCasManager {
 	public static final String USER_QUESTION_BODY_VIEW = "UserQuestionBodyView";

@@ -17,8 +17,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 
-import qa.qcri.iyas.type.InstanceA;
-import qa.qcri.iyas.type.InstanceB;
+import qa.qcri.iyas.type.cqa.InstanceA;
+import qa.qcri.iyas.type.cqa.InstanceB;
 import qa.qcri.iyas.util.AggregatedJCasManagerTaskA;
 import qa.qcri.iyas.util.AggregatedJCasManagerTaskB;
 
