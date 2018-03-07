@@ -21,7 +21,7 @@ package qa.qcri.iyas.feature.similarity;
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.feature.JCasPairGenerator;
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 
 /**
  * Given two JCases, a {@link SimilarityMeasure} computes a similarity based on the content and the annotations in the JCases.

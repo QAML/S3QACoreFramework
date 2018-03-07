@@ -21,8 +21,6 @@ package qa.qcri.iyas.data.preprocessing;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 
-import qa.qcri.iyas.feature.InputJCasMultiplier;
-
 /**
  * A {@link TextPreprocessor} is a resource that in charge of performing the required preprocessing for the text. 
  * The {@link TextPreprocessor} is used by the {@link InputJCasMultiplier} to preprocess the text content for each 

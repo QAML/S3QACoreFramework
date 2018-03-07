@@ -27,9 +27,9 @@ import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 
-import qa.qcri.iyas.feature.JCasPairGenerator;
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
-import qa.qcri.iyas.type.feature.FeatureVector;
+import qa.qcri.iyas.type.representation.DenseVector;
 
 
 @SofaCapability(
@@ -50,7 +50,7 @@ public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
 			
 			UimaContext context = getContext();
 			
-			FeatureVector simVector = new FeatureVector(jcas);
+			DenseVector simVector = new DenseVector(jcas);
 			simVector.setFeatures(new DoubleArray(jcas,similarities.length));
 			for (int i=0;i<similarities.length;i++) {
 				Object obj = context.getResourceObject(similarities[i]);

@@ -16,7 +16,7 @@
  */
 
 
-package qa.qcri.iyas.feature;
+package qa.qcri.iyas.data.preprocessing;
 
 import java.util.LinkedList;
 

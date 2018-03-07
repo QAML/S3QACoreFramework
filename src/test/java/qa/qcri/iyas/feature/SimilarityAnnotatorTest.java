@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.uimafit.factory.ExternalResourceFactory;
 import org.xml.sax.SAXException;
 
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
 import qa.qcri.iyas.feature.extractor.SimilarityAnnotator;
 import qa.qcri.iyas.feature.similarity.CosineBowSimilarity;
@@ -53,7 +54,7 @@ import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.feature.similarity.TreeKernelSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramContainmentMeasureSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramJaccardMeasureSimilarity;
-import qa.qcri.iyas.type.feature.FeatureVector;
+import qa.qcri.iyas.type.representation.DenseVector;
 
 public class SimilarityAnnotatorTest {
 	
@@ -281,7 +282,7 @@ public class SimilarityAnnotatorTest {
 		
 		ae.process(jcas);
 
-		for (FeatureVector sims : JCasUtil.select(jcas.getView("_InitialView"), FeatureVector.class)) {
+		for (DenseVector sims : JCasUtil.select(jcas.getView("_InitialView"), DenseVector.class)) {
 			int i = 0;
 			for (double sim : sims.getFeatures().toArray()) {
 				assertEquals(refSims[i++], sim,0.0000001);

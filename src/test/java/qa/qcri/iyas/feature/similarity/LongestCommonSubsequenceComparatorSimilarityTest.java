@@ -39,7 +39,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.type.feature.Similarity;
+import qa.qcri.iyas.type.representation.NumericFeature;
 
 /**
  * A simple class to test class {@link LongestCommonSubsequenceComparatorSimilarity}.
@@ -83,7 +83,7 @@ public class LongestCommonSubsequenceComparatorSimilarityTest {
 		
 		ae.process(jcas);
 		
-		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
+		for (NumericFeature sim : JCasUtil.select(jcas.getView("_InitialView"), NumericFeature.class)) {
 			System.out.println(sim.getValue());
 			assertEquals(0.6875, sim.getValue(),0.0000001);
 		}

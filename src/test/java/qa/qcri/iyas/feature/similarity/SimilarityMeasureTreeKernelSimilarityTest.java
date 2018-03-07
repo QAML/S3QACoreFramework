@@ -38,7 +38,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import qa.qcri.iyas.type.feature.Similarity;
+import qa.qcri.iyas.type.representation.NumericFeature;
 
 /**
  * A simple class to test a {@link TreeKernelSimilarity}.
@@ -84,7 +84,7 @@ public class SimilarityMeasureTreeKernelSimilarityTest {
 		
 		ae.process(jcas);
 		
-		for (Similarity sim : JCasUtil.select(jcas.getView("_InitialView"), Similarity.class)) {
+		for (NumericFeature sim : JCasUtil.select(jcas.getView("_InitialView"), NumericFeature.class)) {
 			System.out.println(sim.getValue());
 			assertEquals(6.6721654, sim.getValue(),0.0000001);
 		}

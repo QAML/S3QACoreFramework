@@ -59,11 +59,11 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.xml.sax.SAXException;
 
+import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.data.preprocessing.ProcessedJCASAggregator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
-import qa.qcri.iyas.feature.InputJCasMultiplier;
-import qa.qcri.iyas.feature.JCasPairGenerator;
 import qa.qcri.iyas.feature.MyAnnotator;
-import qa.qcri.iyas.feature.ProcessedJCASAggregator;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
 
 public class DescriptorGenerator {

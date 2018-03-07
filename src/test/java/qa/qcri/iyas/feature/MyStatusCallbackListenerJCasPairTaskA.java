@@ -43,6 +43,8 @@ import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.uimafit.util.JCasUtil;
 
+import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.RelatedQuestionBody;

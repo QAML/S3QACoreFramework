@@ -1,6 +1,6 @@
 
-/* First created by JCasGen Mon Mar 05 10:11:00 CET 2018 */
-package qa.qcri.iyas.type.feature;
+/* First created by JCasGen Wed Mar 07 16:18:49 CET 2018 */
+package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -8,19 +8,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Mar 05 10:11:00 CET 2018
+ * Updated by JCasGen Wed Mar 07 16:46:36 CET 2018
  * @generated */
-public class FeatureVector_Type extends Annotation_Type {
+public class DenseVector_Type extends Represenation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = FeatureVector.typeIndexID;
+  public final static int typeIndexID = DenseVector.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.feature.FeatureVector");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.representation.DenseVector");
  
   /** @generated */
   final Feature casFeat_features;
@@ -32,7 +31,7 @@ public class FeatureVector_Type extends Annotation_Type {
    */ 
   public int getFeatures(int addr) {
         if (featOkTst && casFeat_features == null)
-      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.feature.FeatureVector");
+      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.DenseVector");
     return ll_cas.ll_getRefValue(addr, casFeatCode_features);
   }
   /** @generated
@@ -41,7 +40,7 @@ public class FeatureVector_Type extends Annotation_Type {
    */    
   public void setFeatures(int addr, int v) {
         if (featOkTst && casFeat_features == null)
-      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.feature.FeatureVector");
+      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.DenseVector");
     ll_cas.ll_setRefValue(addr, casFeatCode_features, v);}
     
    /** @generated
@@ -51,11 +50,11 @@ public class FeatureVector_Type extends Annotation_Type {
    */
   public double getFeatures(int addr, int i) {
         if (featOkTst && casFeat_features == null)
-      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.feature.FeatureVector");
+      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.DenseVector");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getDoubleArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_features), i, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_features), i);
-	return ll_cas.ll_getDoubleArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_features), i);
+  return ll_cas.ll_getDoubleArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_features), i);
   }
    
   /** @generated
@@ -65,7 +64,7 @@ public class FeatureVector_Type extends Annotation_Type {
    */ 
   public void setFeatures(int addr, int i, double v) {
         if (featOkTst && casFeat_features == null)
-      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.feature.FeatureVector");
+      jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.DenseVector");
     if (lowLevelTypeChecks)
       ll_cas.ll_setDoubleArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_features), i, v, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_features), i);
@@ -80,7 +79,7 @@ public class FeatureVector_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public FeatureVector_Type(JCas jcas, Type casType) {
+  public DenseVector_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

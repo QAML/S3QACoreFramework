@@ -1,6 +1,6 @@
 
-/* First created by JCasGen Sun Mar 04 15:58:29 CET 2018 */
-package qa.qcri.iyas.type.feature;
+/* First created by JCasGen Wed Mar 07 16:22:38 CET 2018 */
+package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -11,16 +11,40 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Mar 05 10:11:00 CET 2018
+ * Updated by JCasGen Wed Mar 07 16:46:36 CET 2018
  * @generated */
-public class Similarity_Type extends Annotation_Type {
+public class NumericFeature_Type extends Annotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = Similarity.typeIndexID;
+  public final static int typeIndexID = NumericFeature.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.feature.Similarity");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.representation.NumericFeature");
+ 
+  /** @generated */
+  final Feature casFeat_index;
+  /** @generated */
+  final int     casFeatCode_index;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getIndex(int addr) {
+        if (featOkTst && casFeat_index == null)
+      jcas.throwFeatMissing("index", "qa.qcri.iyas.type.representation.NumericFeature");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_index);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setIndex(int addr, int v) {
+        if (featOkTst && casFeat_index == null)
+      jcas.throwFeatMissing("index", "qa.qcri.iyas.type.representation.NumericFeature");
+    ll_cas.ll_setIntValue(addr, casFeatCode_index, v);}
+    
+  
  
   /** @generated */
   final Feature casFeat_value;
@@ -32,7 +56,7 @@ public class Similarity_Type extends Annotation_Type {
    */ 
   public double getValue(int addr) {
         if (featOkTst && casFeat_value == null)
-      jcas.throwFeatMissing("value", "qa.qcri.iyas.type.feature.Similarity");
+      jcas.throwFeatMissing("value", "qa.qcri.iyas.type.representation.NumericFeature");
     return ll_cas.ll_getDoubleValue(addr, casFeatCode_value);
   }
   /** @generated
@@ -41,7 +65,7 @@ public class Similarity_Type extends Annotation_Type {
    */    
   public void setValue(int addr, double v) {
         if (featOkTst && casFeat_value == null)
-      jcas.throwFeatMissing("value", "qa.qcri.iyas.type.feature.Similarity");
+      jcas.throwFeatMissing("value", "qa.qcri.iyas.type.representation.NumericFeature");
     ll_cas.ll_setDoubleValue(addr, casFeatCode_value, v);}
     
   
@@ -56,7 +80,7 @@ public class Similarity_Type extends Annotation_Type {
    */ 
   public String getName(int addr) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.feature.Similarity");
+      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.NumericFeature");
     return ll_cas.ll_getStringValue(addr, casFeatCode_name);
   }
   /** @generated
@@ -65,7 +89,7 @@ public class Similarity_Type extends Annotation_Type {
    */    
   public void setName(int addr, String v) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.feature.Similarity");
+      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.NumericFeature");
     ll_cas.ll_setStringValue(addr, casFeatCode_name, v);}
     
   
@@ -77,9 +101,13 @@ public class Similarity_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public Similarity_Type(JCas jcas, Type casType) {
+  public NumericFeature_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+
+ 
+    casFeat_index = jcas.getRequiredFeatureDE(casType, "index", "uima.cas.Integer", featOkTst);
+    casFeatCode_index  = (null == casFeat_index) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_index).getCode();
 
  
     casFeat_value = jcas.getRequiredFeatureDE(casType, "value", "uima.cas.Double", featOkTst);

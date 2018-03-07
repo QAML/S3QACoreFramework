@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature;
+package qa.qcri.iyas.data.preprocessing;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 
-import qa.qcri.iyas.data.preprocessing.TextPreprocessor;
 import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.InstanceA;

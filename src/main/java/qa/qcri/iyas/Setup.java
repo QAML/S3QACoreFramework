@@ -49,11 +49,11 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
+import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
+import qa.qcri.iyas.data.preprocessing.ProcessedJCASAggregator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
-import qa.qcri.iyas.feature.InputJCasMultiplier;
-import qa.qcri.iyas.feature.ProcessedJCASAggregator;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
 
 public class Setup {

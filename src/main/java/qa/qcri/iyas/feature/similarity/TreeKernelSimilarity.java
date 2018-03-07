@@ -131,8 +131,8 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 		}
 			
 		try {
-			System.out.println(ts.serializeTree(leftTree));
-			System.out.println(ts.serializeTree(rightTree));
+//			System.out.println(ts.serializeTree(leftTree));
+//			System.out.println(ts.serializeTree(rightTree));
 			t1.setDataFromText(ts.serializeTree(leftTree));
 			t2.setDataFromText(ts.serializeTree(rightTree));
 		} catch (Exception e) {

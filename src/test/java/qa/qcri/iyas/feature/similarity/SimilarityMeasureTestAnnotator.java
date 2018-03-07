@@ -24,8 +24,8 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 
-import qa.qcri.iyas.feature.JCasPairGenerator;
-import qa.qcri.iyas.type.feature.Similarity;
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.type.representation.NumericFeature;
 
 public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
 	
@@ -44,7 +44,7 @@ public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
 			
 			double sim = similarityMeasure.getValue(jcas);
 			
-			Similarity similarity = new Similarity(jcas.getView("_InitialView"));
+			NumericFeature similarity = new NumericFeature(jcas.getView("_InitialView"));
 			similarity.setValue(sim);
 			similarity.addToIndexes();
 			
