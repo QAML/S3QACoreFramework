@@ -10,7 +10,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
+ * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
  * @generated */
 public class Comment_Type extends QAAnnotation_Type {
   /** @generated */
@@ -44,6 +44,54 @@ public class Comment_Type extends QAAnnotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_questionID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_labels;
+  /** @generated */
+  final int     casFeatCode_labels;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getLabels(int addr) {
+        if (featOkTst && casFeat_labels == null)
+      jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.Comment");
+    return ll_cas.ll_getRefValue(addr, casFeatCode_labels);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setLabels(int addr, int v) {
+        if (featOkTst && casFeat_labels == null)
+      jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.Comment");
+    ll_cas.ll_setRefValue(addr, casFeatCode_labels, v);}
+    
+  
+ 
+  /** @generated */
+  final Feature casFeat_rank;
+  /** @generated */
+  final int     casFeatCode_rank;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getRank(int addr) {
+        if (featOkTst && casFeat_rank == null)
+      jcas.throwFeatMissing("rank", "qa.qcri.iyas.type.cqa.Comment");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_rank);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setRank(int addr, int v) {
+        if (featOkTst && casFeat_rank == null)
+      jcas.throwFeatMissing("rank", "qa.qcri.iyas.type.cqa.Comment");
+    ll_cas.ll_setIntValue(addr, casFeatCode_rank, v);}
+    
+  
 
 
 
@@ -59,6 +107,14 @@ public class Comment_Type extends QAAnnotation_Type {
  
     casFeat_questionID = jcas.getRequiredFeatureDE(casType, "questionID", "uima.cas.String", featOkTst);
     casFeatCode_questionID  = (null == casFeat_questionID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_questionID).getCode();
+
+ 
+    casFeat_labels = jcas.getRequiredFeatureDE(casType, "labels", "uima.cas.StringList", featOkTst);
+    casFeatCode_labels  = (null == casFeat_labels) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_labels).getCode();
+
+ 
+    casFeat_rank = jcas.getRequiredFeatureDE(casType, "rank", "uima.cas.Integer", featOkTst);
+    casFeatCode_rank  = (null == casFeat_rank) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_rank).getCode();
 
   }
 }

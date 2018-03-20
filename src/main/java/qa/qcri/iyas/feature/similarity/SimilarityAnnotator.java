@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature.extractor;
+package qa.qcri.iyas.feature.similarity;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UimaContext;
@@ -29,7 +29,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
-import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.type.representation.DenseVector;
 
 @OperationalProperties(modifiesCas = true, outputsNewCases = false, multipleDeploymentAllowed = true)
@@ -39,9 +38,15 @@ import qa.qcri.iyas.type.representation.DenseVector;
 public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
 	
 	public final static String PARAM_NAME_SIMILARITIES = "similarities";
+	public final static String PARAM_NAME_OUT_VECTOR_NAME = "vector_name";
 
 	@ConfigurationParameter(name = PARAM_NAME_SIMILARITIES)
 	private String similarities[];
+	
+	@ConfigurationParameter(name = PARAM_NAME_OUT_VECTOR_NAME)
+	private String name;
+	
+	
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
@@ -52,6 +57,7 @@ public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
 			UimaContext context = getContext();
 			
 			DenseVector simVector = new DenseVector(jcas);
+			simVector.setName(name);
 			simVector.setFeatures(new DoubleArray(jcas,similarities.length));
 			for (int i=0;i<similarities.length;i++) {
 				Object obj = context.getResourceObject(similarities[i]);

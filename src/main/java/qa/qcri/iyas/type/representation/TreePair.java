@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Wed Mar 07 16:46:36 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas; 
@@ -10,10 +10,10 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
-public class TreePair extends Represenation {
+public class TreePair extends Representation {
   /** @generated
    * @ordered 
    */
@@ -117,6 +117,28 @@ public class TreePair extends Represenation {
     if (TreePair_Type.featOkTst && ((TreePair_Type)jcasType).casFeat_rightTree == null)
       jcasType.jcas.throwFeatMissing("rightTree", "qa.qcri.iyas.type.representation.TreePair");
     jcasType.ll_cas.ll_setRefValue(addr, ((TreePair_Type)jcasType).casFeatCode_rightTree, jcasType.ll_cas.ll_getFSRef(v));}    
+   
+    
+  //*--------------*
+  //* Feature: treeName
+
+  /** getter for treeName - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getTreeName() {
+    if (TreePair_Type.featOkTst && ((TreePair_Type)jcasType).casFeat_treeName == null)
+      jcasType.jcas.throwFeatMissing("treeName", "qa.qcri.iyas.type.representation.TreePair");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((TreePair_Type)jcasType).casFeatCode_treeName);}
+    
+  /** setter for treeName - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setTreeName(String v) {
+    if (TreePair_Type.featOkTst && ((TreePair_Type)jcasType).casFeat_treeName == null)
+      jcasType.jcas.throwFeatMissing("treeName", "qa.qcri.iyas.type.representation.TreePair");
+    jcasType.ll_cas.ll_setStringValue(addr, ((TreePair_Type)jcasType).casFeatCode_treeName, v);}    
   }
 
     

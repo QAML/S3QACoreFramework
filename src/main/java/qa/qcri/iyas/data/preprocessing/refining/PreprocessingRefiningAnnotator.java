@@ -25,6 +25,8 @@ import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceProcessException;
 
+import qa.qcri.iyas.representation.decorator.JCasDecorator;
+
 
 /**
  * A {@link PreprocessingRefiningAnnotator} adds additional information (meta-information) to the aggregated CASes.
@@ -38,12 +40,12 @@ public class PreprocessingRefiningAnnotator extends JCasAnnotator_ImplBase {
 	public final static String PARAM_PREPROCESSING_REFINER_RESOURCE = "preprocessingRefiner";
 
 	@ExternalResource(key = PARAM_PREPROCESSING_REFINER_RESOURCE)
-	PreprocessingRefiner preprocessingRefiner;
+	JCasDecorator preprocessingRefiner;
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			preprocessingRefiner.refine(jcas);
+			preprocessingRefiner.decorate(jcas);
 		} catch (ResourceProcessException e) {
 			throw new AnalysisEngineProcessException(e);
 		}

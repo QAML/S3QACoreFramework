@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
+ * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
  * @generated */
 public class RelatedQuestion_Type extends Annotation_Type {
   /** @generated */
@@ -79,7 +79,7 @@ public class RelatedQuestion_Type extends Annotation_Type {
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_candidateIDs), i, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_candidateIDs), i);
-	return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_candidateIDs), i);
+  return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_candidateIDs), i);
   }
    
   /** @generated

@@ -1,25 +1,24 @@
 
 
-/* First created by JCasGen Wed Mar 07 16:18:49 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
-public class Represenation extends Annotation {
+public class ConstituencyTree extends Tree {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(Represenation.class);
+  public final static int typeIndexID = JCasRegistry.register(ConstituencyTree.class);
   /** @generated
    * @ordered 
    */
@@ -33,14 +32,14 @@ public class Represenation extends Annotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected Represenation() {/* intentionally empty block */}
+  protected ConstituencyTree() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
    * @param type the type of this Feature Structure 
    */
-  public Represenation(int addr, TOP_Type type) {
+  public ConstituencyTree(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
@@ -48,7 +47,7 @@ public class Represenation extends Annotation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public Represenation(JCas jcas) {
+  public ConstituencyTree(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -58,7 +57,7 @@ public class Represenation extends Annotation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public Represenation(JCas jcas, int begin, int end) {
+  public ConstituencyTree(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
@@ -74,28 +73,6 @@ public class Represenation extends Annotation {
    */
   private void readObject() {/*default - does nothing empty block */}
      
- 
-    
-  //*--------------*
-  //* Feature: name
-
-  /** getter for name - gets 
-   * @generated
-   * @return value of the feature 
-   */
-  public String getName() {
-    if (Represenation_Type.featOkTst && ((Represenation_Type)jcasType).casFeat_name == null)
-      jcasType.jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Represenation");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((Represenation_Type)jcasType).casFeatCode_name);}
-    
-  /** setter for name - sets  
-   * @generated
-   * @param v value to set into the feature 
-   */
-  public void setName(String v) {
-    if (Represenation_Type.featOkTst && ((Represenation_Type)jcasType).casFeat_name == null)
-      jcasType.jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Represenation");
-    jcasType.ll_cas.ll_setStringValue(addr, ((Represenation_Type)jcasType).casFeatCode_name, v);}    
-  }
+}
 
     

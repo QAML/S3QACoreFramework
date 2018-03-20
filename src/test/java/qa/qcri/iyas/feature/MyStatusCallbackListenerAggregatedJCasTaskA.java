@@ -33,6 +33,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.collection.EntityProcessStatus;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.jdom2.Document;
@@ -42,10 +43,18 @@ import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.uimafit.util.JCasUtil;
 
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.reader.DataReader;
+import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.InstanceA;
 import qa.qcri.iyas.type.cqa.RelatedQuestion;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
 import qa.qcri.iyas.util.AggregatedJCasManager;
 
 public class MyStatusCallbackListenerAggregatedJCasTaskA extends UimaAsBaseCallbackListener {
@@ -62,6 +71,20 @@ public class MyStatusCallbackListenerAggregatedJCasTaskA extends UimaAsBaseCallb
 		builder = new SAXBuilder(factory);
 		maps = m;
 		this.concatenate = concatenate;
+	}
+	
+	private void checkStandardTextAnnotations(JCas jcas) {
+		if (!JCasUtil.exists(jcas, Token.class))
+			fail("Expected Token annotations");
+		if (!JCasUtil.exists(jcas, Sentence.class))
+			fail("Expected Sentence annotations");
+		if (!JCasUtil.exists(jcas, Lemma.class))
+			fail("Expected Lemma annotations");
+		if (!JCasUtil.exists(jcas, POS.class))
+			fail("Expected POS annotations");
+		if (!JCasUtil.exists(jcas, Chunk.class))
+			fail("Expected Chunk annotations");
+		
 	}
 	
 	@Override
@@ -109,12 +132,18 @@ public class MyStatusCallbackListenerAggregatedJCasTaskA extends UimaAsBaseCallb
 						if (!concatenate) {
 							if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW), InstanceA.class))
 								fail("Unexpected InstanceA annotation");
+							if (!JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW), RelatedQuestionSubject.class))
+								fail("Unexpected RelatedQuestionSubject annotation");
 							subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW).getDocumentText();
+							checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW));
 						}
 						
 						if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW), InstanceA.class))
 							fail("Unexpected InstanceA annotation");
+						if (!JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW), RelatedQuestionBody.class))
+							fail("Expected RelatedQuestionBody annotation");
 						String body = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW).getDocumentText();
+						checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW));
 						
 						Map<String,String> map = maps.get(cqaAnnotation.getID());
 						
@@ -131,7 +160,10 @@ public class MyStatusCallbackListenerAggregatedJCasTaskA extends UimaAsBaseCallb
 						for (String cid : cqaAnnotation.getCandidateIDs().toArray()) {
 							if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid), InstanceA.class))
 								fail("Unexpected InstanceA annotation");
+							if (!JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid), Comment.class))
+								fail("Expected Comment annotation");
 							String comment = cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid).getDocumentText();
+							checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.COMMENT_VIEW+"-"+cid));
 							if (map.get("comment_"+cid).equals(comment)) {
 								map.remove("comment_"+cid);
 								System.out.println("Removed "+"comment_"+cid);

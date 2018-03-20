@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Wed Mar 07 16:18:49 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas; 
@@ -11,10 +11,10 @@ import org.apache.uima.jcas.cas.DoubleArray;
 
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
-public class DenseVector extends Represenation {
+public class DenseVector extends Representation {
   /** @generated
    * @ordered 
    */

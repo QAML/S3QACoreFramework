@@ -33,6 +33,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.collection.EntityProcessStatus;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.jdom2.Document;
@@ -42,11 +43,18 @@ import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.uimafit.util.JCasUtil;
 
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.type.cqa.InstanceA;
 import qa.qcri.iyas.type.cqa.InstanceB;
 import qa.qcri.iyas.type.cqa.UserQuestion;
+import qa.qcri.iyas.type.cqa.UserQuestionBody;
+import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 import qa.qcri.iyas.util.AggregatedJCasManager;
 
 public class MyStatusCallbackListenerAggregatedJCasTaskB extends UimaAsBaseCallbackListener {
@@ -63,6 +71,20 @@ public class MyStatusCallbackListenerAggregatedJCasTaskB extends UimaAsBaseCallb
 		builder = new SAXBuilder(factory);
 		maps = m;
 		this.concatenate = concatenate;
+	}
+	
+	private void checkStandardTextAnnotations(JCas jcas) {
+		if (!JCasUtil.exists(jcas, Token.class))
+			fail("Expected Token annotations");
+		if (!JCasUtil.exists(jcas, Sentence.class))
+			fail("Expected Sentence annotations");
+		if (!JCasUtil.exists(jcas, Lemma.class))
+			fail("Expected Lemma annotations");
+		if (!JCasUtil.exists(jcas, POS.class))
+			fail("Expected POS annotations");
+		if (!JCasUtil.exists(jcas, Chunk.class))
+			fail("Expected Chunk annotations");
+		
 	}
 	
 	@Override
@@ -110,31 +132,47 @@ public class MyStatusCallbackListenerAggregatedJCasTaskB extends UimaAsBaseCallb
 						if (!concatenate) {
 							if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW), InstanceA.class))
 								fail("Unexpected InstanceA annotation");
+							if (!JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW), UserQuestionSubject.class))
+								fail("Expected UserQuestionSubject annotation");
 							subject = cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW).getDocumentText();
+							checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_SUBJECT_VIEW));
 						}
 						
 						if (JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW), InstanceA.class))
 							fail("Unexpected InstanceA annotation");
+						if (!JCasUtil.exists(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW), UserQuestionBody.class))
+							fail("Expected UserQuestionBody annotation");
 						String body = cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW).getDocumentText();
-												
+						checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.USER_QUESTION_BODY_VIEW));
+						
 						Map<String,String> map = maps.get(cqaAnnotation.getID());
 						
-						if (!concatenate && map.get("subject_"+cqaAnnotation.getID()).equals(subject))
+						if (!concatenate && map.get("subject_"+cqaAnnotation.getID()).equals(subject)) {
 							map.remove("subject_"+cqaAnnotation.getID());
+							System.out.println("Removed "+"subject_"+cqaAnnotation.getID());
+						}
 						
-						if (map.get("body_"+cqaAnnotation.getID()).equals(body))
+						if (map.get("body_"+cqaAnnotation.getID()).equals(body)) {
 							map.remove("body_"+cqaAnnotation.getID());
+							System.out.println("Removed "+"body_"+cqaAnnotation.getID());
+						}
 						
 						for (String rid : cqaAnnotation.getCandidateIDs().toArray()) {
 							if (!concatenate) {
 								String rel_subject = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+rid).getDocumentText();
-								if (map.get("rel_subject_"+rid).equals(rel_subject))
+								checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_SUBJECT_VIEW+"-"+rid));
+								if (map.get("rel_subject_"+rid).equals(rel_subject)) {
 									map.remove("rel_subject_"+rid);
+									System.out.println("Removed "+"rel_subject_"+rid);
+								}
 							}
 							
 							String rel_body = cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW+"-"+rid).getDocumentText();
-							if (map.get("rel_body_"+rid).equals(rel_body))
+							checkStandardTextAnnotations(cas.getJCas().getView(AggregatedJCasManager.RELATED_QUESTION_BODY_VIEW+"-"+rid));
+							if (map.get("rel_body_"+rid).equals(rel_body)) {
 								map.remove("rel_body_"+rid);
+								System.out.println("Removed "+"rel_body_"+rid);
+							}
 						}
 						
 						if (map.isEmpty()) {

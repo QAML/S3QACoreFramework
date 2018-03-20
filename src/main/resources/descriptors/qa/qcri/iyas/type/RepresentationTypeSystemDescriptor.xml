@@ -8,7 +8,7 @@
     <typeDescription>
       <name>qa.qcri.iyas.type.representation.DenseVector</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.representation.Represenation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.representation.Representation</supertypeName>
       <features>
         <featureDescription>
           <name>features</name>
@@ -20,7 +20,7 @@
   <typeDescription>
       <name>qa.qcri.iyas.type.representation.SparseVector</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.representation.Represenation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.representation.Representation</supertypeName>
       <features>
         <featureDescription>
           <name>features</name>
@@ -52,7 +52,7 @@
       </features>
     </typeDescription>
   <typeDescription>
-      <name>qa.qcri.iyas.type.representation.Represenation</name>
+      <name>qa.qcri.iyas.type.representation.Representation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -66,10 +66,10 @@
   <typeDescription>
       <name>qa.qcri.iyas.type.representation.Tree</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.representation.Represenation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.representation.Representation</supertypeName>
       <features>
         <featureDescription>
-          <name>stringRepresentaion</name>
+          <name>casView</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
@@ -78,7 +78,7 @@
     <typeDescription>
       <name>qa.qcri.iyas.type.representation.TreePair</name>
       <description/>
-      <supertypeName>qa.qcri.iyas.type.representation.Represenation</supertypeName>
+      <supertypeName>qa.qcri.iyas.type.representation.Representation</supertypeName>
       <features>
         <featureDescription>
           <name>leftTree</name>
@@ -89,6 +89,38 @@
           <name>rightTree</name>
           <description/>
           <rangeTypeName>qa.qcri.iyas.type.representation.Tree</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>treeName</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>qa.qcri.iyas.type.representation.PosChunkTree</name>
+      <description/>
+      <supertypeName>qa.qcri.iyas.type.representation.Tree</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>qa.qcri.iyas.type.representation.ConstituencyTree</name>
+      <description/>
+      <supertypeName>qa.qcri.iyas.type.representation.Tree</supertypeName>
+    </typeDescription>
+    <typeDescription>
+      <name>qa.qcri.iyas.type.representation.DependencyTree</name>
+      <description/>
+      <supertypeName>qa.qcri.iyas.type.representation.Tree</supertypeName>
+    </typeDescription>
+  <typeDescription>
+      <name>qa.qcri.iyas.type.representation.StringRepresentation</name>
+      <description/>
+      <supertypeName>qa.qcri.iyas.type.representation.Representation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>content</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

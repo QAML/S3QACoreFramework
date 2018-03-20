@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Wed Mar 07 16:46:36 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
@@ -10,9 +10,9 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * @generated */
-public class TreePair_Type extends Represenation_Type {
+public class TreePair_Type extends Representation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
   public final static int typeIndexID = TreePair.typeIndexID;
@@ -68,6 +68,30 @@ public class TreePair_Type extends Represenation_Type {
     ll_cas.ll_setRefValue(addr, casFeatCode_rightTree, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_treeName;
+  /** @generated */
+  final int     casFeatCode_treeName;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getTreeName(int addr) {
+        if (featOkTst && casFeat_treeName == null)
+      jcas.throwFeatMissing("treeName", "qa.qcri.iyas.type.representation.TreePair");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_treeName);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setTreeName(int addr, String v) {
+        if (featOkTst && casFeat_treeName == null)
+      jcas.throwFeatMissing("treeName", "qa.qcri.iyas.type.representation.TreePair");
+    ll_cas.ll_setStringValue(addr, casFeatCode_treeName, v);}
+    
+  
 
 
 
@@ -87,6 +111,10 @@ public class TreePair_Type extends Represenation_Type {
  
     casFeat_rightTree = jcas.getRequiredFeatureDE(casType, "rightTree", "qa.qcri.iyas.type.representation.Tree", featOkTst);
     casFeatCode_rightTree  = (null == casFeat_rightTree) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_rightTree).getCode();
+
+ 
+    casFeat_treeName = jcas.getRequiredFeatureDE(casType, "treeName", "uima.cas.String", featOkTst);
+    casFeatCode_treeName  = (null == casFeat_treeName) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_treeName).getCode();
 
   }
 }

@@ -37,6 +37,16 @@
           <description/>
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>labels</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>rank</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
@@ -48,6 +58,16 @@
           <name>questionID</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>labels</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+        </featureDescription>
+      <featureDescription>
+          <name>rank</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>

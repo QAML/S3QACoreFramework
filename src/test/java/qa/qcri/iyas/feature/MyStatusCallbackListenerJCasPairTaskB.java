@@ -46,6 +46,7 @@ import org.uimafit.util.JCasUtil;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.data.reader.DataReader;
+import qa.qcri.iyas.type.cqa.InstanceB;
 import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
 import qa.qcri.iyas.type.cqa.UserQuestionBody;
 
@@ -71,15 +72,7 @@ public class MyStatusCallbackListenerJCasPairTaskB extends UimaAsBaseCallbackLis
 			} else {
 				AnnotationIndex<Annotation> annotations = cas.getJCas().getAnnotationIndex();
 				if (annotations.size() == 1) {
-					if (!JCasUtil.exists(cas.getJCas(), DocumentAnnotation.class)) {
-						StringBuilder sb = new StringBuilder();
-						sb.append("Only a DocumentAnnotation annotation is expected\n");
-						sb.append("The following annotations have been received:\n");
-						for (Annotation annotation : annotations)
-							sb.append(annotation.getClass()+"\n");
-						
-						fail(sb.toString());
-					} else {
+					if (JCasUtil.exists(cas.getJCas(), DocumentAnnotation.class)) {
 						String content = cas.getDocumentText();
 						boolean b = inputInstances.remove(content);
 						if (!b)
@@ -90,49 +83,57 @@ public class MyStatusCallbackListenerJCasPairTaskB extends UimaAsBaseCallbackLis
 								.getChild(DataReader.USER_QUESTION_TAG).getAttributeValue(DataReader.ID_ATTRIBUTE);
 						
 						System.out.println("Removed "+id);
+					} else if (JCasUtil.exists(cas.getJCas(), InstanceB.class)) {
+						try {
+							CAS left =	cas.getView(JCasPairGenerator.LEFT_CAS_VIEW);
+							int nl = JCasUtil.select(left.getJCas(), UserQuestionBody.class).size();
+							if (nl != 1)
+								fail("Expected one UserQuestionBody annotation, found "+nl);
+							
+							UserQuestionBody userQuestion = JCasUtil.select(left.getJCas(), UserQuestionBody.class).iterator().next();
+							
+							CAS right =	cas.getView(JCasPairGenerator.RIGHT_CAS_VIEW);
+							int nr = JCasUtil.select(right.getJCas(), RelatedQuestionBody.class).size();
+							if (nr != 1)
+								fail("Expected one RelatedQuestionBody annotation, found "+nr);
+							
+							RelatedQuestionBody relatedQuestion = JCasUtil.select(right.getJCas(), RelatedQuestionBody.class).iterator().next();
+							
+							String userQuestionText = left.getDocumentText();
+							String relatedQuestionText = right.getDocumentText();
+							
+							Map<String,String> map = maps.get(userQuestion.getID());
+							
+							if (map.get("left_"+relatedQuestion.getID()).equals(userQuestionText)) {
+								map.remove("left_"+relatedQuestion.getID());
+								System.out.println("Removed "+"left_"+relatedQuestion.getID());
+							}
+							
+							if (map.get("right_"+relatedQuestion.getID()).equals(relatedQuestionText)) {
+								map.remove("right_"+relatedQuestion.getID());
+								System.out.println("Removed "+"right_"+relatedQuestion.getID());
+							}
+							
+							if (map.isEmpty()) {
+								maps.remove(userQuestion.getID());
+								System.out.println(userQuestion.getID()+" complete");
+							}
+						} catch (CASRuntimeException e) {
+							fail(e.getMessage());
+						}
+					} else {
+						StringBuilder sb = new StringBuilder();
+						sb.append("The following unexpected annotations have been received:\n");
+						for (Annotation annotation : annotations)
+							sb.append(annotation.getClass()+"\n");
+						
+						fail(sb.toString());
 					}
 				} else if (annotations.size() == 0) {
-					try {
-						CAS left =	cas.getView(JCasPairGenerator.LEFT_CAS_VIEW);
-						int nl = JCasUtil.select(left.getJCas(), UserQuestionBody.class).size();
-						if (nl != 1)
-							fail("Expected one UserQuestionBody annotation, found "+nl);
-						
-						UserQuestionBody userQuestion = JCasUtil.select(left.getJCas(), UserQuestionBody.class).iterator().next();
-						
-						CAS right =	cas.getView(JCasPairGenerator.RIGHT_CAS_VIEW);
-						int nr = JCasUtil.select(right.getJCas(), RelatedQuestionBody.class).size();
-						if (nr != 1)
-							fail("Expected one RelatedQuestionBody annotation, found "+nr);
-						
-						RelatedQuestionBody relatedQuestion = JCasUtil.select(right.getJCas(), RelatedQuestionBody.class).iterator().next();
-						
-						String userQuestionText = left.getDocumentText();
-						String relatedQuestionText = right.getDocumentText();
-						
-						Map<String,String> map = maps.get(userQuestion.getID());
-						
-						if (map.get("left_"+relatedQuestion.getID()).equals(userQuestionText)) {
-							map.remove("left_"+relatedQuestion.getID());
-							System.out.println("Removed "+"left_"+relatedQuestion.getID());
-						}
-						
-						if (map.get("right_"+relatedQuestion.getID()).equals(relatedQuestionText)) {
-							map.remove("right_"+relatedQuestion.getID());
-							System.out.println("Removed "+"right_"+relatedQuestion.getID());
-						}
-						
-						if (map.isEmpty()) {
-							maps.remove(userQuestion.getID());
-							System.out.println(userQuestion.getID()+" complete");
-						}
-					} catch (CASRuntimeException e) {
-						fail(e.getMessage());
-					}
+					
 				} else {
 					StringBuilder sb = new StringBuilder();
-					sb.append("unexpected annotations have not been received\n");
-					sb.append("The following annotations have been received:\n");
+					sb.append("The following unexpected annotations have been received:\n");
 					for (Annotation annotation : annotations)
 						sb.append(annotation.getClass()+"\n");
 					

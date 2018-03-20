@@ -52,8 +52,7 @@ import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 
-
-public class JCasMultiplierAndAggregatorNotConcatenatedTest {
+public class PreprocessingPipelineConcatenatedTest {
 	
 	private static Map<String,Map<String,String>> mapsA = new HashMap<String,Map<String,String>>();
 	private static Map<String,Map<String,String>> mapsB = new HashMap<String,Map<String,String>>();
@@ -145,16 +144,8 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 	}
 	
 	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateMyAnnotatorAAEDescriptor(
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generatePipelineAAEDescriptor(
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generatePipelineAAEDeploymentDescriptor(
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generatePreprocessingPipelineDeploymentDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
 		
 	}
 	
@@ -230,8 +221,8 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 	
 	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
 		String inputJCasMultiplierAEDescriptor = 
-				new File(JCasMultiplierAndAggregatorConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/PipelineAAE_DeploymentDescriptor.xml";
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
+						+ "/PreprocessingPipelineAAE_DeploymentDescriptor.xml";
 		
 		// create a Map to hold required parameters
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -256,12 +247,12 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		generateAnalysisEngineDescritors(false);
+		generateAnalysisEngineDescritors(true);
 		String id = deployPipeline(uimaAsEngine);
 		
-		String file = generateInputTestFile(false);
-		runTestTaskA(false, file);
-		runTestTaskB(false, file);
+		String file = generateInputTestFile(true);
+		runTestTaskA(true, file);
+		runTestTaskB(true, file);
 		undeployPipeline(id,uimaAsEngine);
 
 		Thread.sleep(100);
@@ -270,7 +261,7 @@ public class JCasMultiplierAndAggregatorNotConcatenatedTest {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		new JCasMultiplierAndAggregatorNotConcatenatedTest().multiplierTest();
+		new PreprocessingPipelineConcatenatedTest().multiplierTest();
 	}
 	
 //	public static void main(String[] args) {

@@ -9,8 +9,11 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 
+import org.apache.uima.jcas.cas.StringList;
+
+
 /** 
- * Updated by JCasGen Sun Mar 04 15:52:51 CET 2018
+ * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
  * @generated */
 public class Comment extends QAAnnotation {
@@ -95,6 +98,50 @@ public class Comment extends QAAnnotation {
     if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_questionID == null)
       jcasType.jcas.throwFeatMissing("questionID", "qa.qcri.iyas.type.cqa.Comment");
     jcasType.ll_cas.ll_setStringValue(addr, ((Comment_Type)jcasType).casFeatCode_questionID, v);}    
+   
+    
+  //*--------------*
+  //* Feature: labels
+
+  /** getter for labels - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public StringList getLabels() {
+    if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_labels == null)
+      jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.Comment");
+    return (StringList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Comment_Type)jcasType).casFeatCode_labels)));}
+    
+  /** setter for labels - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setLabels(StringList v) {
+    if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_labels == null)
+      jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.Comment");
+    jcasType.ll_cas.ll_setRefValue(addr, ((Comment_Type)jcasType).casFeatCode_labels, jcasType.ll_cas.ll_getFSRef(v));}    
+   
+    
+  //*--------------*
+  //* Feature: rank
+
+  /** getter for rank - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getRank() {
+    if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_rank == null)
+      jcasType.jcas.throwFeatMissing("rank", "qa.qcri.iyas.type.cqa.Comment");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((Comment_Type)jcasType).casFeatCode_rank);}
+    
+  /** setter for rank - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setRank(int v) {
+    if (Comment_Type.featOkTst && ((Comment_Type)jcasType).casFeat_rank == null)
+      jcasType.jcas.throwFeatMissing("rank", "qa.qcri.iyas.type.cqa.Comment");
+    jcasType.ll_cas.ll_setIntValue(addr, ((Comment_Type)jcasType).casFeatCode_rank, v);}    
   }
 
     

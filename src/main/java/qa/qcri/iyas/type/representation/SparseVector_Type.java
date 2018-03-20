@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Wed Mar 07 16:18:49 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
@@ -10,9 +10,9 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * @generated */
-public class SparseVector_Type extends Represenation_Type {
+public class SparseVector_Type extends Representation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
   public final static int typeIndexID = SparseVector.typeIndexID;

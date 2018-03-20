@@ -25,6 +25,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -48,15 +49,17 @@ import qa.qcri.iyas.util.AggregatedJCasManagerTaskB;
 				   "qa.qcri.iyas.types.RelatedQuestion",
 				   "qa.qcri.iyas.types.RelatedQuestionSubject",
 				   "qa.qcri.iyas.types.RelatedQuestionBody",
-				   "qa.qcri.iyas.types.Comment"},
+				   "qa.qcri.iyas.types.Comment",
+				   "qa.qcri.iyas.type.cqa.InstanceA",
+				   "qa.qcri.iyas.type.cqa.InstanceB"},
 		
-		outputs = {"qa.qcri.iyas.types.UserQuestion",
-				   "qa.qcri.iyas.types.UserQuestionSubject",
+		outputs = {"qa.qcri.iyas.types.UserQuestionSubject",
 				   "qa.qcri.iyas.types.UserQuestionBody",
-				   "qa.qcri.iyas.types.RelatedQuestion",
 				   "qa.qcri.iyas.types.RelatedQuestionSubject",
 				   "qa.qcri.iyas.types.RelatedQuestionBody",
-				   "qa.qcri.iyas.types.Comment"}
+				   "qa.qcri.iyas.types.Comment",
+				   "qa.qcri.iyas.type.cqa.InstanceA",
+				   "qa.qcri.iyas.type.cqa.InstanceB"}
 )
 public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 
@@ -84,7 +87,7 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 		CasCopier.copyCas(cas, jcas.getCas(), true);
 		pendingJCases.removeFirst();
 		cas.release();
-		
+				
 		return jcas;
 	}
 
@@ -99,7 +102,6 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 				
 				JCas questionBody = aggrJCasManager.getRelatedQuestionBodyJCas();
 				
-				
 				for (JCas candidate : aggrJCasManager.getCandidatesJCases()) {
 					CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 							null, null);
@@ -109,6 +111,9 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 					
 					CasCopier rightCopier = new CasCopier(candidate.getCas(), cas);
 					rightCopier.copyCasView(candidate.getCas(), cas.createView(RIGHT_CAS_VIEW), true);
+					
+					InstanceA instanceA = new InstanceA(cas.getJCas());
+					instanceA.addToIndexes();
 					
 					pendingJCases.add(cas.getJCas());
 				}
@@ -129,6 +134,9 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 					
 					CasCopier rightCopier = new CasCopier(candidate.getCas(), cas);
 					rightCopier.copyCasView(candidate.getCas(), cas.createView(RIGHT_CAS_VIEW), true);
+					
+					InstanceB instanceB = new InstanceB(cas.getJCas());
+					instanceB.addToIndexes();
 					
 					pendingJCases.add(cas.getJCas());
 				}

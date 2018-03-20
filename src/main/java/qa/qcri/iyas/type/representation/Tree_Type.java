@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Wed Mar 07 16:46:36 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
@@ -10,9 +10,9 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * @generated */
-public class Tree_Type extends Represenation_Type {
+public class Tree_Type extends Representation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
   public final static int typeIndexID = Tree.typeIndexID;
@@ -22,26 +22,26 @@ public class Tree_Type extends Represenation_Type {
   public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.representation.Tree");
  
   /** @generated */
-  final Feature casFeat_stringRepresentaion;
+  final Feature casFeat_casView;
   /** @generated */
-  final int     casFeatCode_stringRepresentaion;
+  final int     casFeatCode_casView;
   /** @generated
    * @param addr low level Feature Structure reference
    * @return the feature value 
    */ 
-  public String getStringRepresentaion(int addr) {
-        if (featOkTst && casFeat_stringRepresentaion == null)
-      jcas.throwFeatMissing("stringRepresentaion", "qa.qcri.iyas.type.representation.Tree");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_stringRepresentaion);
+  public String getCasView(int addr) {
+        if (featOkTst && casFeat_casView == null)
+      jcas.throwFeatMissing("casView", "qa.qcri.iyas.type.representation.Tree");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_casView);
   }
   /** @generated
    * @param addr low level Feature Structure reference
    * @param v value to set 
    */    
-  public void setStringRepresentaion(int addr, String v) {
-        if (featOkTst && casFeat_stringRepresentaion == null)
-      jcas.throwFeatMissing("stringRepresentaion", "qa.qcri.iyas.type.representation.Tree");
-    ll_cas.ll_setStringValue(addr, casFeatCode_stringRepresentaion, v);}
+  public void setCasView(int addr, String v) {
+        if (featOkTst && casFeat_casView == null)
+      jcas.throwFeatMissing("casView", "qa.qcri.iyas.type.representation.Tree");
+    ll_cas.ll_setStringValue(addr, casFeatCode_casView, v);}
     
   
 
@@ -57,8 +57,8 @@ public class Tree_Type extends Represenation_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 
  
-    casFeat_stringRepresentaion = jcas.getRequiredFeatureDE(casType, "stringRepresentaion", "uima.cas.String", featOkTst);
-    casFeatCode_stringRepresentaion  = (null == casFeat_stringRepresentaion) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_stringRepresentaion).getCode();
+    casFeat_casView = jcas.getRequiredFeatureDE(casType, "casView", "uima.cas.String", featOkTst);
+    casFeatCode_casView  = (null == casFeat_casView) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_casView).getCode();
 
   }
 }

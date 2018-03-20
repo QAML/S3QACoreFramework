@@ -45,7 +45,7 @@ public abstract class Feature implements SharedResourceObject, ExternalResourceA
 
 	@Override
 	public void afterResourcesInitialized() throws ResourceInitializationException {
-		// TODO Auto-generated method stub	
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>   Created "+resourceName);
 	}
 	
 	public abstract double getValue(JCas jcas) throws UIMAException;

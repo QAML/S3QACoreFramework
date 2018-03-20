@@ -1,25 +1,24 @@
 
 
-/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:47:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-import org.apache.uima.jcas.cas.NonEmptyFSList;
 
 
 /** 
  * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
-public class SparseVector extends Representation {
+public class StringRepresentation extends Representation {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(SparseVector.class);
+  public final static int typeIndexID = JCasRegistry.register(StringRepresentation.class);
   /** @generated
    * @ordered 
    */
@@ -33,14 +32,14 @@ public class SparseVector extends Representation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected SparseVector() {/* intentionally empty block */}
+  protected StringRepresentation() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
    * @param type the type of this Feature Structure 
    */
-  public SparseVector(int addr, TOP_Type type) {
+  public StringRepresentation(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
@@ -48,7 +47,7 @@ public class SparseVector extends Representation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public SparseVector(JCas jcas) {
+  public StringRepresentation(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -58,7 +57,7 @@ public class SparseVector extends Representation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public SparseVector(JCas jcas, int begin, int end) {
+  public StringRepresentation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
@@ -77,25 +76,25 @@ public class SparseVector extends Representation {
  
     
   //*--------------*
-  //* Feature: features
+  //* Feature: content
 
-  /** getter for features - gets 
+  /** getter for content - gets 
    * @generated
    * @return value of the feature 
    */
-  public NonEmptyFSList getFeatures() {
-    if (SparseVector_Type.featOkTst && ((SparseVector_Type)jcasType).casFeat_features == null)
-      jcasType.jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.SparseVector");
-    return (NonEmptyFSList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((SparseVector_Type)jcasType).casFeatCode_features)));}
+  public String getContent() {
+    if (StringRepresentation_Type.featOkTst && ((StringRepresentation_Type)jcasType).casFeat_content == null)
+      jcasType.jcas.throwFeatMissing("content", "qa.qcri.iyas.type.representation.StringRepresentation");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((StringRepresentation_Type)jcasType).casFeatCode_content);}
     
-  /** setter for features - sets  
+  /** setter for content - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setFeatures(NonEmptyFSList v) {
-    if (SparseVector_Type.featOkTst && ((SparseVector_Type)jcasType).casFeat_features == null)
-      jcasType.jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.SparseVector");
-    jcasType.ll_cas.ll_setRefValue(addr, ((SparseVector_Type)jcasType).casFeatCode_features, jcasType.ll_cas.ll_getFSRef(v));}    
+  public void setContent(String v) {
+    if (StringRepresentation_Type.featOkTst && ((StringRepresentation_Type)jcasType).casFeat_content == null)
+      jcasType.jcas.throwFeatMissing("content", "qa.qcri.iyas.type.representation.StringRepresentation");
+    jcasType.ll_cas.ll_setStringValue(addr, ((StringRepresentation_Type)jcasType).casFeatCode_content, v);}    
   }
 
     

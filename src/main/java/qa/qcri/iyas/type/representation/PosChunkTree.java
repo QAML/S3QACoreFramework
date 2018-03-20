@@ -1,7 +1,7 @@
 
 
-/* First created by JCasGen Sun Mar 04 15:52:51 CET 2018 */
-package qa.qcri.iyas.type.cqa;
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
+package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
@@ -10,15 +10,15 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 /** 
- * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
- * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
-public class UserQuestionSubject extends QAAnnotation {
+public class PosChunkTree extends Tree {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(UserQuestionSubject.class);
+  public final static int typeIndexID = JCasRegistry.register(PosChunkTree.class);
   /** @generated
    * @ordered 
    */
@@ -32,14 +32,14 @@ public class UserQuestionSubject extends QAAnnotation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected UserQuestionSubject() {/* intentionally empty block */}
+  protected PosChunkTree() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
    * @param type the type of this Feature Structure 
    */
-  public UserQuestionSubject(int addr, TOP_Type type) {
+  public PosChunkTree(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
@@ -47,7 +47,7 @@ public class UserQuestionSubject extends QAAnnotation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public UserQuestionSubject(JCas jcas) {
+  public PosChunkTree(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -57,7 +57,7 @@ public class UserQuestionSubject extends QAAnnotation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public UserQuestionSubject(JCas jcas, int begin, int end) {
+  public PosChunkTree(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);

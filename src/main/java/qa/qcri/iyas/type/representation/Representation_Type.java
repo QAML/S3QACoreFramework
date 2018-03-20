@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Wed Mar 07 16:18:49 CET 2018 */
+/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
 package qa.qcri.iyas.type.representation;
 
 import org.apache.uima.jcas.JCas;
@@ -11,16 +11,16 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Wed Mar 07 19:38:12 CET 2018
+ * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
  * @generated */
-public class Represenation_Type extends Annotation_Type {
+public class Representation_Type extends Annotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = Represenation.typeIndexID;
+  public final static int typeIndexID = Representation.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.representation.Represenation");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("qa.qcri.iyas.type.representation.Representation");
  
   /** @generated */
   final Feature casFeat_name;
@@ -32,7 +32,7 @@ public class Represenation_Type extends Annotation_Type {
    */ 
   public String getName(int addr) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Represenation");
+      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Representation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_name);
   }
   /** @generated
@@ -41,7 +41,7 @@ public class Represenation_Type extends Annotation_Type {
    */    
   public void setName(int addr, String v) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Represenation");
+      jcas.throwFeatMissing("name", "qa.qcri.iyas.type.representation.Representation");
     ll_cas.ll_setStringValue(addr, casFeatCode_name, v);}
     
   
@@ -53,7 +53,7 @@ public class Represenation_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public Represenation_Type(JCas jcas, Type casType) {
+  public Representation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 

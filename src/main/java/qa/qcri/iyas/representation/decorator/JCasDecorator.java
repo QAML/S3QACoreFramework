@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.data.preprocessing.refining;
+package qa.qcri.iyas.representation.decorator;
 
 import org.apache.uima.fit.component.ExternalResourceAware;
 import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
@@ -28,23 +28,20 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.SharedResourceObject;
 
+import qa.qcri.iyas.data.preprocessing.refining.PreprocessingRefiningAnnotator;
+
 /**
  * Used by a {@link PreprocessingRefiningAnnotator}, adds additional information (meta-information) JCaes.
  * 
  * @author Salvatore Romeo
  *
  */
-public abstract class PreprocessingRefiner  implements SharedResourceObject, ExternalResourceAware {
+public abstract class JCasDecorator  implements SharedResourceObject, ExternalResourceAware {
 
 	@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
 	private String resourceName;
 	
-	/**
-	 * Adds additional information (meta-information) the specified JCas.
-	 * @param jcas JCas where to add the additional information (meta-information)
-	 * @throws ResourceProcessException
-	 */
-	public abstract void refine(JCas jcas) throws ResourceProcessException;
+	public abstract void decorate(JCas jcas) throws ResourceProcessException;
 	
 	@Override
 	public void load(DataResource data) throws ResourceInitializationException {
