@@ -40,7 +40,7 @@
       <featureDescription>
           <name>labels</name>
           <description/>
-          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
       <featureDescription>
           <name>rank</name>
@@ -62,7 +62,7 @@
       <featureDescription>
           <name>labels</name>
           <description/>
-          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
         </featureDescription>
       <featureDescription>
           <name>rank</name>

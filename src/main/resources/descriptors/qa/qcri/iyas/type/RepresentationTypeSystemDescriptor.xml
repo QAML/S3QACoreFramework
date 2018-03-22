@@ -124,5 +124,17 @@
         </featureDescription>
       </features>
     </typeDescription>
+  <typeDescription>
+      <name>qa.qcri.iyas.type.representation.Label</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>labels</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
   </types>
 </typeSystemDescription>

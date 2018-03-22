@@ -1,2 +1,3 @@
 classpath*:descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
 classpath*:descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
+classpath*:descriptors/qa/qcri/iyas/type/GeneralTypeSystemDescriptor.xml
