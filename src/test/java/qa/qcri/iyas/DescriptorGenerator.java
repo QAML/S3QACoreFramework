@@ -83,7 +83,7 @@ import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.feature.similarity.TreeKernelSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramContainmentMeasureSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramJaccardMeasureSimilarity;
-import qa.qcri.iyas.learning.LearneringAnnotator;
+import qa.qcri.iyas.learning.LearningAnnotator;
 import qa.qcri.iyas.learning.kelp.KeLPSVMLearner;
 import qa.qcri.iyas.representation.RepresentantationExtractor;
 import qa.qcri.iyas.representation.decorator.CQAPairIdentifierDecorator;
@@ -386,11 +386,11 @@ public class DescriptorGenerator {
 	
 	private static void generateLearningAnnotatorAEDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		AnalysisEngineDescription learningAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
-				LearneringAnnotator.class);
+				LearningAnnotator.class);
 		
 		System.out.println("Generating XML description for LearningAnnotatorAE_Descriptor");
 		ExternalResourceFactory.bindResource(learningAnnotatorAE_Descriptor,
-				LearneringAnnotator.PARAM_LEARNER_RESOURCE, KeLPSVMLearner.class,"",
+				LearningAnnotator.PARAM_LEARNER_RESOURCE, KeLPSVMLearner.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"kelpSVMLearner",
 				KeLPSVMLearner.PARAM_NAME_C_SVM_PARAM,1,
 				KeLPSVMLearner.PARAM_NAME_APPLY_REL_TAGS,true,

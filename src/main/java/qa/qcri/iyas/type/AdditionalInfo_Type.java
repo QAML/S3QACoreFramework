@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Mar 22 08:53:09 CET 2018
+ * Updated by JCasGen Thu Mar 22 14:01:38 CET 2018
  * @generated */
 public class AdditionalInfo_Type extends Annotation_Type {
   /** @generated */
@@ -93,6 +93,30 @@ public class AdditionalInfo_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_requesterID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_instanceID;
+  /** @generated */
+  final int     casFeatCode_instanceID;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getInstanceID(int addr) {
+        if (featOkTst && casFeat_instanceID == null)
+      jcas.throwFeatMissing("instanceID", "qa.qcri.iyas.type.AdditionalInfo");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_instanceID);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setInstanceID(int addr, String v) {
+        if (featOkTst && casFeat_instanceID == null)
+      jcas.throwFeatMissing("instanceID", "qa.qcri.iyas.type.AdditionalInfo");
+    ll_cas.ll_setStringValue(addr, casFeatCode_instanceID, v);}
+    
+  
 
 
 
@@ -116,6 +140,10 @@ public class AdditionalInfo_Type extends Annotation_Type {
  
     casFeat_requesterID = jcas.getRequiredFeatureDE(casType, "requesterID", "uima.cas.String", featOkTst);
     casFeatCode_requesterID  = (null == casFeat_requesterID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_requesterID).getCode();
+
+ 
+    casFeat_instanceID = jcas.getRequiredFeatureDE(casType, "instanceID", "uima.cas.String", featOkTst);
+    casFeatCode_instanceID  = (null == casFeat_instanceID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_instanceID).getCode();
 
   }
 }

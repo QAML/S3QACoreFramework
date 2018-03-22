@@ -38,7 +38,7 @@ import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)
-public class LearneringAnnotator extends JCasMultiplier_ImplBase {
+public class LearningAnnotator extends JCasMultiplier_ImplBase {
 	
 	public final static String PARAM_LEARNER_RESOURCE = "learner";
 	public final static String PARAM_NAME_MODEL_FILE = "modelFile";

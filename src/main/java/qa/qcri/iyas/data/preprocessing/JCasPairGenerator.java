@@ -104,6 +104,9 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 		if (info.getRequesterID() == null)
 			throw new AnalysisEngineProcessException("Requerer ID not set", null);
 		
+		String requesterID = info.getRequesterID();
+		info.removeFromIndexes();
+		
 		try {
 			if (JCasUtil.exists(jcas, InstanceA.class)) {
 				AggregatedJCasManagerTaskA aggrJCasManager = new AggregatedJCasManagerTaskA(jcas);
@@ -115,12 +118,14 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 				
 				for (JCas candidate : aggrJCasManager.getCandidatesJCases()) {
 					
-					Collection<AdditionalInfo> localInfos = JCasUtil.select(jcas, AdditionalInfo.class);
+					Collection<AdditionalInfo> localInfos = JCasUtil.select(candidate, AdditionalInfo.class);
 					if (localInfos.size() != 1)
 						throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+localInfos.size(),null);
 					
 					AdditionalInfo localInfo = localInfos.iterator().next();
-					localInfo.setRequesterID(info.getRequesterID());
+					if (localInfo.getRequesterID() != null)
+						throw new AnalysisEngineProcessException("The reuesterID is expected to be not set",null);
+					localInfo.setRequesterID(requesterID);
 					
 					CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 							null, null);
@@ -145,6 +150,16 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 				JCas questionBody = aggrJCasManager.getUserQuestionBodyJCas();
 				
 				for (JCas candidate : aggrJCasManager.getCandidatesJCases()) {
+					
+					Collection<AdditionalInfo> localInfos = JCasUtil.select(candidate, AdditionalInfo.class);
+					if (localInfos.size() != 1)
+						throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+localInfos.size(),null);
+					
+					AdditionalInfo localInfo = localInfos.iterator().next();
+					if (localInfo.getRequesterID() != null)
+						throw new AnalysisEngineProcessException("The reuesterID is expected to be not set",null);
+					localInfo.setRequesterID(requesterID);
+					
 					CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 							null, null);
 

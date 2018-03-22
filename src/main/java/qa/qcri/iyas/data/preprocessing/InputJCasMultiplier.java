@@ -179,12 +179,13 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 			if (info.getRequesterID() == null)
 				throw new AnalysisEngineProcessException("Requerer Id not set", null);
 			
+			String requesterID = info.getRequesterID();
+			info.removeFromIndexes();
+			
 			Document document = saxBuilder.build(new StringReader(jcas.getDocumentText()));
 			Element root = document.getRootElement();
 			Element instance = root.getChildren().get(0);
-			parseInstance(instance,info.getRequesterID());
-			
-			info.removeFromIndexes();
+			parseInstance(instance,requesterID);
 			
 		} catch (IOException | JDOMException e) {
 			e.printStackTrace();
@@ -218,6 +219,8 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		AdditionalInfo info = new AdditionalInfo(questionJCas);
 		info.setRequesterID(requesterID);
+		info.setIndex(-1);
+		info.setTotalNumberOfExamples(-1);
 		info.addToIndexes();
 		
 		return questionJCas;
@@ -237,6 +240,8 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		AdditionalInfo info = new AdditionalInfo(subjectJCas);
 		info.setRequesterID(requesterID);
+		info.setIndex(-1);
+		info.setTotalNumberOfExamples(-1);
 		info.addToIndexes();
 		
 		return subjectJCas;
@@ -258,6 +263,8 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		AdditionalInfo info = new AdditionalInfo(bodyJCas);
 		info.setRequesterID(requesterID);
+		info.setIndex(-1);
+		info.setTotalNumberOfExamples(-1);
 		info.addToIndexes();
 		
 		return bodyJCas;
@@ -304,7 +311,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		return questionJCas;
 	}
 	
-	private JCas getRelatedQuestionSubject(Element relatedQuestion) {
+	private JCas getRelatedQuestionSubject(Element relatedQuestion,String requesterID) {
 		String id = relatedQuestion.getAttributeValue(DataReader.ID_ATTRIBUTE);
 		String lang = relatedQuestion.getAttributeValue(DataReader.LANG_ATTRIBUTE);
 		
@@ -315,6 +322,12 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		RelatedQuestionSubject subjectAnnotation = new RelatedQuestionSubject(subjectJCas, 0, subject.length());
 		subjectAnnotation.setID(id);
 		subjectAnnotation.addToIndexes();
+		
+		AdditionalInfo info = new AdditionalInfo(subjectJCas);
+		info.setIndex(-1);
+		info.setTotalNumberOfExamples(-1);
+		info.setRequesterID(requesterID);
+		info.addToIndexes();
 		
 		return subjectJCas;
 	}
@@ -414,7 +427,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 				currentElements.removeFirst();
 				status = Status.RELATED_QUESTION_SUBJECT;
 			} else if (status == Status.RELATED_QUESTION_SUBJECT && next.element.getName().equals(DataReader.RELATED_QUESTION_TAG)) {
-				jcas = getRelatedQuestionSubject(next.element);
+				jcas = getRelatedQuestionSubject(next.element,next.requestererID);
 				status = Status.RELATED_QUESTION_BODY;
 			} else if (status == Status.RELATED_QUESTION_BODY && next.element.getName().equals(DataReader.RELATED_QUESTION_TAG)) {
 				jcas = getRelatedQuestionBody(next.element,next.requestererID);

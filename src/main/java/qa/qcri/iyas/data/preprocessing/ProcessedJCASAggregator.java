@@ -32,7 +32,6 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceProcessException;
 
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.cqa.Comment;
@@ -145,9 +144,14 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 			throw new AnalysisEngineProcessException("Requerer ID not set", null);
 		
 		String requesterID = info.getRequesterID();
+		info.setRequesterID(null);
 		
 		if (JCasUtil.exists(jcas, InstanceA.class)) {
 			String relatedQuestionID = getRelatedQuestionID(jcas);
+			
+			if (JCasUtil.exists(jcas, RelatedQuestionBody.class) || JCasUtil.exists(jcas, RelatedQuestionSubject.class))
+				info.removeFromIndexes();
+			
 			try {
 				boolean ready = processedInstancesManager.addJCasToInstanceA(requesterID,relatedQuestionID,jcas);
 				if (ready) {
@@ -165,6 +169,10 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 			}
 		} else if (JCasUtil.exists(jcas, InstanceB.class)) {
 			String userQuestionID = getUserQuestionID(jcas);
+			
+			if (JCasUtil.exists(jcas, UserQuestionBody.class) || JCasUtil.exists(jcas, UserQuestionSubject.class))
+				info.removeFromIndexes();
+			
 			try {
 				boolean ready = processedInstancesManager.addJCasToInstanceB(requesterID,userQuestionID,jcas);
 				if (ready) {
