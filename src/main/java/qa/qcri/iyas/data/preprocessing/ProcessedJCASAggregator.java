@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  
 package qa.qcri.iyas.data.preprocessing;
 
+import java.util.Collection;
 import java.util.LinkedList;
 
 import org.apache.uima.UIMAException;
@@ -33,6 +34,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceProcessException;
 
+import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.InstanceA;
 import qa.qcri.iyas.type.cqa.InstanceB;
@@ -133,13 +135,29 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	//TODO: add release if the JCas are not automatically released when an exception occurs
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		Collection<AdditionalInfo> infos = JCasUtil.select(jcas, AdditionalInfo.class);
+		if (infos.size() != 1)
+			throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+infos.size(),null);
+		
+		AdditionalInfo info = infos.iterator().next();
+		
+		if (info.getRequesterID() == null)
+			throw new AnalysisEngineProcessException("Requerer ID not set", null);
+		
+		String requesterID = info.getRequesterID();
+		
 		if (JCasUtil.exists(jcas, InstanceA.class)) {
 			String relatedQuestionID = getRelatedQuestionID(jcas);
 			try {
-				boolean ready = processedInstancesManager.addJCasToInstanceA(relatedQuestionID,jcas);
+				boolean ready = processedInstancesManager.addJCasToInstanceA(requesterID,relatedQuestionID,jcas);
 				if (ready) {
 					JCas readyJCas = getEmptyJCas();
-					processedInstancesManager.getJCasForInstanceA(relatedQuestionID, readyJCas, true);
+					processedInstancesManager.getJCasForInstanceA(requesterID,relatedQuestionID, readyJCas, true);
+					
+					AdditionalInfo newInfo = new AdditionalInfo(readyJCas);
+					newInfo.setRequesterID(requesterID);
+					newInfo.addToIndexes();
+					
 					pendingJCases.addLast(readyJCas);
 				}
 			} catch (UIMAException e) {
@@ -148,27 +166,33 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 		} else if (JCasUtil.exists(jcas, InstanceB.class)) {
 			String userQuestionID = getUserQuestionID(jcas);
 			try {
-				boolean ready = processedInstancesManager.addJCasToInstanceB(userQuestionID,jcas);
+				boolean ready = processedInstancesManager.addJCasToInstanceB(requesterID,userQuestionID,jcas);
 				if (ready) {
 					JCas readyJCas = getEmptyJCas();
-					processedInstancesManager.getJCasForInstanceB(userQuestionID, readyJCas, true);
+					processedInstancesManager.getJCasForInstanceB(requesterID,userQuestionID, readyJCas, true);
+					
+					AdditionalInfo newInfo = new AdditionalInfo(readyJCas);
+					newInfo.setRequesterID(requesterID);
+					newInfo.addToIndexes();
+					
 					pendingJCases.addLast(readyJCas);
 				}
 			} catch (UIMAException e) {
 				throw new AnalysisEngineProcessException(e);
 			}
 		} else if (JCasUtil.exists(jcas, InstanceC.class)) {
-			String userQuestionID = getUserQuestionID(jcas);
-			try {
-				boolean ready = processedInstancesManager.addJCasToInstanceC(userQuestionID,jcas);
-				if (ready) {
-					JCas readyJCas = getEmptyJCas();
-					processedInstancesManager.getJCasForInstanceC(userQuestionID, readyJCas, true);
-					pendingJCases.addLast(readyJCas);
-				}
-			} catch (ResourceProcessException e) {
-				throw new AnalysisEngineProcessException(e);
-			}
+//			String userQuestionID = getUserQuestionID(jcas);
+//			try {
+//				boolean ready = processedInstancesManager.addJCasToInstanceC(userQuestionID,jcas);
+//				if (ready) {
+//					JCas readyJCas = getEmptyJCas();
+//					processedInstancesManager.getJCasForInstanceC(userQuestionID, readyJCas, true);
+//					pendingJCases.addLast(readyJCas);
+//				}
+//			} catch (ResourceProcessException e) {
+//				throw new AnalysisEngineProcessException(e);
+//			}
+			throw new AnalysisEngineProcessException("Task C currently not supported",null);
 		}
 	}
 

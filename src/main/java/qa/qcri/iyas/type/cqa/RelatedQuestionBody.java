@@ -9,11 +9,14 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 
 
+import org.apache.uima.jcas.cas.StringArray;
+
+
 import org.apache.uima.jcas.cas.StringList;
 
 
 /** 
- * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
+ * Updated by JCasGen Thu Mar 22 09:14:35 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/CQATypeSystemDescriptor.xml
  * @generated */
 public class RelatedQuestionBody extends QAAnnotation {
@@ -129,19 +132,41 @@ public class RelatedQuestionBody extends QAAnnotation {
    * @generated
    * @return value of the feature 
    */
-  public StringList getLabels() {
+  public StringArray getLabels() {
     if (RelatedQuestionBody_Type.featOkTst && ((RelatedQuestionBody_Type)jcasType).casFeat_labels == null)
       jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
-    return (StringList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels)));}
+    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels)));}
     
   /** setter for labels - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setLabels(StringList v) {
+  public void setLabels(StringArray v) {
     if (RelatedQuestionBody_Type.featOkTst && ((RelatedQuestionBody_Type)jcasType).casFeat_labels == null)
       jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     jcasType.ll_cas.ll_setRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels, jcasType.ll_cas.ll_getFSRef(v));}    
+    
+  /** indexed getter for labels - gets an indexed value - 
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
+   */
+  public String getLabels(int i) {
+    if (RelatedQuestionBody_Type.featOkTst && ((RelatedQuestionBody_Type)jcasType).casFeat_labels == null)
+      jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
+    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels), i);
+    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels), i);}
+
+  /** indexed setter for labels - sets an indexed value - 
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
+   */
+  public void setLabels(int i, String v) { 
+    if (RelatedQuestionBody_Type.featOkTst && ((RelatedQuestionBody_Type)jcasType).casFeat_labels == null)
+      jcasType.jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
+    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels), i);
+    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((RelatedQuestionBody_Type)jcasType).casFeatCode_labels), i, v);}
    
     
   //*--------------*

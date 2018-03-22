@@ -10,7 +10,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
+ * Updated by JCasGen Tue Mar 20 16:27:12 CET 2018
  * @generated */
 public class Tree_Type extends Representation_Type {
   /** @generated */

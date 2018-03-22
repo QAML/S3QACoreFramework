@@ -1,25 +1,25 @@
 
 
-/* First created by JCasGen Mon Mar 19 07:46:39 CET 2018 */
-package qa.qcri.iyas.type.representation;
+/* First created by JCasGen Wed Mar 21 14:30:44 CET 2018 */
+package qa.qcri.iyas.type;
 
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Mar 20 16:27:12 CET 2018
- * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
+ * Updated by JCasGen Thu Mar 22 08:53:09 CET 2018
+ * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/GeneralTypeSystemDescriptor.xml
  * @generated */
-public class SparseVector extends Representation {
+public class Model extends Annotation {
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(SparseVector.class);
+  public final static int typeIndexID = JCasRegistry.register(Model.class);
   /** @generated
    * @ordered 
    */
@@ -33,14 +33,14 @@ public class SparseVector extends Representation {
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected SparseVector() {/* intentionally empty block */}
+  protected Model() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
    * @param type the type of this Feature Structure 
    */
-  public SparseVector(int addr, TOP_Type type) {
+  public Model(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
@@ -48,7 +48,7 @@ public class SparseVector extends Representation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public SparseVector(JCas jcas) {
+  public Model(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -58,7 +58,7 @@ public class SparseVector extends Representation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public SparseVector(JCas jcas, int begin, int end) {
+  public Model(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
@@ -77,25 +77,25 @@ public class SparseVector extends Representation {
  
     
   //*--------------*
-  //* Feature: features
+  //* Feature: file
 
-  /** getter for features - gets 
+  /** getter for file - gets 
    * @generated
    * @return value of the feature 
    */
-  public NonEmptyFSList getFeatures() {
-    if (SparseVector_Type.featOkTst && ((SparseVector_Type)jcasType).casFeat_features == null)
-      jcasType.jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.SparseVector");
-    return (NonEmptyFSList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((SparseVector_Type)jcasType).casFeatCode_features)));}
+  public String getFile() {
+    if (Model_Type.featOkTst && ((Model_Type)jcasType).casFeat_file == null)
+      jcasType.jcas.throwFeatMissing("file", "qa.qcri.iyas.type.Model");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((Model_Type)jcasType).casFeatCode_file);}
     
-  /** setter for features - sets  
+  /** setter for file - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setFeatures(NonEmptyFSList v) {
-    if (SparseVector_Type.featOkTst && ((SparseVector_Type)jcasType).casFeat_features == null)
-      jcasType.jcas.throwFeatMissing("features", "qa.qcri.iyas.type.representation.SparseVector");
-    jcasType.ll_cas.ll_setRefValue(addr, ((SparseVector_Type)jcasType).casFeatCode_features, jcasType.ll_cas.ll_getFSRef(v));}    
+  public void setFile(String v) {
+    if (Model_Type.featOkTst && ((Model_Type)jcasType).casFeat_file == null)
+      jcasType.jcas.throwFeatMissing("file", "qa.qcri.iyas.type.Model");
+    jcasType.ll_cas.ll_setStringValue(addr, ((Model_Type)jcasType).casFeatCode_file, v);}    
   }
 
     

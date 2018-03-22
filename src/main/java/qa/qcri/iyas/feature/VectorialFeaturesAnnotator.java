@@ -16,7 +16,7 @@
  */
  
  
-package qa.qcri.iyas.feature.similarity;
+package qa.qcri.iyas.feature;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UimaContext;
@@ -29,13 +29,14 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.type.representation.DenseVector;
 
 @OperationalProperties(modifiesCas = true, outputsNewCases = false, multipleDeploymentAllowed = true)
 @SofaCapability(
 		inputSofas = {"_InitialView",JCasPairGenerator.LEFT_CAS_VIEW,JCasPairGenerator.RIGHT_CAS_VIEW}
 )
-public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
+public class VectorialFeaturesAnnotator extends JCasAnnotator_ImplBase  {
 	
 	public final static String PARAM_NAME_SIMILARITIES = "similarities";
 	public final static String PARAM_NAME_OUT_VECTOR_NAME = "vector_name";
@@ -51,9 +52,6 @@ public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			JCas leftJCas = jcas.getView(JCasPairGenerator.LEFT_CAS_VIEW);
-			JCas rightJCas = jcas.getView(JCasPairGenerator.RIGHT_CAS_VIEW);
-			
 			UimaContext context = getContext();
 			
 			DenseVector simVector = new DenseVector(jcas);
@@ -61,11 +59,11 @@ public class SimilarityAnnotator extends JCasAnnotator_ImplBase  {
 			simVector.setFeatures(new DoubleArray(jcas,similarities.length));
 			for (int i=0;i<similarities.length;i++) {
 				Object obj = context.getResourceObject(similarities[i]);
-				SimilarityMeasure sim = null;
+				Feature feature = null;
 				if (obj instanceof SimilarityMeasure)
-					sim = (SimilarityMeasure)obj;
+					feature = (SimilarityMeasure)obj;
 				
-				double simValue = sim.getSimilarityValue(leftJCas, rightJCas);
+				double simValue = feature.getValue(jcas);
 				simVector.setFeatures(i, simValue);
 			}
 			simVector.addToIndexes();

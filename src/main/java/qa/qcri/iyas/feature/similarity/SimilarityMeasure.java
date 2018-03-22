@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.feature.Feature;
 
 /**
  * Given two JCases, a {@link SimilarityMeasure} computes a similarity based on the content and the annotations in the JCases.

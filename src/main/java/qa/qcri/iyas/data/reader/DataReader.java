@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,8 @@ public abstract class DataReader extends Resource_ImplBase {
 	public static final String RANK_ATTRIBUTE = "rank";
 	public static final String COMMENT_TAG = "comment";
 	public static final String ID_ATTRIBUTE = "id";
+	public static final String INDEX_ATTRIBUTE = "index";
+	public static final String TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE = "totalNumberExamples";
 	public static final String LANG_ATTRIBUTE = "lang";
 	public static final String NUMBER_OF_CANDIDATES_ATTRIBUTE = "numberOfCandidates";
 	public static final String RELEVANCE_ATTRIBUTE = "relevance";

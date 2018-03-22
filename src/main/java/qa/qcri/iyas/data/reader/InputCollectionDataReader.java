@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,15 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.Session;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaderXSDFactory;
+
+import qa.qcri.iyas.type.AdditionalInfo;
 
 /**
  * 
@@ -50,6 +54,8 @@ import org.jdom2.input.sax.XMLReaderXSDFactory;
 public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	
 	public static final String INPUT_READER_PARAM = "InputReader";
+	
+	private static String identifier;
 
 	@ExternalResource(key = INPUT_READER_PARAM)
 	private DataReader reader;
@@ -65,6 +71,10 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	
 	@Override
 	public void getNext(JCas jcas) throws IOException, CollectionException {
+		if (identifier == null) {
+			identifier = ""+System.currentTimeMillis();
+		}
+		
 		try {
 			File schemaFile = null;
 			if (reader.getTask().equals(DataReader.INSTANCE_A_TASK))
@@ -78,16 +88,14 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
 					schemaFile);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
-
-			String nextStr = reader.next();
-			
+			String nextStr = reader.next();			
 			saxBuilder.build(new StringReader(nextStr));
-//			System.out.println(nextStr);
-//			
-//			System.exit(0);
+
+			AdditionalInfo info = new AdditionalInfo(jcas);
+			info.setRequesterID(identifier);
+			info.addToIndexes();
 			
 			jcas.setDocumentText(nextStr);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CollectionException();

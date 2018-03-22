@@ -1,5 +1,5 @@
 /**
- * Copyright 201 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  *  
  */
-
-
-package qa.qcri.iyas.feature.similarity;
+ 
+ 
+package qa.qcri.iyas.feature;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.fit.component.ExternalResourceAware;
@@ -45,7 +45,7 @@ public abstract class Feature implements SharedResourceObject, ExternalResourceA
 
 	@Override
 	public void afterResourcesInitialized() throws ResourceInitializationException {
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>   Created "+resourceName);
+		
 	}
 	
 	public abstract double getValue(JCas jcas) throws UIMAException;

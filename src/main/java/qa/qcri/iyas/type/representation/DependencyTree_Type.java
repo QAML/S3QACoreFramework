@@ -8,7 +8,7 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 
 /** 
- * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
+ * Updated by JCasGen Tue Mar 20 16:27:12 CET 2018
  * @generated */
 public class DependencyTree_Type extends Tree_Type {
   /** @generated */

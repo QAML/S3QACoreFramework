@@ -1,5 +1,5 @@
 /**
- * Copyright 201 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  *  
  */
-
-
+ 
+ 
 package qa.qcri.iyas.data.preprocessing;
 
+import java.util.Collection;
 import java.util.LinkedList;
 
 import org.apache.uima.UIMAException;
@@ -25,7 +26,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -36,6 +36,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 
+import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.cqa.InstanceA;
 import qa.qcri.iyas.type.cqa.InstanceB;
 import qa.qcri.iyas.util.AggregatedJCasManagerTaskA;
@@ -93,6 +94,16 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		
+		Collection<AdditionalInfo> infos = JCasUtil.select(jcas, AdditionalInfo.class);
+		if (infos.size() != 1)
+			throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+infos.size(),null);
+		
+		AdditionalInfo info = infos.iterator().next();
+		
+		if (info.getRequesterID() == null)
+			throw new AnalysisEngineProcessException("Requerer ID not set", null);
+		
 		try {
 			if (JCasUtil.exists(jcas, InstanceA.class)) {
 				AggregatedJCasManagerTaskA aggrJCasManager = new AggregatedJCasManagerTaskA(jcas);
@@ -103,6 +114,14 @@ public class JCasPairGenerator extends JCasMultiplier_ImplBase {
 				JCas questionBody = aggrJCasManager.getRelatedQuestionBodyJCas();
 				
 				for (JCas candidate : aggrJCasManager.getCandidatesJCases()) {
+					
+					Collection<AdditionalInfo> localInfos = JCasUtil.select(jcas, AdditionalInfo.class);
+					if (localInfos.size() != 1)
+						throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+localInfos.size(),null);
+					
+					AdditionalInfo localInfo = localInfos.iterator().next();
+					localInfo.setRequesterID(info.getRequesterID());
+					
 					CAS cas = CasCreationUtils.createCas(TypeSystemDescriptionFactory.createTypeSystemDescription(),
 							null, null);
 

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.reader.DataReader;
+import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.cqa.InstanceA;
 import qa.qcri.iyas.type.cqa.InstanceB;
 import qa.qcri.iyas.type.cqa.UserQuestion;
@@ -115,7 +117,11 @@ public class MyStatusCallbackListenerAggregatedJCasTaskB extends UimaAsBaseCallb
 						
 						System.out.println("Removed "+id);
 					}
-				} else if (annotations.size() == 2) {
+				} else if (annotations.size() == 3) {
+					Collection<AdditionalInfo> infos = JCasUtil.select(cas.getJCas(), AdditionalInfo.class);
+					if (infos.size() != 1)
+						fail("Expected an AdditionalInfo annotation, found "+infos.size());
+					
 					if (!(JCasUtil.exists(cas.getJCas(), UserQuestion.class) && 
 							JCasUtil.exists(cas.getJCas(), InstanceB.class))) {
 						StringBuilder sb = new StringBuilder();

@@ -1,3 +1,20 @@
+/**
+ * Copyright 2018 Salvatore Romeo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *  
+ */
+
 package qa.qcri.iyas.feature;
 
 import java.io.BufferedWriter;
@@ -32,10 +49,10 @@ import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 
-public class FeatureExtractionTest {
+public class LearningTest {
 
 	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(
+		DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 	}
@@ -124,7 +141,7 @@ public class FeatureExtractionTest {
 		return collectionReaderDescr;
 	}
 	
-	private void runTestTaskA(boolean concatenate,String inputFile) throws Exception {
+	private String runTestTaskA(boolean concatenate,String inputFile) throws Exception {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -154,6 +171,7 @@ public class FeatureExtractionTest {
 		
 		uimaAsEngine.stop();
 		
+		return listenerA.file;
 	}
 	
 	private void runTestTaskB(boolean concatenate,String inputFile) throws Exception {
@@ -191,7 +209,7 @@ public class FeatureExtractionTest {
 	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
 		String inputJCasMultiplierAEDescriptor = 
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml";
+						+ "/LearningPipelineAAE_DeploymentDescriptor.xml";
 		
 		// create a Map to hold required parameters
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -220,12 +238,16 @@ public class FeatureExtractionTest {
 		String id = deployPipeline(uimaAsEngine);
 		
 		String file = generateInputTestFile(true);
-		runTestTaskA(true, file);
-		runTestTaskB(true, file);
+		String model =runTestTaskA(true, file);
+		System.out.println("Model file: "+model);
+
+//		runTestTaskB(true, file);
 		undeployPipeline(id,uimaAsEngine);
 
 		Thread.sleep(100);
 		uimaAsEngine.stop();
 		broker.stop();
+		
 	}
 }
+

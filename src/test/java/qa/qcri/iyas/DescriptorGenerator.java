@@ -72,17 +72,19 @@ import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
 import qa.qcri.iyas.feature.MyAnnotator;
 import qa.qcri.iyas.feature.PreprocessingPipelineConcatenatedTest;
+import qa.qcri.iyas.feature.VectorialFeaturesAnnotator;
 import qa.qcri.iyas.feature.similarity.CosineBowSimilarity;
 import qa.qcri.iyas.feature.similarity.CosineTokenSimilarity;
 import qa.qcri.iyas.feature.similarity.GreedyStringTilingSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubsequenceComparatorSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubsequenceNormComparatorSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubstringComparatorSimilarity;
-import qa.qcri.iyas.feature.similarity.SimilarityAnnotator;
 import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.feature.similarity.TreeKernelSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramContainmentMeasureSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramJaccardMeasureSimilarity;
+import qa.qcri.iyas.learning.LearneringAnnotator;
+import qa.qcri.iyas.learning.kelp.KeLPSVMLearner;
 import qa.qcri.iyas.representation.RepresentantationExtractor;
 import qa.qcri.iyas.representation.decorator.CQAPairIdentifierDecorator;
 import qa.qcri.iyas.representation.decorator.DecorationAnnotator;
@@ -101,7 +103,6 @@ public class DescriptorGenerator {
 	
 	private static void saveDescriptor(Document descriptor, String file) throws IOException {
 		XMLOutputter xmlOut = new XMLOutputter();
-		System.out.print(xmlOut.outputString(descriptor));
 		BufferedWriter out = new BufferedWriter(
 				new OutputStreamWriter(new FileOutputStream(file)));
 		out.write(xmlOut.outputString(descriptor));
@@ -146,49 +147,49 @@ public class DescriptorGenerator {
 		
 		String simName = null;
 		
-		for(int[] interval : lemmaIntervals) {
-			simName = "CosineBowSimilarity-Lemmas-NoStopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-			
-			ExternalResourceFactory.bindResource(descr,
-					simName, CosineBowSimilarity.class,"",
-					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
-					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
-			
-			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-			
-			ExternalResourceFactory.bindResource(descr,
-					simName, CosineBowSimilarity.class,"",
-					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
-					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
-		}
-		
-		
-		for(int[] interval : posIntervals) {
-			simName = "CosineBowSimilarity-POSTags-NoStopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-			
-			ExternalResourceFactory.bindResource(descr,
-					simName, CosineBowSimilarity.class,"",
-					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
-					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_POSTAGS);
-		}
+//		for(int[] interval : lemmaIntervals) {
+//			simName = "CosineBowSimilarity-Lemmas-NoStopwording-"+interval[0]+"-"+interval[1];
+//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+//			
+//			ExternalResourceFactory.bindResource(descr,
+//					simName, CosineBowSimilarity.class,"",
+//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
+//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+//			
+//			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
+//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+//			
+//			ExternalResourceFactory.bindResource(descr,
+//					simName, CosineBowSimilarity.class,"",
+//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+//		}
+//		
+//		
+//		for(int[] interval : posIntervals) {
+//			simName = "CosineBowSimilarity-POSTags-NoStopwording-"+interval[0]+"-"+interval[1];
+//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+//			
+//			ExternalResourceFactory.bindResource(descr,
+//					simName, CosineBowSimilarity.class,"",
+//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
+//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_POSTAGS);
+//		}
 		
 		
 		simName = "GreedyStringTilingSimilarity";
@@ -290,8 +291,8 @@ public class DescriptorGenerator {
 	
 	public static void generateSimsAEDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		AnalysisEngineDescription similarityAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
-				SimilarityAnnotator.class,
-				SimilarityAnnotator.PARAM_NAME_OUT_VECTOR_NAME,"qq-sims");
+				VectorialFeaturesAnnotator.class,
+				VectorialFeaturesAnnotator.PARAM_NAME_OUT_VECTOR_NAME,"qq-sims");
 		
 		List<ExternalResourceDependency> dependencyList = bindSimilarities(similarityAnnotatorAE_Descriptor);
 		String resouceNames[] = new String[dependencyList.size()];
@@ -301,7 +302,7 @@ public class DescriptorGenerator {
 		}
 		
 		ConfigurationParameterFactory.addConfigurationParameter(similarityAnnotatorAE_Descriptor, 
-				SimilarityAnnotator.PARAM_NAME_SIMILARITIES, resouceNames);
+				VectorialFeaturesAnnotator.PARAM_NAME_SIMILARITIES, resouceNames);
 		
 		similarityAnnotatorAE_Descriptor.toXML(
 				new FileOutputStream(root_folder+"/test/SimilarityAnnotatorAE_Descriptor.xml"));
@@ -380,6 +381,55 @@ public class DescriptorGenerator {
 		
 	    decoratorrAAE.toXML(
 				new FileOutputStream(root_folder+"/test/DecorationAnnotatorAAE_Descriptor.xml"));		
+		
+	}
+	
+	private static void generateLearningAnnotatorAEDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		AnalysisEngineDescription learningAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+				LearneringAnnotator.class);
+		
+		System.out.println("Generating XML description for LearningAnnotatorAE_Descriptor");
+		ExternalResourceFactory.bindResource(learningAnnotatorAE_Descriptor,
+				LearneringAnnotator.PARAM_LEARNER_RESOURCE, KeLPSVMLearner.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,"kelpSVMLearner",
+				KeLPSVMLearner.PARAM_NAME_C_SVM_PARAM,1,
+				KeLPSVMLearner.PARAM_NAME_APPLY_REL_TAGS,true,
+				KeLPSVMLearner.PARAM_NAME_TREE_KERNEL,"tree",
+				KeLPSVMLearner.PARAM_NAME_SIMS_KERNEL,"qq-sims");
+
+		learningAnnotatorAE_Descriptor.toXML(
+				new FileOutputStream(root_folder+"/test/LearningAnnotatorAE_Descriptor.xml"));
+		
+	}
+	
+	private static void generateLearningAnnotatorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		new File(root_folder+"/test").mkdirs();
+		
+		generateLearningAnnotatorAEDescriptor(root_folder);
+		
+		System.out.println("Generating XML description for LearningAnnotatorAAE_Descriptor");
+		AnalysisEngineDescription learningAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		learningAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		learningAnnotatorAAE.setPrimitive(false);
+
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		Import learningAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		learningAnnotatorAEImport.setName("descriptors.test.LearningAnnotatorAE_Descriptor");
+		learningAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LearningAnnotatorAE", learningAnnotatorAEImport);
+		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("LearningAnnotatorAE");
+		
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    learningAnnotatorAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    learningAnnotatorAAE.toXML(
+				new FileOutputStream(root_folder+"/test/LearningAnnotatorAAE_Descriptor.xml"));		
 		
 	}
 	
@@ -608,7 +658,7 @@ public class DescriptorGenerator {
 		System.out.println("Generating XML description for InputJCasMultiplierAE_Descriptor");
 		AnalysisEngineDescription inputJCasMultiplierAEDescriptor = AnalysisEngineFactory.createEngineDescription(
 				InputJCasMultiplier.class,
-				InputJCasMultiplier.CONCATENATE_PARAM,new Boolean(concatenate));
+				InputJCasMultiplier.CONCATENATE_PARAM,concatenate);
 		ExternalResourceFactory.bindResource(inputJCasMultiplierAEDescriptor,
 				InputJCasMultiplier.PREPROCESSOR_EXTERNAL_RESOURCE, StandardPreprocessor.class);
 		inputJCasMultiplierAEDescriptor.toXML(
@@ -620,7 +670,7 @@ public class DescriptorGenerator {
 		inputJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		inputJCasMultiplierAAE.setPrimitive(false);
 
-		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
 		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
 		inputJCasMultiplierAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
 		
@@ -1169,8 +1219,173 @@ public class DescriptorGenerator {
 		saveDescriptor(descriptor, root_folder+"/test/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
 	}
 	
-	public static void main(String args[]) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		generateFeatureExtractionPipelineDeploymentDescriptor(
-				new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+	private static void generateLearningPipelineDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
+		new File(root_folder+"/test").mkdirs();
+		
+		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",true);
+		DescriptorGenerator.generateStandardTextAnnotatorDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateFeatureComputerDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateDecorationAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		DescriptorGenerator.generateLearningAnnotatorAAEDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		param.setType("String");
+		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		parameters.addConfigurationParameter(param);
+		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+		
+		
+		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		inputJCasMultiplierAEImport.setName("descriptors.test.InputJCasMultiplierAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE", inputJCasMultiplierAEImport);
+		
+		Import standardTextAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		standardTextAnnotatorAEImport.setName("descriptors.test.StandardTextAnnotator_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotator", standardTextAnnotatorAEImport);
+		
+		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		processedJCasMultiplierAEImport.setName("descriptors.test.ProcessedJCASAggregatorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE", processedJCasMultiplierAEImport);
+		
+		Import jcasPairGeneratorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		jcasPairGeneratorAEImport.setName("descriptors.test.JCasPairGeneratorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("JCasPairGeneratorAAE", jcasPairGeneratorAEImport);
+		
+		Import featureComputerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		featureComputerAEImport.setName("descriptors.test.FeatureComputer_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureComputer", featureComputerAEImport);
+		
+		Import decorationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		decorationAEImport.setName("descriptors.test.DecorationAnnotatorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("DecorationAnnotatorAAE", decorationAEImport);
+		
+		Import representationExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		representationExtractionAEImport.setName("descriptors.test.KeLPRepresentationExtractorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("KeLPRepresentationExtractorAAE", representationExtractionAEImport);
+		
+		Import learningAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		learningAEImport.setName("descriptors.test.LearningAnnotatorAAE_Descriptor");
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LearningAnnotatorAAE", learningAEImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("InputJCasMultiplierAAE");
+		flowNames.add("StandardTextAnnotator");
+		flowNames.add("ProcessedJCASAggregatorAAE");
+		flowNames.add("JCasPairGeneratorAAE");
+		flowNames.add("FeatureComputer");
+		flowNames.add("DecorationAnnotatorAAE");
+		flowNames.add("KeLPRepresentationExtractorAAE");
+		flowNames.add("LearningAnnotatorAAE");
+
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/test/LearningPipelineAAE_Descriptor.xml").getAbsolutePath()));	
+	    
 	}
+	
+	public static void generateLearningPipelineDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
+		new File(root_folder+"/test").mkdirs();
+		
+		DescriptorGenerator.generateLearningPipelineDescriptor(
+				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+		
+		System.out.println("Generating XML description for LearningPipelineAAE_DeploymentDescriptor");
+		ServiceContext pipelineContext = new ServiceContextImpl("Learning", 
+							           "LearningPipelineAAE_Descriptor",
+							           "descriptors.test.LearningPipelineAAE_Descriptor", 
+							           "myQueueName", "tcp://localhost:61616");
+		pipelineContext.setCasPoolSize(10);
+		
+		
+		ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
+		delegate11.setCasMultiplier(true);
+		delegate11.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
+
+
+		ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+		ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
+				delegate21});
+		
+		ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
+		delegate31.setCasMultiplier(true);
+		delegate31.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate31});
+		
+		ColocatedDelegateConfiguration delegate41 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAE", new DelegateConfiguration[0]);
+		delegate41.setCasMultiplier(true);
+		delegate41.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd4 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAAE", new DelegateConfiguration[]{delegate41});
+		
+		ColocatedDelegateConfiguration delegate51 = new ColocatedDelegateConfigurationImpl("FeatureComputerAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+		ColocatedDelegateConfiguration spCldd5 = new ColocatedDelegateConfigurationImpl("FeatureComputer", new DelegateConfiguration[]{delegate51});
+		
+		ColocatedDelegateConfiguration delegate61 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+		ColocatedDelegateConfiguration spCldd6 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAAE", new DelegateConfiguration[]{delegate61});
+
+		ColocatedDelegateConfiguration delegate71 = new ColocatedDelegateConfigurationImpl("KeLPRepresentationExtractorAE", new DelegateConfiguration[0]);
+		delegate71.setCasMultiplier(true);
+		delegate71.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd7 = new ColocatedDelegateConfigurationImpl("KeLPRepresentationExtractorAAE", new DelegateConfiguration[]{delegate71});
+		
+		ColocatedDelegateConfiguration delegate81 = new ColocatedDelegateConfigurationImpl("LearningAnnotatorAE", new DelegateConfiguration[0]);
+		delegate81.setCasMultiplier(true);
+		delegate81.setCasPoolSize(10);
+		ColocatedDelegateConfiguration spCldd8 = new ColocatedDelegateConfigurationImpl("LearningAnnotatorAAE", new DelegateConfiguration[]{delegate81});
+		
+		UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
+				pipelineContext,spCldd1,spCldd2,spCldd3,spCldd4,spCldd5,spCldd6,spCldd7,spCldd8);
+		
+		BufferedWriter out = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(root_folder+"/test/LearningPipelineAAE_DeploymentDescriptor.xml")));
+		out.write(spdd.toXML());
+		out.close();
+		
+		
+		Document descriptor = loadDescriptor(root_folder+"/test/LearningPipelineAAE_DeploymentDescriptor.xml");
+		addScaleoutElement(descriptor, "StandardTextAnnotator");
+		addScaleoutElement(descriptor, "FeatureComputer");
+		saveDescriptor(descriptor, root_folder+"/test/LearningPipelineAAE_DeploymentDescriptor.xml");
+	}
+	
+//	public static void main(String args[]) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
+//		generateFeatureExtractionPipelineDeploymentDescriptor(
+//				new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
+//	}
 }

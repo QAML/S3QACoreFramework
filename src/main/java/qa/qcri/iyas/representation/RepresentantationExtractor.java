@@ -1,5 +1,5 @@
 /**
- * Copyright 201 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,29 @@
 
 package qa.qcri.iyas.representation;
 
+import java.util.Collection;
+
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasMultiplier_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.ResourceProcessException;
+import org.apache.uima.resource.Session;
+import org.uimafit.util.JCasUtil;
+
+import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.type.AdditionalInfo;
+import qa.qcri.iyas.type.cqa.Comment;
+import qa.qcri.iyas.type.cqa.InstanceA;
+import qa.qcri.iyas.type.cqa.InstanceB;
+import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
+import qa.qcri.iyas.type.representation.Label;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)
 //@TypeCapability(
@@ -73,10 +88,43 @@ public class RepresentantationExtractor extends JCasMultiplier_ImplBase {
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			String repr = serializer.serialize(jcas);
 			pendingJCas = getEmptyJCas();
+			JCas rightJCas = jcas.getView(JCasPairGenerator.RIGHT_CAS_VIEW);
+			
+			Collection<AdditionalInfo> infos = JCasUtil.select(rightJCas, AdditionalInfo.class);
+			if (infos.size() != 1)
+				throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+infos.size(),null);
+			
+			AdditionalInfo info = infos.iterator().next();
+			
+			AdditionalInfo newInfo = new AdditionalInfo(pendingJCas);
+			newInfo.setRequesterID(info.getRequesterID());
+			newInfo.setIndex(info.getIndex());
+			newInfo.setTotalNumberOfExamples(info.getTotalNumberOfExamples());
+			newInfo.addToIndexes();
+			
+			if (info.getRequesterID() == null)
+				throw new AnalysisEngineProcessException("Requerer Id not set", null);
+
+			if (JCasUtil.exists(jcas, InstanceA.class)) {
+				Comment comment = JCasUtil.select(rightJCas, Comment.class).iterator().next();
+				
+				Label label = new Label(rightJCas);
+				label.setLabels(comment.getLabels());
+				label.addToIndexes();
+				
+			} else if (JCasUtil.exists(jcas, InstanceB.class)) {
+				RelatedQuestionBody question = JCasUtil.select(rightJCas, RelatedQuestionBody.class).iterator().next();
+				
+				Label label = new Label(rightJCas);
+				label.setLabels(question.getLabels());
+				label.addToIndexes();
+			}
+			
+			String repr = serializer.serialize(jcas);
+			
 			pendingJCas.setDocumentText(repr);
-		} catch (ResourceProcessException e) {
+		} catch (ResourceProcessException | CASException e) {
 			throw new AnalysisEngineProcessException(e);
 		}
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -516,12 +516,13 @@ public class ProcessedInstancesManager implements SharedResourceObject, External
 	private Map<String,AggregatedJCasManagerTaskB> instancesB = new HashMap<String,AggregatedJCasManagerTaskB>();
 	private Map<String,ProcessedInstanceC> instancesC = new HashMap<String,ProcessedInstanceC>();
 	
-	public boolean addJCasToInstanceA(String id,JCas jcas) throws ResourceProcessException {
+	public boolean addJCasToInstanceA(String requesterID, String id,JCas jcas) throws ResourceProcessException {
 		synchronized (instancesA) {
-			if (instancesA.get(id) == null)
-				instancesA.put(id, new AggregatedJCasManagerTaskA());
+			String globalID = requesterID+id;
+			if (instancesA.get(globalID) == null)
+				instancesA.put(globalID, new AggregatedJCasManagerTaskA());
 			
-			AggregatedJCasManagerTaskA manager = instancesA.get(id);
+			AggregatedJCasManagerTaskA manager = instancesA.get(globalID);
 			
 			try { 
 				if (JCasUtil.exists(jcas, RelatedQuestionSubject.class))
@@ -540,20 +541,22 @@ public class ProcessedInstancesManager implements SharedResourceObject, External
 		}
 	}
 	
-	public void getJCasForInstanceA(String id, JCas jcas, boolean remove) throws UIMAException {
+	public void getJCasForInstanceA(String requesterID, String id, JCas jcas, boolean remove) throws UIMAException {
 		synchronized (instancesA) {
-			instancesA.get(id).getAggregatedJCas(jcas);
+			String globalID = requesterID+id;
+			instancesA.get(globalID).getAggregatedJCas(jcas);
 			if (remove)
-				instancesA.remove(id);
+				instancesA.remove(globalID);
 		}
 	}
 	
-	public boolean addJCasToInstanceB(String id,JCas jcas) throws ResourceProcessException {
+	public boolean addJCasToInstanceB(String requesterID, String id,JCas jcas) throws ResourceProcessException {
 		synchronized (instancesB) {
-			if (instancesB.get(id) == null)
-				instancesB.put(id, new AggregatedJCasManagerTaskB());
+			String globalID = requesterID+id;
+			if (instancesB.get(globalID) == null)
+				instancesB.put(globalID, new AggregatedJCasManagerTaskB());
 			
-			AggregatedJCasManagerTaskB manager = instancesB.get(id);
+			AggregatedJCasManagerTaskB manager = instancesB.get(globalID);
 			
 			try { 
 				if (JCasUtil.exists(jcas, UserQuestionSubject.class))
@@ -573,30 +576,31 @@ public class ProcessedInstancesManager implements SharedResourceObject, External
 		}
 	}
 	
-	public void getJCasForInstanceB(String id, JCas jcas, boolean remove) throws UIMAException {
+	public void getJCasForInstanceB(String requesterID, String id, JCas jcas, boolean remove) throws UIMAException {
 		synchronized (instancesB) {
-			instancesB.get(id).getAggregatedJCas(jcas);
+			String globalID = requesterID+id;
+			instancesB.get(globalID).getAggregatedJCas(jcas);
 			if (remove)
-				instancesB.remove(id);
+				instancesB.remove(globalID);
 		}
 	}
 	
-	public boolean addJCasToInstanceC(String id,JCas jcas) throws ResourceProcessException {
-		synchronized (instancesC) {
-			if (instancesC.get(id) == null)
-				instancesC.put(id, new ProcessedInstanceC());
-			
-			return instancesC.get(id).addJCas(jcas);
-		}
-	}
-	
-	public void getJCasForInstanceC(String id, JCas jcas, boolean remove) throws ResourceProcessException {
-		synchronized (instancesC) {
-			instancesC.get(id).getAggregatedJCas(jcas);
-			if (remove)
-				instancesC.remove(id);
-		}
-	}
+//	public boolean addJCasToInstanceC(String id,JCas jcas) throws ResourceProcessException {
+//		synchronized (instancesC) {
+//			if (instancesC.get(id) == null)
+//				instancesC.put(id, new ProcessedInstanceC());
+//			
+//			return instancesC.get(id).addJCas(jcas);
+//		}
+//	}
+//	
+//	public void getJCasForInstanceC(String id, JCas jcas, boolean remove) throws ResourceProcessException {
+//		synchronized (instancesC) {
+//			instancesC.get(id).getAggregatedJCas(jcas);
+//			if (remove)
+//				instancesC.remove(id);
+//		}
+//	}
 	
 	@Override
 	public void load(DataResource data) throws ResourceInitializationException {

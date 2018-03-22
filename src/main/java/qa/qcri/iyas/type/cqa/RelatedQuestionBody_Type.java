@@ -10,7 +10,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
 /** 
- * Updated by JCasGen Sun Mar 11 09:42:29 CET 2018
+ * Updated by JCasGen Thu Mar 22 09:14:35 CET 2018
  * @generated */
 public class RelatedQuestionBody_Type extends QAAnnotation_Type {
   /** @generated */
@@ -91,7 +91,34 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
       jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
     ll_cas.ll_setRefValue(addr, casFeatCode_labels, v);}
     
-  
+   /** @generated
+   * @param addr low level Feature Structure reference
+   * @param i index of item in the array
+   * @return value at index i in the array 
+   */
+  public String getLabels(int addr, int i) {
+        if (featOkTst && casFeat_labels == null)
+      jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
+    if (lowLevelTypeChecks)
+      return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i, true);
+    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i);
+  return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i);
+  }
+   
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param i index of item in the array
+   * @param v value to set
+   */ 
+  public void setLabels(int addr, int i, String v) {
+        if (featOkTst && casFeat_labels == null)
+      jcas.throwFeatMissing("labels", "qa.qcri.iyas.type.cqa.RelatedQuestionBody");
+    if (lowLevelTypeChecks)
+      ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i, v, true);
+    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i);
+    ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_labels), i, v);
+  }
+ 
  
   /** @generated */
   final Feature casFeat_rank;
@@ -137,7 +164,7 @@ public class RelatedQuestionBody_Type extends QAAnnotation_Type {
     casFeatCode_concatenated  = (null == casFeat_concatenated) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_concatenated).getCode();
 
  
-    casFeat_labels = jcas.getRequiredFeatureDE(casType, "labels", "uima.cas.StringList", featOkTst);
+    casFeat_labels = jcas.getRequiredFeatureDE(casType, "labels", "uima.cas.StringArray", featOkTst);
     casFeatCode_labels  = (null == casFeat_labels) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_labels).getCode();
 
  

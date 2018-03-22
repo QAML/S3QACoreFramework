@@ -11,7 +11,7 @@ import org.apache.uima.jcas.cas.DoubleArray;
 
 
 /** 
- * Updated by JCasGen Mon Mar 19 07:47:39 CET 2018
+ * Updated by JCasGen Tue Mar 20 16:27:12 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/RepresentationTypeSystemDescriptor.xml
  * @generated */
 public class DenseVector extends Representation {

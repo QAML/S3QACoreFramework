@@ -1,5 +1,6 @@
 /**
- * Copyright 2017 Salvatore Romeo
+ /**
+ * Copyright 2018 Salvatore Romeo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +44,32 @@ public class PlainTextDataReader extends DataReader {
 	private BufferedReader in;
 	private String currentLine[] = null;
 	
+	private int index = 0;
+	private int totalNumberOfExamples = 0;
+	
+	private int countExamples() throws IOException {
+		in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+		
+		int count = 0;
+		String line = null;
+		if (task.equals(DataReader.INSTANCE_A_TASK)) {
+			while ((line = in.readLine()) != null) {
+				String split[] = StringEscapeUtils.escapeXml(line).split("\t");
+				for (int i=6;i<split.length;i+=2) {
+					count++;
+				}
+			}
+		} else if (task.equals(DataReader.INSTANCE_B_TASK)) {
+			while ((line = in.readLine()) != null) {
+				count++;
+			}
+		}
+		
+		in.close();
+		
+		return count;
+	}
+	
 	private void setNextLine(String line) {
 		if (line != null) {
 			currentLine = StringEscapeUtils.escapeXml(line).split("\t");
@@ -54,6 +81,7 @@ public class PlainTextDataReader extends DataReader {
 	@Override
 	protected void init() throws ResourceInitializationException {
 		try {
+			totalNumberOfExamples = countExamples();
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 			String line = in.readLine();
 			setNextLine(line);
@@ -139,7 +167,8 @@ public class PlainTextDataReader extends DataReader {
 			for (int i=6;i<currentLine.length;i+=2) {
 				String commentID = currentLine[i];
 				String comment = currentLine[i+1];
-				sb.append("			<"+COMMENT_TAG+" "+ID_ATTRIBUTE+"=\""+commentID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\">"+comment+"</"+COMMENT_TAG+">"+System.getProperty("line.separator"));
+				String label = Math.random() > 0.5 ? "Relevant" : "Irrelevant";
+				sb.append("			<"+COMMENT_TAG+" "+ID_ATTRIBUTE+"=\""+commentID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+INDEX_ATTRIBUTE+"=\""+(index++)+"\" "+TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE+"=\""+totalNumberOfExamples+"\" "+RELEVANCE_ATTRIBUTE+"=\""+label+"\">"+comment+"</"+COMMENT_TAG+">"+System.getProperty("line.separator"));
 			}
 			sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));
 			
@@ -152,7 +181,7 @@ public class PlainTextDataReader extends DataReader {
 			
 			sb.append("	</"+INSTANCE_A_TAG+">"+System.getProperty("line.separator"));
 			sb.append("</"+ROOT_TAG+">"+System.getProperty("line.separator"));
-			
+						
 			return sb.toString();
 		} if (task.equals(DataReader.INSTANCE_B_TASK)) {
 			sb.append("<"+ROOT_TAG+">"+System.getProperty("line.separator"));
@@ -170,7 +199,8 @@ public class PlainTextDataReader extends DataReader {
 				relatedQuestionID = currentLine[3];
 				realtedQuestionSubject = currentLine[4];
 				realtedQuestionBody = currentLine[5];
-				sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" >"+System.getProperty("line.separator"));
+				String label = Math.random() > 0.5 ? "Relevant" : "Irrelevant";
+				sb.append("		<"+RELATED_QUESTION_TAG+" "+ID_ATTRIBUTE+"=\""+relatedQuestionID+"\" "+LANG_ATTRIBUTE+"=\""+language+"\" "+INDEX_ATTRIBUTE+"=\""+(index++)+"\" "+TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE+"=\""+totalNumberOfExamples+"\" "+RELEVANCE_ATTRIBUTE+"=\""+label+"\">"+System.getProperty("line.separator"));
 				sb.append("			<"+SUBJECT_TAG+">"+realtedQuestionSubject+"</"+SUBJECT_TAG+">"+System.getProperty("line.separator"));
 				sb.append("			<"+BODY_TAG+">"+realtedQuestionBody+"</"+BODY_TAG+">"+System.getProperty("line.separator"));
 				sb.append("		</"+RELATED_QUESTION_TAG+">"+System.getProperty("line.separator"));

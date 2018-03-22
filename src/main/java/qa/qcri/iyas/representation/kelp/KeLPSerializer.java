@@ -1,3 +1,21 @@
+/**
+ * Copyright 2018 Salvatore Romeo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *  
+ */
+ 
+ 
 package qa.qcri.iyas.representation.kelp;
 
 import java.util.Collection;
@@ -8,10 +26,12 @@ import org.uimafit.util.JCasUtil;
 
 import it.uniroma2.sag.kelp.data.example.ExamplePair;
 import it.uniroma2.sag.kelp.data.example.SimpleExample;
+import it.uniroma2.sag.kelp.data.label.StringLabel;
 import it.uniroma2.sag.kelp.data.representation.tree.TreeRepresentation;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.representation.Serializer;
 import qa.qcri.iyas.type.representation.DenseVector;
+import qa.qcri.iyas.type.representation.Label;
 import qa.qcri.iyas.type.representation.PosChunkTree;
 import qa.qcri.iyas.type.representation.SparseVector;
 import qa.qcri.iyas.type.representation.StringRepresentation;
@@ -83,7 +103,13 @@ public class KeLPSerializer extends Serializer {
 			for (Tree tree : JCasUtil.select(jcas, Tree.class))
 				throw new ResourceProcessException("Tree representation is currently supported only in example pairs.", null);
 			
-			
+			Label label = JCasUtil.select(rightJCas, Label.class).iterator().next();
+			if (label.getLabels() == null) {
+				pair.addLabel(new StringLabel("?"));
+			} else {
+				for (String lStr : label.getLabels().toArray())
+					pair.addLabel(new StringLabel(lStr));
+			}
 //			
 //			if (JCasUtil.exists(jcas, InstanceA.class)) {
 //				Collection<Comment> comments = JCasUtil.select(rightJCas, Comment.class);

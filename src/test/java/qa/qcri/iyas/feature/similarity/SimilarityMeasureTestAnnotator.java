@@ -25,6 +25,7 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.feature.Feature;
 import qa.qcri.iyas.type.representation.NumericFeature;
 
 public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
