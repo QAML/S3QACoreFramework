@@ -172,13 +172,27 @@
 		<!-- For KeLP -->
 		<dependency>
 			<groupId>it.uniroma2.sag.kelp</groupId>
-			<artifactId>kelp-full</artifactId>
+			<artifactId>kelp-core</artifactId>
+			<version>2.2.1</version>
+		</dependency><dependency>
+			<groupId>it.uniroma2.sag.kelp</groupId>
+			<artifactId>kelp-additional-kernels</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>it.uniroma2.sag.kelp</groupId>
+			<artifactId>kelp-additional-algorithms</artifactId>
 			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>
 			<artifactId>trove4j</artifactId>
 			<version>3.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.9.2</version>
 		</dependency>
 		
 		<!-- Required by the TokenTree class -->
