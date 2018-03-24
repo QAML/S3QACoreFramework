@@ -63,8 +63,7 @@ public class KeLPSVMLearner extends Learner  {
 	public static final String PARAM_NAME_RANK_KERNEL = "rankKernel";
 	public static final String PARAM_NAME_APPLY_REL_TAGS = "relTagging";
 	public static final String PARAM_NAME_C_SVM_PARAM = "c";
-	
-	private static final String POSITIVE_CLASS_LABEL = "Relevant";
+	public static final String PARAM_NAME_POSITIVE_CLASS_LABEL = "posLabel";
 
 	@ConfigurationParameter(name = PARAM_NAME_SIMS_KERNEL, mandatory = false)
 	private String simsKernel;
@@ -79,7 +78,12 @@ public class KeLPSVMLearner extends Learner  {
 	private Boolean applyRELTags;
 	
 	@ConfigurationParameter(name = PARAM_NAME_C_SVM_PARAM, mandatory = true)
-	private int c;
+	private float c;
+	
+	@ConfigurationParameter(name = PARAM_NAME_POSITIVE_CLASS_LABEL)
+	private String positiveLabelStr;
+	
+	private Label positiveLabel;
 	
 	private SimpleDataset addRELtags(SimpleDataset dataset, String representationName) {
 		HashSet<String> stopwords = new HashSet<String>();
@@ -110,16 +114,13 @@ public class KeLPSVMLearner extends Learner  {
 		return dataset;
 	}
 
-	private static LearningAlgorithm getSVMalgorithm(
-			String positiveClassLabel, Kernel kernel, float cp, float cn, 
-			boolean fairness) {
-		
+	private LearningAlgorithm getSVMalgorithm(Kernel kernel) {
 		BinaryCSvmClassification svm = new BinaryCSvmClassification(kernel, 
-				new StringLabel(positiveClassLabel), cp, cn, fairness); 
+				positiveLabel, c, c, false); 
 
 		System.err.println(String.format("Learning algorithm=BinaryCSvm; "
 				+ "positive class=%s; c+ = %f c- =%f fairness=%s %n", 
-				positiveClassLabel, cp, cn, fairness));
+				positiveLabelStr, c, c, ""+false));
 		return svm;
 	}
 	
@@ -138,6 +139,8 @@ public class KeLPSVMLearner extends Learner  {
 		super.afterResourcesInitialized();
 		if (simsKernel == null && treeKernel == null && rankKernel == null)
 			throw new ResourceInitializationException("No kernel has been set",null);
+		
+		positiveLabel = new StringLabel(positiveLabelStr);
 	}
 
 	@Override
@@ -147,8 +150,10 @@ public class KeLPSVMLearner extends Learner  {
 			for (int i=0;i<examples.length;i++)
 				trainingset.addExample((Example)examples[i]);
 			
-			if (applyRELTags)
+			if (applyRELTags) {
+				
 				trainingset = addRELtags(trainingset, "tree");
+			}
 			
 			LinearKernelCombination kernel = new LinearKernelCombination();
 			if (simsKernel != null)
@@ -170,7 +175,7 @@ public class KeLPSVMLearner extends Learner  {
 				kernel.addKernel(1,new RbfKernel(1.0f,new LinearKernel(rankKernel)));
 			
 			System.err.println("Learning started at " + LocalDateTime.now().toString());
-			PredictionFunction learningModel = train(getSVMalgorithm(POSITIVE_CLASS_LABEL, kernel, c, c, false), trainingset);
+			PredictionFunction learningModel = train(getSVMalgorithm(kernel), trainingset);
 			System.err.println("Learning ended at " + LocalDateTime.now().toString());
 			
 			ObjectSerializer serializer = new JacksonSerializerWrapper();

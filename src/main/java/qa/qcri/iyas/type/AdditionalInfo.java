@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Mar 22 14:01:38 CET 2018
+ * Updated by JCasGen Thu Mar 22 15:29:39 CET 2018
  * XML source: /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/main/resources/descriptors/qa/qcri/iyas/type/GeneralTypeSystemDescriptor.xml
  * @generated */
 public class AdditionalInfo extends Annotation {
@@ -162,6 +162,28 @@ public class AdditionalInfo extends Annotation {
     if (AdditionalInfo_Type.featOkTst && ((AdditionalInfo_Type)jcasType).casFeat_instanceID == null)
       jcasType.jcas.throwFeatMissing("instanceID", "qa.qcri.iyas.type.AdditionalInfo");
     jcasType.ll_cas.ll_setStringValue(addr, ((AdditionalInfo_Type)jcasType).casFeatCode_instanceID, v);}    
+   
+    
+  //*--------------*
+  //* Feature: prediction
+
+  /** getter for prediction - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public String getPrediction() {
+    if (AdditionalInfo_Type.featOkTst && ((AdditionalInfo_Type)jcasType).casFeat_prediction == null)
+      jcasType.jcas.throwFeatMissing("prediction", "qa.qcri.iyas.type.AdditionalInfo");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((AdditionalInfo_Type)jcasType).casFeatCode_prediction);}
+    
+  /** setter for prediction - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setPrediction(String v) {
+    if (AdditionalInfo_Type.featOkTst && ((AdditionalInfo_Type)jcasType).casFeat_prediction == null)
+      jcasType.jcas.throwFeatMissing("prediction", "qa.qcri.iyas.type.AdditionalInfo");
+    jcasType.ll_cas.ll_setStringValue(addr, ((AdditionalInfo_Type)jcasType).casFeatCode_prediction, v);}    
   }
 
     

@@ -44,18 +44,15 @@ import org.jdom2.JDOMException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
-import it.uniroma2.sag.kelp.utils.JacksonSerializerWrapper;
-import it.uniroma2.sag.kelp.utils.ObjectSerializer;
 import qa.qcri.iyas.DescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 
-public class LearningTest {
+public class ClassificationTest {
 
 	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
+		DescriptorGenerator.generateClassificationPipelineDeploymentDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 	}
@@ -212,7 +209,7 @@ public class LearningTest {
 	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
 		String inputJCasMultiplierAEDescriptor = 
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/LearningPipelineAAE_DeploymentDescriptor.xml";
+						+ "/ClassificationPipelineAAE_DeploymentDescriptor.xml";
 		
 		// create a Map to hold required parameters
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -252,15 +249,4 @@ public class LearningTest {
 		broker.stop();
 		
 	}
-	
-	public static void main(String args[]) {
-		ObjectSerializer serializer = new JacksonSerializerWrapper();
-		File file = new File("/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/1521745849273.mdl");
-		try {
-			serializer.readValue(file, PredictionFunction.class);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
-

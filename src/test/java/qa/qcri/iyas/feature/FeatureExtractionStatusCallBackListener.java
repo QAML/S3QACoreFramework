@@ -23,7 +23,8 @@ public class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackL
 			try {
 				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
 					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
-					System.out.print(info.getIndex() + " over "+info.getTotalNumberOfExamples()+" ");
+					System.out.println(info.getIndex() + " " + info.getTotalNumberOfExamples()
+					+ " " + info.getInstanceID() + " " + info.getPrediction());
 				} else if (JCasUtil.exists(cas.getJCas(), Model.class)) {
 					file = JCasUtil.select(cas.getJCas(), Model.class).iterator().next().getFile();
 				}

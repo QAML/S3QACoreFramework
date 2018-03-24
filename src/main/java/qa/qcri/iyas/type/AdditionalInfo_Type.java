@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Mar 22 14:01:38 CET 2018
+ * Updated by JCasGen Thu Mar 22 15:29:39 CET 2018
  * @generated */
 public class AdditionalInfo_Type extends Annotation_Type {
   /** @generated */
@@ -117,6 +117,30 @@ public class AdditionalInfo_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_instanceID, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_prediction;
+  /** @generated */
+  final int     casFeatCode_prediction;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getPrediction(int addr) {
+        if (featOkTst && casFeat_prediction == null)
+      jcas.throwFeatMissing("prediction", "qa.qcri.iyas.type.AdditionalInfo");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_prediction);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setPrediction(int addr, String v) {
+        if (featOkTst && casFeat_prediction == null)
+      jcas.throwFeatMissing("prediction", "qa.qcri.iyas.type.AdditionalInfo");
+    ll_cas.ll_setStringValue(addr, casFeatCode_prediction, v);}
+    
+  
 
 
 
@@ -144,6 +168,10 @@ public class AdditionalInfo_Type extends Annotation_Type {
  
     casFeat_instanceID = jcas.getRequiredFeatureDE(casType, "instanceID", "uima.cas.String", featOkTst);
     casFeatCode_instanceID  = (null == casFeat_instanceID) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_instanceID).getCode();
+
+ 
+    casFeat_prediction = jcas.getRequiredFeatureDE(casType, "prediction", "uima.cas.String", featOkTst);
+    casFeatCode_prediction  = (null == casFeat_prediction) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_prediction).getCode();
 
   }
 }
