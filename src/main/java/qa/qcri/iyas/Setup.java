@@ -89,9 +89,9 @@ public class Setup {
 		System.out.println("Generating XML description for ProcessedJCASAggregatorAE_Descriptor");
 		AnalysisEngineDescription processedJCASAggregatorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
 				ProcessedJCASAggregator.class);
-		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
-				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,"processedInstancesManager");
+//		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
+//				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
+//				ExternalResourceFactory.PARAM_RESOURCE_NAME,"processedInstancesManager");
 		processedJCASAggregatorAEDescriptor.toXML(
 				new FileOutputStream(ROOT_MAIN_DESCRIPTORS_FOLDER+"/qa/qcri/iyas/feature/ProcessedJCASAggregatorAE_Descriptor.xml"));
 		processedJCASAggregatorAEDescriptor.toXML(

@@ -47,7 +47,7 @@ import org.jdom2.JDOMException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import qa.qcri.iyas.DescriptorGenerator;
+import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
@@ -145,7 +145,7 @@ public class PreprocessingPipelineNotConcatenatedTest {
 	}
 	
 	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generatePreprocessingPipelineDeploymentDescriptor(
+		TestDescriptorGenerator.generatePreprocessingPipelineDeploymentDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
 		
 	}

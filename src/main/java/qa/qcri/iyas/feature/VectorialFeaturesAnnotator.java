@@ -60,8 +60,8 @@ public class VectorialFeaturesAnnotator extends JCasAnnotator_ImplBase  {
 			for (int i=0;i<similarities.length;i++) {
 				Object obj = context.getResourceObject(similarities[i]);
 				Feature feature = null;
-				if (obj instanceof SimilarityMeasure)
-					feature = (SimilarityMeasure)obj;
+				if (obj instanceof Feature)
+					feature = (Feature)obj;
 				
 				double simValue = feature.getValue(jcas);
 				simVector.setFeatures(i, simValue);

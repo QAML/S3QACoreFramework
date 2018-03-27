@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
 import it.uniroma2.sag.kelp.predictionfunction.PredictionFunction;
 import it.uniroma2.sag.kelp.utils.JacksonSerializerWrapper;
 import it.uniroma2.sag.kelp.utils.ObjectSerializer;
-import qa.qcri.iyas.DescriptorGenerator;
+import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
@@ -55,7 +55,7 @@ import qa.qcri.iyas.data.reader.PlainTextDataReader;
 public class LearningTest {
 
 	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
+		TestDescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 	}

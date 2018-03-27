@@ -88,17 +88,19 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
 					schemaFile);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
-			String nextStr = reader.next();			
+			String nextStr = reader.next();	
 			saxBuilder.build(new StringReader(nextStr));
 
 			AdditionalInfo info = new AdditionalInfo(jcas);
 			info.setRequesterID(identifier);
+			info.setIndex(-1);
+			info.setTotalNumberOfExamples(-1);
 			info.addToIndexes();
 			
 			jcas.setDocumentText(nextStr);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new CollectionException();
+			throw new CollectionException(e);
 		}
 	}
 	@Override

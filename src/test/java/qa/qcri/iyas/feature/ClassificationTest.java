@@ -44,24 +44,19 @@ import org.jdom2.JDOMException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import qa.qcri.iyas.DescriptorGenerator;
+import qa.qcri.iyas.Starter;
+import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
 
 public class ClassificationTest {
-
-	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateClassificationPipelineDeploymentDescriptor(
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		
-	}
 	
 	private String generateInputTestFile(boolean concatenate) throws IOException {
 		StandardPreprocessor sp = new StandardPreprocessor();
 		File file = new File("test_input.txt");
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		for (int k=1;k<=3;k++) {
+		for (int k=1;k<=10;k++) {
 			String qid = "Q"+k;
 			String org_subject = "This is the subject of original question "+qid;
 			String org_body = "This is the body of original question "+qid;
@@ -75,7 +70,7 @@ public class ClassificationTest {
 				mapB.put("subject_"+qid, sp.preprocess(org_subject,"en"));
 				mapB.put("body_"+qid, sp.preprocess(org_body,"en"));
 			}
-			for (int i=1;i<=7;i++) {
+			for (int i=1;i<=10;i++) {
 				out.write(qid+"	"+org_subject+"	"+org_body);
 				String rid = qid+"_R"+i;
 				String rel_subject = "This is the subject of related question "+rid;
@@ -102,7 +97,7 @@ public class ClassificationTest {
 					mapA.put("body_"+rid, sp.preprocess(rel_body,"en"));
 				}
 				
-				for (int j=1;j<=5;j++) {
+				for (int j=1;j<=10;j++) {
 					String cid = rid+"_C"+j;
 					String comment = "This comment "+cid;
 					out.write("	"+cid+"	"+comment);
@@ -141,18 +136,18 @@ public class ClassificationTest {
 		return collectionReaderDescr;
 	}
 	
-	private String runTestTaskA(boolean concatenate,String inputFile) throws Exception {
+	private void runTestTaskA(boolean concatenate,String inputFile) throws Exception {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		appCtx.put(UimaAsynchronousEngine.ServerUri, "tcp://localhost:61616");
-		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "myQueueName");
+		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "classificationQueue");
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(inputFile));
-		FeatureExtractionStatusCallBackListener listenerA = new FeatureExtractionStatusCallBackListener();
+		ClassificationStatusCallBackListener listenerA = new ClassificationStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -170,8 +165,6 @@ public class ClassificationTest {
 		System.out.println(secondsA+" seconds");
 		
 		uimaAsEngine.stop();
-		
-		return listenerA.file;
 	}
 	
 	private void runTestTaskB(boolean concatenate,String inputFile) throws Exception {
@@ -181,11 +174,11 @@ public class ClassificationTest {
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		appCtx.put(UimaAsynchronousEngine.ServerUri, "tcp://localhost:61616");
-		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "myQueueName");
+		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "classificationQueue");
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
-		FeatureExtractionStatusCallBackListener listenerB = new FeatureExtractionStatusCallBackListener();
+		ClassificationStatusCallBackListener listenerB = new ClassificationStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerB);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -206,26 +199,8 @@ public class ClassificationTest {
 		
 	}
 	
-	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		String inputJCasMultiplierAEDescriptor = 
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/ClassificationPipelineAAE_DeploymentDescriptor.xml";
-		
-		// create a Map to hold required parameters
-		Map<String,Object> appCtx = new HashMap<String,Object>();
-		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
-		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
-		
-		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
-		
-		return id;
-	}
 	
-	private void undeployPipeline(String id,UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		uimaAsEngine.undeploy(id);
-	}
 	
-	@Test
 	public void multiplierTest() throws Exception {
 		
 		BrokerService broker = new BrokerService();
@@ -234,19 +209,23 @@ public class ClassificationTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		generateAnalysisEngineDescritors(true);
-		String id = deployPipeline(uimaAsEngine);
-		
+		String ids[] = Starter.depoyFeatureExtraction(uimaAsEngine,"featureExtractionQueue",1,true,true,true);
+		String id2 = Starter.depoyClassification(uimaAsEngine,"classificationQueue",1,"tcp://localhost:61616","featureExtractionQueue");
+				
 		String file = generateInputTestFile(true);
-		String model =runTestTaskA(true, file);
-		System.out.println("Model file: "+model);
-
-//		runTestTaskB(true, file);
-		undeployPipeline(id,uimaAsEngine);
+		runTestTaskB(true, file);
+		runTestTaskA(true, file);
+		for (String id : ids)
+			Starter.undeployPipeline(id,uimaAsEngine);
+		Starter.undeployPipeline(id2,uimaAsEngine);
 
 		Thread.sleep(100);
 		uimaAsEngine.stop();
 		broker.stop();
 		
+	}
+	
+	public static void main(String args[]) throws Exception {
+		new ClassificationTest().multiplierTest();
 	}
 }

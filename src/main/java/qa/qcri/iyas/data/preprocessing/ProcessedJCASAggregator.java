@@ -68,8 +68,8 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	
 	public final static String PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE = "processedInstancesManager";
 	
-	@ExternalResource(key = PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE)
-	private ProcessedInstancesManager processedInstancesManager;
+//	@ExternalResource(key = PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE)
+	private ProcessedInstancesManager processedInstancesManager = new ProcessedInstancesManager();
 	
 	private LinkedList<JCas> pendingJCases = new LinkedList<JCas>();
 	

@@ -38,7 +38,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import qa.qcri.iyas.DescriptorGenerator;
+import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.type.representation.DenseVector;
 
@@ -46,7 +46,7 @@ public class SimilarityAnnotatorTest {
 	
 	public AnalysisEngine getAnalysisEngine() throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		
-		DescriptorGenerator.generateSimsAEDescriptor(
+		TestDescriptorGenerator.generateSimsAEDescriptor(
 				new File(SimilarityAnnotatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		String aeDescriptor = 
 				new File(SimilarityAnnotatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
@@ -62,7 +62,7 @@ public class SimilarityAnnotatorTest {
 	@Test
 	public void test() throws IOException, URISyntaxException, UIMAException, SAXException {
 		
-		DescriptorGenerator.generateStandardTextAnnotatorAAEDescriptor(
+		TestDescriptorGenerator.generateStandardTextAnnotatorAAEDescriptor(
 				new File(SimilarityAnnotatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		String aeDescriptor = 
 				new File(SimilarityAnnotatorTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"

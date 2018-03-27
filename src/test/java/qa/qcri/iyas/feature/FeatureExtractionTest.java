@@ -28,23 +28,20 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import qa.qcri.iyas.DescriptorGenerator;
+import qa.qcri.iyas.Starter;
+import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
+import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 
 public class FeatureExtractionTest {
 
-	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		
-	}
-	
 	private String generateInputTestFile(boolean concatenate) throws IOException {
 		StandardPreprocessor sp = new StandardPreprocessor();
 		File file = new File("test_input.txt");
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		for (int k=1;k<=3;k++) {
+		for (int k=1;k<=10;k++) {
 			String qid = "Q"+k;
 			String org_subject = "This is the subject of original question "+qid;
 			String org_body = "This is the body of original question "+qid;
@@ -58,7 +55,7 @@ public class FeatureExtractionTest {
 				mapB.put("subject_"+qid, sp.preprocess(org_subject,"en"));
 				mapB.put("body_"+qid, sp.preprocess(org_body,"en"));
 			}
-			for (int i=1;i<=7;i++) {
+			for (int i=1;i<=10;i++) {
 				out.write(qid+"	"+org_subject+"	"+org_body);
 				String rid = qid+"_R"+i;
 				String rel_subject = "This is the subject of related question "+rid;
@@ -85,7 +82,7 @@ public class FeatureExtractionTest {
 					mapA.put("body_"+rid, sp.preprocess(rel_body,"en"));
 				}
 				
-				for (int j=1;j<=5;j++) {
+				for (int j=1;j<=10;j++) {
 					String cid = rid+"_C"+j;
 					String comment = "This comment "+cid;
 					out.write("	"+cid+"	"+comment);
@@ -103,9 +100,9 @@ public class FeatureExtractionTest {
 	private CollectionReaderDescription getCollectionReaderDescriptorTaskA(String file) throws ResourceInitializationException, IOException {
 		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
 				InputCollectionDataReader.class);
-		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM, file,
-				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_A_TASK);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
+				XmlSemeval2016CqaEn.FILE_PARAM, file,
+				PlainTextDataReader.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_A_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -115,9 +112,9 @@ public class FeatureExtractionTest {
 	private CollectionReaderDescription getCollectionReaderDescriptorTaskB(String file) throws ResourceInitializationException, IOException {
 		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
 				InputCollectionDataReader.class);
-		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM, file,
-				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
+				XmlSemeval2016CqaEn.FILE_PARAM, file,
+				PlainTextDataReader.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -164,7 +161,7 @@ public class FeatureExtractionTest {
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		appCtx.put(UimaAsynchronousEngine.ServerUri, "tcp://localhost:61616");
 		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "myQueueName");
-		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 110);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
 		FeatureExtractionStatusCallBackListener listenerB = new FeatureExtractionStatusCallBackListener();
@@ -188,26 +185,25 @@ public class FeatureExtractionTest {
 		
 	}
 	
-	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		String inputJCasMultiplierAEDescriptor = 
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml";
-		
-		// create a Map to hold required parameters
-		Map<String,Object> appCtx = new HashMap<String,Object>();
-		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
-		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
-		
-		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
-		
-		return id;
-	}
+//	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
+//		String inputJCasMultiplierAEDescriptor = 
+//				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
+//						+ "/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml";
+//		
+//		// create a Map to hold required parameters
+//		Map<String,Object> appCtx = new HashMap<String,Object>();
+//		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+//		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+//		
+//		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
+//		
+//		return id;
+//	}
+//	
+//	private void undeployPipeline(String id,UimaAsynchronousEngine uimaAsEngine) throws Exception {
+//		uimaAsEngine.undeploy(id);
+//	}
 	
-	private void undeployPipeline(String id,UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		uimaAsEngine.undeploy(id);
-	}
-	
-	@Test
 	public void multiplierTest() throws Exception {
 		
 		BrokerService broker = new BrokerService();
@@ -216,16 +212,23 @@ public class FeatureExtractionTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		generateAnalysisEngineDescritors(true);
-		String id = deployPipeline(uimaAsEngine);
+//		generateAnalysisEngineDescritors(true);
+		String ids[] = Starter.depoyFeatureExtraction(uimaAsEngine, "myQueueName", 10,false,true,false);
 		
-		String file = generateInputTestFile(true);
-		runTestTaskA(true, file);
+		String file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml";
+//		String file = generateInputTestFile(true);
 		runTestTaskB(true, file);
-		undeployPipeline(id,uimaAsEngine);
+		file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev-subtaskA.xml";
+		runTestTaskA(true, file);
+		for (String id : ids)
+			Starter.undeployPipeline(id,uimaAsEngine);
 
 		Thread.sleep(100);
 		uimaAsEngine.stop();
 		broker.stop();
+	}
+	
+	public static void main(String args[]) throws Exception {
+		new FeatureExtractionTest().multiplierTest();
 	}
 }

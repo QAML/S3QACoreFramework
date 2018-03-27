@@ -500,7 +500,9 @@ abstract class AbstractProcessedInstance {
 
 //TODO make the class more robust checking status of in classes ProcessedInstanceA, ProcessedInstanceB and ProcessedInstanceC
 //(Expected annotation, IDs coherence etc)
-public class ProcessedInstancesManager implements SharedResourceObject, ExternalResourceAware {
+public class ProcessedInstancesManager 
+//implements SharedResourceObject, ExternalResourceAware 
+{
 	
 	public static final String USER_QUESTION_BODY_VIEW = "UserQuestionBodyView";
 	public static final String USER_QUESTION_SUBJECT_VIEW = "UserQuestionSubjectView";
@@ -584,19 +586,19 @@ public class ProcessedInstancesManager implements SharedResourceObject, External
 		}
 	}
 	
-	@Override
-	public void load(DataResource data) throws ResourceInitializationException {
-		ConfigurationParameterInitializer.initialize(this, data);
-	}
-
-	@Override
-	public String getResourceName() {
-		return this.resourceName;
-	}
-
-	@Override
-	public void afterResourcesInitialized() throws ResourceInitializationException {
-		// TODO Auto-generated method stub	
-	}
+//	@Override
+//	public void load(DataResource data) throws ResourceInitializationException {
+//		ConfigurationParameterInitializer.initialize(this, data);
+//	}
+//
+//	@Override
+//	public String getResourceName() {
+//		return this.resourceName;
+//	}
+//
+//	@Override
+//	public void afterResourcesInitialized() throws ResourceInitializationException {
+//		// TODO Auto-generated method stub	
+//	}
 	
 }

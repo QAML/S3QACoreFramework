@@ -143,10 +143,8 @@ public class PreprocessingPipelineConcatenatedTest {
 		return collectionReaderDescr;
 	}
 	
-	private void generateAnalysisEngineDescritors(boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		DescriptorGenerator.generatePreprocessingPipelineDeploymentDescriptor(
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
-		
+	private String generateAnalysisEngineDescritors() throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
+		return DescriptorGenerator.generatePreprocessingPipelineDeploymentDescritor("myQueueName",10);
 	}
 	
 	private void runTestTaskA(boolean concatenate,String inputFile) throws Exception {
@@ -220,16 +218,14 @@ public class PreprocessingPipelineConcatenatedTest {
 	}
 	
 	private String deployPipeline(UimaAsynchronousEngine uimaAsEngine) throws Exception {
-		String inputJCasMultiplierAEDescriptor = 
-				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors/test"
-						+ "/PreprocessingPipelineAAE_DeploymentDescriptor.xml";
+		String descr = generateAnalysisEngineDescritors();
 		
 		// create a Map to hold required parameters
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		
-		String id = uimaAsEngine.deploy(new File(inputJCasMultiplierAEDescriptor).getAbsolutePath(), appCtx);
+		String id = uimaAsEngine.deploy(new File(descr).getAbsolutePath(), appCtx);
 		
 		return id;
 	}
@@ -247,7 +243,6 @@ public class PreprocessingPipelineConcatenatedTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		generateAnalysisEngineDescritors(true);
 		String id = deployPipeline(uimaAsEngine);
 		
 		String file = generateInputTestFile(true);

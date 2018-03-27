@@ -283,6 +283,10 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		int totalExamples = -1;
 		if (relatedQuestion.getAttributeValue(DataReader.TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE) != null) 
 			totalExamples = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE));
+		int rank = -1;
+		if (relatedQuestion.getAttributeValue(DataReader.RANK_ATTRIBUTE) != null) 
+			rank = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.RANK_ATTRIBUTE));
+		
 		
 		String subject = preprocessor.preprocess(relatedQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
@@ -296,6 +300,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		questionAnnotation.setNumberOfCandidates(numberOfCandidates);
 		questionAnnotation.setID(id);
 		questionAnnotation.setConcatenated(true);
+		questionAnnotation.setRank(rank);
 		StringArray labels = new StringArray(questionJCas, 1);
 		labels.set(0, relevance);
 		labels.addToIndexes();
@@ -338,6 +343,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		int numberOfCandidates = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.NUMBER_OF_CANDIDATES_ATTRIBUTE));
 		int index = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.INDEX_ATTRIBUTE));
 		int totalExamples = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE));
+		int rank = -1;
+		if (relatedQuestion.getAttributeValue(DataReader.RANK_ATTRIBUTE) != null) 
+			rank = Integer.parseInt(relatedQuestion.getAttributeValue(DataReader.RANK_ATTRIBUTE));
 		
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
 		JCas bodyJCas = getEmptyJCas();
@@ -346,6 +354,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		RelatedQuestionBody bodyAnnotation = new RelatedQuestionBody(bodyJCas, 0, body.length());
 		bodyAnnotation.setNumberOfCandidates(numberOfCandidates);
 		bodyAnnotation.setID(id);
+		bodyAnnotation.setRank(rank);
 		bodyAnnotation.addToIndexes();
 		
 		AdditionalInfo info = new AdditionalInfo(bodyJCas);
@@ -363,6 +372,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		String relevance = comment.getAttributeValue(DataReader.RELEVANCE_ATTRIBUTE);
 		int index = Integer.parseInt(comment.getAttributeValue(DataReader.INDEX_ATTRIBUTE));
 		int totalExamples = Integer.parseInt(comment.getAttributeValue(DataReader.TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE));
+		int rank = -1;
+		if (comment.getAttributeValue(DataReader.RANK_ATTRIBUTE) != null) 
+			rank = Integer.parseInt(comment.getAttributeValue(DataReader.RANK_ATTRIBUTE));
 		
 		String commentText = preprocessor.preprocess(comment.getText(),lang);
 		JCas commentJCas = getEmptyJCas();
@@ -370,6 +382,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		commentJCas.setDocumentText(commentText);
 		Comment commentAnnotation = new Comment(commentJCas, 0, commentText.length());
 		commentAnnotation.setID(id);
+		commentAnnotation.setRank(rank);
 		StringArray labels = new StringArray(commentJCas, 1);
 		labels.set(0, relevance);
 		labels.addToIndexes();

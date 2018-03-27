@@ -28,7 +28,7 @@ import org.apache.uima.jcas.JCas;
 
 import qa.qcri.iyas.type.AdditionalInfo;
 
-@OperationalProperties(modifiesCas = true, outputsNewCases = false, multipleDeploymentAllowed = true)
+@OperationalProperties(modifiesCas = true, outputsNewCases = false, multipleDeploymentAllowed = false)
 public class ClassificationAnnotator extends JCasAnnotator_ImplBase {
 
 	public final static String PARAM_CLASSIFIER_RESOURCE = "classifier";

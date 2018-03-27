@@ -127,6 +127,7 @@ public class RepresentantationExtractor extends JCasMultiplier_ImplBase {
 			newInfo.addToIndexes();
 			
 			String repr = serializer.serialize(jcas);
+//			System.out.println(repr);
 			
 			pendingJCas.setDocumentText(repr);
 		} catch (ResourceProcessException | CASException e) {

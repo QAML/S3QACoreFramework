@@ -95,7 +95,7 @@ import qa.qcri.iyas.representation.decorator.TreePairDecorator;
 import qa.qcri.iyas.representation.kelp.KeLPSerializer;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
 
-public class DescriptorGenerator {
+public class TestDescriptorGenerator {
 //	public static final String ROOT_TEST_DESCRIPTORS_FOLDER = "src/test/resources/descriptors";
 	
 	private static Document loadDescriptor(String file) throws JDOMException, IOException {
@@ -746,9 +746,9 @@ public class DescriptorGenerator {
 		System.out.println("Generating XML description for ProcessedJCASAggregatorAE_Descriptor");
 		AnalysisEngineDescription processedJCASAggregatorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
 				ProcessedJCASAggregator.class);
-		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
-				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,"processedInstancesManager");
+//		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
+//				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
+//				ExternalResourceFactory.PARAM_RESOURCE_NAME,"processedInstancesManager");
 		processedJCASAggregatorAEDescriptor.toXML(
 				new FileOutputStream(root_folder+"/test/ProcessedJCASAggregatorAE_Descriptor.xml"));
 		
@@ -853,13 +853,13 @@ public class DescriptorGenerator {
 	private static void generatePipelineForPairGeneratorTestDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+		TestDescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",true);
-		DescriptorGenerator.generateMyAnnotatorAAEDescriptor(
+		TestDescriptorGenerator.generateMyAnnotatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+		TestDescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
+		TestDescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -923,7 +923,7 @@ public class DescriptorGenerator {
 	public static void generatePipelineForPairGeneratorTestDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generatePipelineForPairGeneratorTestDescriptor(
+		TestDescriptorGenerator.generatePipelineForPairGeneratorTestDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		System.out.println("Generating XML description for PipelineWithPairGeneratorAAE_DeploymentDescriptor");
@@ -991,11 +991,11 @@ public class DescriptorGenerator {
 	private static void generatePreprocessingPipelineDescriptor(String root_folder,boolean concatenate) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+		TestDescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
-		DescriptorGenerator.generateStandardTextAnnotatorDescriptor(
+		TestDescriptorGenerator.generateStandardTextAnnotatorDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+		TestDescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1054,7 +1054,7 @@ public class DescriptorGenerator {
 	public static void generatePreprocessingPipelineDeploymentDescriptor(String root_folder,boolean concatenate) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generatePreprocessingPipelineDescriptor(
+		TestDescriptorGenerator.generatePreprocessingPipelineDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",concatenate);
 		
 		System.out.println("Generating XML description for PreprocessingPipelineAAE_DeploymentDescriptor");
@@ -1120,19 +1120,19 @@ public class DescriptorGenerator {
 	private static void generateFeatureExtractionPipelineDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+		TestDescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",true);
-		DescriptorGenerator.generateStandardTextAnnotatorDescriptor(
+		TestDescriptorGenerator.generateStandardTextAnnotatorDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+		TestDescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
+		TestDescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateFeatureComputerDescriptor(
+		TestDescriptorGenerator.generateFeatureComputerDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateDecorationAAEDescriptor(
+		TestDescriptorGenerator.generateDecorationAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
+		TestDescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		
@@ -1212,7 +1212,7 @@ public class DescriptorGenerator {
 	public static void generateFeatureExtractionPipelineDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateFeatureExtractionPipelineDescriptor(
+		TestDescriptorGenerator.generateFeatureExtractionPipelineDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		System.out.println("Generating XML description for PreprocessingPipelineAAE_DeploymentDescriptor");
@@ -1273,21 +1273,21 @@ public class DescriptorGenerator {
 	private static void generateLearningPipelineDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+		TestDescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",true);
-		DescriptorGenerator.generateStandardTextAnnotatorDescriptor(
+		TestDescriptorGenerator.generateStandardTextAnnotatorDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+		TestDescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
+		TestDescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateFeatureComputerDescriptor(
+		TestDescriptorGenerator.generateFeatureComputerDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateDecorationAAEDescriptor(
+		TestDescriptorGenerator.generateDecorationAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
+		TestDescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateLearningAnnotatorAAEDescriptor(
+		TestDescriptorGenerator.generateLearningAnnotatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		
@@ -1372,7 +1372,7 @@ public class DescriptorGenerator {
 	public static void generateLearningPipelineDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateLearningPipelineDescriptor(
+		TestDescriptorGenerator.generateLearningPipelineDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		System.out.println("Generating XML description for LearningPipelineAAE_DeploymentDescriptor");
@@ -1438,21 +1438,21 @@ public class DescriptorGenerator {
 	private static void generateClassificationPipelineDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
+		TestDescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors",true);
-		DescriptorGenerator.generateStandardTextAnnotatorDescriptor(
+		TestDescriptorGenerator.generateStandardTextAnnotatorDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
+		TestDescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
+		TestDescriptorGenerator.generateJCasPairGeneratorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateFeatureComputerDescriptor(
+		TestDescriptorGenerator.generateFeatureComputerDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateDecorationAAEDescriptor(
+		TestDescriptorGenerator.generateDecorationAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
+		TestDescriptorGenerator.generateKeLPRepresentationExtractorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
-		DescriptorGenerator.generateClassificationAnnotatorAAEDescriptor(
+		TestDescriptorGenerator.generateClassificationAnnotatorAAEDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		
@@ -1537,7 +1537,7 @@ public class DescriptorGenerator {
 	public static void generateClassificationPipelineDeploymentDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
 		new File(root_folder+"/test").mkdirs();
 		
-		DescriptorGenerator.generateClassificationPipelineDescriptor(
+		TestDescriptorGenerator.generateClassificationPipelineDescriptor(
 				new File(PreprocessingPipelineConcatenatedTest.class.getResource("/").toURI()).getAbsolutePath()+"/descriptors");
 		
 		System.out.println("Generating XML description for LearningPipelineAAE_DeploymentDescriptor");

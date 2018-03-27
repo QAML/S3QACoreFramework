@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
@@ -87,13 +88,31 @@ public class XmlSemeval2016CqaEn extends DataReader{
 	 */
 	private final String language = "en";
 	
+	private int totalNumberOfExamples;
+	private int index;
+	
 //	private String DOCUMENT; 
 
+	private int countIntances(Document doc) {
+		int count = 0;
+		
+		if (task.equals(DataReader.INSTANCE_A_TASK)) {
+			Elements threads = doc.getElementsByTag(XML_TAG_THREAD);
+			for (Element thread : threads)
+				count += thread.getElementsByTag(XML_TAG_REL_C).size();
+		} else if (task.equals(DataReader.INSTANCE_B_TASK)) {
+			count = doc.getElementsByTag(XML_TAG_ORG_Q).size();
+		}
+		
+		return count;
+	}
 	public void init() throws ResourceInitializationException {
 		try {
 			byte[] encoded = Files.readAllBytes(Paths.get(file));
 			String contents = new String(encoded, ENCODING).replaceAll("(?i)<br[^>]*>", LINE_START).replaceAll("\n", LINE_START);
 			Document DOCUMENT = Jsoup.parse(contents);
+			totalNumberOfExamples = countIntances(DOCUMENT);
+			index = 0;
 			
 			Elements questions;
 			if (task.equals(DataReader.INSTANCE_A_TASK)) {
@@ -135,8 +154,8 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		// GET THE ORIGINAL QUESTION INFO FROM THE FIRST INSTANCE
 		Element userQ = questions.get(0).getElementsByTag(XML_TAG_ORG_Q).first();
 		String userQuestionID = userQ.attr(XML_ATT_ORG_QID);
-		String userQuestionSubject = userQ.getElementsByTag(XML_TAG_ORG_Q_SUBJECT).get(0).ownText();
-		String userQuestionBody = userQ.getElementsByTag(XML_TAG_ORG_Q_BODY).get(0).ownText();
+		String userQuestionSubject = StringEscapeUtils.escapeXml(userQ.getElementsByTag(XML_TAG_ORG_Q_SUBJECT).get(0).ownText());
+		String userQuestionBody = StringEscapeUtils.escapeXml(userQ.getElementsByTag(XML_TAG_ORG_Q_BODY).get(0).ownText());
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append("<")
@@ -183,6 +202,7 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		  .append(">")
 		  .append(System.getProperty("line.separator"));
 		
+		int rank = 1;
 		// GET THE REST OF INFO FOR THE REST OF INSTANCES		
 		for (Element myKk : questions) {
 			// There's always one single thread and the single thread has one single related question
@@ -190,10 +210,10 @@ public class XmlSemeval2016CqaEn extends DataReader{
 									.getElementsByTag(XML_TAG_REL_Q).first();
 			String relatedQuestionID = relatedQ.attr(XML_ATT_REL_QID);
 			// TODO is this preprocesing necessary?
-			String realtedQuestionSubject = relatedQ.getElementsByTag(XML_TAG_REL_QSUBJECT)
-													.get(0).ownText().replaceAll(LINE_START, "\n");
-			String realtedQuestionBody = relatedQ.getElementsByTag(XML_TAG_REL_QBODY)
-													.get(0).ownText().replaceAll(LINE_START, "\n");
+			String realtedQuestionSubject = StringEscapeUtils.escapeXml(relatedQ.getElementsByTag(XML_TAG_REL_QSUBJECT)
+													.get(0).ownText().replaceAll(LINE_START, "\n"));
+			String realtedQuestionBody = StringEscapeUtils.escapeXml(relatedQ.getElementsByTag(XML_TAG_REL_QBODY)
+													.get(0).ownText().replaceAll(LINE_START, "\n"));
 			
 			sb.append("		<")
 			  .append(RELATED_QUESTION_TAG)
@@ -205,6 +225,18 @@ public class XmlSemeval2016CqaEn extends DataReader{
 			  .append(LANG_ATTRIBUTE)
 			  .append("=\"")
 			  .append(language)
+			  .append("\" ")
+			  .append(INDEX_ATTRIBUTE)
+			  .append("=\"")
+			  .append(index++)
+			  .append("\" ")
+			  .append(TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE)
+			  .append("=\"")
+			  .append(totalNumberOfExamples)
+			  .append("\" ")
+			  .append(RANK_ATTRIBUTE)
+			  .append("=\"")
+			  .append(rank++)
 			  .append("\" >")
 			  .append(System.getProperty("line.separator"));
 			
@@ -426,8 +458,8 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		Elements comments = current.getElementsByTag(XML_TAG_REL_C);
 		
 		String relatedQuestionID = questions.get(0).attr(XML_ATT_REL_QID);
-		String realtedQuestionSubject = questions.get(0).getElementsByTag(XML_TAG_REL_QSUBJECT).get(0).ownText();
-		String realtedQuestionBody = questions.get(0).getElementsByTag(XML_TAG_REL_QBODY).get(0).ownText();
+		String realtedQuestionSubject = StringEscapeUtils.escapeXml(questions.get(0).getElementsByTag(XML_TAG_REL_QSUBJECT).get(0).ownText());
+		String realtedQuestionBody = StringEscapeUtils.escapeXml(questions.get(0).getElementsByTag(XML_TAG_REL_QBODY).get(0).ownText());
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append("<"+ROOT_TAG+">")
@@ -470,14 +502,14 @@ public class XmlSemeval2016CqaEn extends DataReader{
 		  .append(">")
 		  .append(System.getProperty("line.separator"));
 		
-		
+		int rank = 1;
 		/////////
 		for (Element comment : comments) {
 //			System.out.println(comment.attr(XML_ATT_REL_CID));
 			String commentID = comment.attr(XML_ATT_REL_CID);
 			String commentBody = 
-					comment.getElementsByTag(XML_TAG_REL_CBODY).get(0)
-							.ownText().replaceAll(LINE_START, "\n");
+					StringEscapeUtils.escapeXml(comment.getElementsByTag(XML_TAG_REL_CBODY).get(0)
+							.ownText().replaceAll(LINE_START, "\n"));
 					
 			sb.append("			<")
 			  .append(COMMENT_TAG).append(" ")
@@ -488,6 +520,18 @@ public class XmlSemeval2016CqaEn extends DataReader{
 			  .append(LANG_ATTRIBUTE)
 			  .append("=\"")
 			  .append(language)
+			  .append("\" ")
+			  .append(INDEX_ATTRIBUTE)
+			  .append("=\"")
+			  .append(index++)
+			  .append("\" ")
+			  .append(TOTAL_NUM_OF_EXAMPLES_ATTRIBUTE)
+			  .append("=\"")
+			  .append(totalNumberOfExamples)
+			  .append("\" ")
+			  .append(RANK_ATTRIBUTE)
+			  .append("=\"")
+			  .append(rank++)
 			  .append("\">")
 			  .append(commentBody)
 			  .append("</").append(COMMENT_TAG).append(">")
