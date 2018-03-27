@@ -18,6 +18,7 @@
 package qa.qcri.iyas;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -78,6 +79,11 @@ public class Starter {
 
 	private static final String CLASSIFICATION_LONG_OPT = "classifye";
 
+	
+	private static final String HELP_OPT = "h";
+
+	private static final String HELP_LONG_OPT = "help";
+
 
 	
 	public static String[] depoyFeatureExtraction(UimaAsynchronousEngine uimaAsEngine,String queueName,int scaleout,boolean sims,boolean rank,boolean trees) throws Exception {
@@ -110,7 +116,6 @@ public class Starter {
 	
 	public static void main(String args[]) throws Exception {
 		CommandLineParser parser = new DefaultParser();
-		HelpFormatter formatter = new HelpFormatter();
 		
 		
 //		depoyClassification(uimaAsEngine,"classificationQueue",1,"tcp://localhost:61616","featureExtractionQueue");
@@ -204,6 +209,8 @@ public class Starter {
 		classificationOpts.addOption(of2Opt);
 		
 		
+		Option helpOpt = new Option(HELP_OPT, HELP_LONG_OPT, false, "Help");
+		
 		OptionGroup optGr = new OptionGroup();
 		optGr.addOption(deployFEOpt);
 		optGr.addOption(processDataOpt);
@@ -227,34 +234,44 @@ public class Starter {
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
 				UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 				depoyFeatureExtraction(uimaAsEngine,queueName,scaleout,useSims,useRank,useTrees);
+			} else if (line.hasOption(HELP_OPT)) {
+				printHelp(commandOptions, deployFEOpts, processOpts, classificationDeploymentOpts, classificationOpts);
+
 			}
 			
 		} catch (ParseException e) {
-			StringWriter sw = new StringWriter();
-	    	PrintWriter pw = new PrintWriter(sw);
-	    	
-	    	formatter.printUsage(pw, 1000000000, "java qa.qcri.iyas.Starter ", commandOptions);
-	    	pw.flush();
-	    	pw.close();
-	    	String cmd = sw.toString();
-	    	sw.close();
-	    	
-	    	System.out.println(cmd);
-	    	
-	    	sw = new StringWriter();
-	    	pw = new PrintWriter(sw);
-	    	pw.println("Commands:");
-	    	formatter.printOptions(pw, 1000, commandOptions, 2, 5);
-	    	pw.println("\nFeature extraction pipeline deployment options:");
-	    	formatter.printOptions(pw, 1000, deployFEOpts, 4, 5);
-	    	pw.println("\nFeature extraction options:");
-	    	formatter.printOptions(pw, 2000, processOpts, 4, 5);
-	    	pw.println("\nClassification pipeline deployment options:");
-	    	formatter.printOptions(pw, 2000, classificationDeploymentOpts, 4, 5);
-	    	pw.println("\nClassification pipeline options:");
-	    	formatter.printOptions(pw, 2000, classificationOpts, 4, 5);
-	    	pw.flush();
-	    	System.out.println(sw.toString());
+			printHelp(commandOptions, deployFEOpts, processOpts, classificationDeploymentOpts, classificationOpts);
 		}
+	}
+	
+	public static void printHelp(Options commandOptions,Options deployFEOpts,Options processOpts
+			,Options classificationDeploymentOpts,Options classificationOpts) throws IOException {
+		HelpFormatter formatter = new HelpFormatter();
+
+		StringWriter sw = new StringWriter();
+    	PrintWriter pw = new PrintWriter(sw);
+    	
+    	formatter.printUsage(pw, 1000000000, "java qa.qcri.iyas.Starter ", commandOptions);
+    	pw.flush();
+    	pw.close();
+    	String cmd = sw.toString();
+    	sw.close();
+    	
+    	System.out.println(cmd);
+    	
+    	sw = new StringWriter();
+    	pw = new PrintWriter(sw);
+    	pw.println("Commands:");
+    	formatter.printOptions(pw, 1000, commandOptions, 2, 5);
+    	pw.println("\nFeature extraction pipeline deployment options:");
+    	formatter.printOptions(pw, 1000, deployFEOpts, 4, 5);
+    	pw.println("\nFeature extraction options:");
+    	formatter.printOptions(pw, 2000, processOpts, 4, 5);
+    	pw.println("\nClassification pipeline deployment options:");
+    	formatter.printOptions(pw, 2000, classificationDeploymentOpts, 4, 5);
+    	pw.println("\nClassification pipeline options:");
+    	formatter.printOptions(pw, 2000, classificationOpts, 4, 5);
+    	pw.flush();
+    	System.out.println(sw.toString());
 	}
 }
