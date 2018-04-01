@@ -630,17 +630,17 @@ public class DescriptorGenerator {
 				CosineTokenSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false);
 		
 		
-		simName = "TreeKernelSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-		
-		ExternalResourceFactory.bindResource(descr,
-				simName, TreeKernelSimilarity.class,"",
-				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
-				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
-				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
-				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
+//		simName = "TreeKernelSimilarity";
+//		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+//		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+//		
+//		ExternalResourceFactory.bindResource(descr,
+//				simName, TreeKernelSimilarity.class,"",
+//				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+//				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
+//				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
+//				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
+//				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
 		
 		return dependencyList;
 	}
