@@ -86,6 +86,8 @@ import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
 import qa.qcri.iyas.feature.similarity.TreeKernelSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramContainmentMeasureSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramJaccardMeasureSimilarity;
+import qa.qcri.iyas.learning.LearningAnnotator;
+import qa.qcri.iyas.learning.kelp.KeLPSVMLearner;
 import qa.qcri.iyas.representation.RepresentantationExtractor;
 import qa.qcri.iyas.representation.decorator.CQAPairIdentifierDecorator;
 import qa.qcri.iyas.representation.decorator.DecorationAnnotator;
@@ -630,17 +632,17 @@ public class DescriptorGenerator {
 				CosineTokenSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false);
 		
 		
-//		simName = "TreeKernelSimilarity";
-//		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-//		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-//		
-//		ExternalResourceFactory.bindResource(descr,
-//				simName, TreeKernelSimilarity.class,"",
-//				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-//				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
-//				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
-//				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
-//				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
+		simName = "TreeKernelSimilarity";
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+		
+		ExternalResourceFactory.bindResource(descr,
+				simName, TreeKernelSimilarity.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
+				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
+				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
+				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
 		
 		return dependencyList;
 	}
@@ -899,7 +901,7 @@ public class DescriptorGenerator {
 	    return "descriptors.representation.KeLPRepresentationExtractorAAE_Descriptor";
 	}
 	
-	private static String generateClassificationAnnotatorAEDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+	private static String generateClassificationAnnotatorAEDescriptor(String root_folder,String modelFile) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		AnalysisEngineDescription classifiactionAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
 				ClassificationAnnotator.class);
@@ -910,7 +912,7 @@ public class DescriptorGenerator {
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,"kelpSVMClassifer",
 				KeLPClassifier.PARAM_NAME_APPLY_REL_TAGS,true,
 				KeLPClassifier.PARAM_NAME_POSITIVE_CLASS_LABEL,"Relevant",
-				KeLPClassifier.PARAM_NAME_MODEL_FILE,"1521745849273.mdl");
+				KeLPClassifier.PARAM_NAME_MODEL_FILE,modelFile);
 
 		classifiactionAnnotatorAE_Descriptor.toXML(
 				new FileOutputStream(root_folder+"/descriptors/classification/ClassificationAnnotatorAE_Descriptor.xml"));
@@ -918,10 +920,60 @@ public class DescriptorGenerator {
 		return "descriptors.classification.ClassificationAnnotatorAE_Descriptor";
 	}
 	
-	private static String generateClassificationAnnotatorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+	private static void generateLearningAnnotatorAEDescriptor(String root_folder) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		AnalysisEngineDescription learningAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+				LearningAnnotator.class);
+		
+		System.out.println("Generating XML description for LearningAnnotatorAE_Descriptor");
+		ExternalResourceFactory.bindResource(learningAnnotatorAE_Descriptor,
+				LearningAnnotator.PARAM_LEARNER_RESOURCE, KeLPSVMLearner.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,"kelpSVMLearner",
+				KeLPSVMLearner.PARAM_NAME_C_SVM_PARAM,1,
+				KeLPSVMLearner.PARAM_NAME_APPLY_REL_TAGS,true,
+				KeLPSVMLearner.PARAM_NAME_TREE_KERNEL,"tree",
+				KeLPSVMLearner.PARAM_NAME_SIMS_KERNEL,"qq-sims",
+				KeLPSVMLearner.PARAM_NAME_POSITIVE_CLASS_LABEL,"Relevant");
+
+		learningAnnotatorAE_Descriptor.toXML(
+				new FileOutputStream(root_folder+"/test/LearningAnnotatorAE_Descriptor.xml"));
+		
+	}
+	
+	private static void generateLearningAnnotatorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		new File(root_folder+"/test").mkdirs();
+		
+		generateLearningAnnotatorAEDescriptor(root_folder);
+		
+		System.out.println("Generating XML description for LearningAnnotatorAAE_Descriptor");
+		AnalysisEngineDescription learningAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		learningAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		learningAnnotatorAAE.setPrimitive(false);
+
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(false);
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		learningAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		Import learningAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		learningAnnotatorAEImport.setName("descriptors.test.LearningAnnotatorAE_Descriptor");
+		learningAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LearningAnnotatorAE", learningAnnotatorAEImport);
+		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("LearningAnnotatorAE");
+		
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    learningAnnotatorAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    learningAnnotatorAAE.toXML(
+				new FileOutputStream(root_folder+"/test/LearningAnnotatorAAE_Descriptor.xml"));		
+		
+	}
+	
+	private static String generateClassificationAnnotatorAAEDescriptor(String root_folder,String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String aeDescr = generateClassificationAnnotatorAEDescriptor(root_folder);
+		String aeDescr = generateClassificationAnnotatorAEDescriptor(root_folder,modelFile);
 		
 		System.out.println("Generating XML description for ClassificationAnnotatorAAE_Descriptor");
 		AnalysisEngineDescription classificationAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
@@ -1256,7 +1308,8 @@ public class DescriptorGenerator {
 	    
 	}
 	
-	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String queueName,int scaleout,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName,int scaleout,
+			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		try {
 			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
@@ -1267,7 +1320,7 @@ public class DescriptorGenerator {
 			ServiceContext pipelineContext = new ServiceContextImpl("FeatureExtraction", 
 								           "FeatureExtractionPipelineAAE_Descriptor",
 								           aaeDescr, 
-								           queueName, "tcp://localhost:61616");
+								           queueName, brokerURL);
 			pipelineContext.setCasPoolSize(scaleout);
 			
 
@@ -1329,11 +1382,11 @@ public class DescriptorGenerator {
 		}
 	}
 	
-	private static String generateClassificationPipelineDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+	private static String generateClassificationPipelineDescriptor(String root_folder,String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
 		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,true,true,true);
-		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder);
+		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder,modelFile);
 		
 		//Generates a AAE descriptor for the testing pipeline
 		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
@@ -1384,19 +1437,19 @@ public class DescriptorGenerator {
 	    return "descriptors.classification.ClassificationPipelineAAE_Descriptor";
 	}
 	
-	public static String generateClassificationPipelineDeploymentDescriptor(String queueName,
+	public static String generateClassificationPipelineDeploymentDescriptor(String brokerURL, String queueName,String modelFile,
 			String featureExtractionURL,String featureExtractionQueueName) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		try {
 			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateClassificationPipelineDescriptor(rootFolder);
+			String aaeDescr = generateClassificationPipelineDescriptor(rootFolder,modelFile);
 			
 			System.out.println("Generating XML description for ClassificationPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("Classification", 
 								           "ClassificationPipelineAAE",
 								           aaeDescr, 
-								           queueName, "tcp://localhost:61616");
+								           queueName, brokerURL);
 			pipelineContext.setCasPoolSize(10);
 			
 			RemoteDelegateConfiguration spCldd1 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
@@ -1433,5 +1486,62 @@ public class DescriptorGenerator {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	
+	private static String generateLearningPipelineDescriptor(String root_folder,String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		new File(root_folder+"/descriptors/classification").mkdirs();
+		
+		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,true,true,true);
+		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder,modelFile);
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		param.setType("String");
+		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		parameters.addConfigurationParameter(param);
+		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+		
+		
+		Import featureExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		featureExtractionAEImport.setName(feDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractor", featureExtractionAEImport);
+		
+		Import classificationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		classificationAEImport.setName(clDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ClassificationAnnotatorAAE", classificationAEImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("FeatureExtractor");
+		flowNames.add("ClassificationAnnotatorAAE");
+
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/descriptors/classification/ClassificationPipelineAAE_Descriptor.xml").getAbsolutePath()));	
+	    
+	    return "descriptors.classification.ClassificationPipelineAAE_Descriptor";
 	}
 }

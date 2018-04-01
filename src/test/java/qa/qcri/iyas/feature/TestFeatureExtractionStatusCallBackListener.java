@@ -11,7 +11,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
 
-public class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener  {
+public class TestFeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener  {
 	
 	public String file;
 	

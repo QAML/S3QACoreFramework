@@ -102,7 +102,7 @@ public class FeatureExtractionTest {
 				InputCollectionDataReader.class);
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
 				XmlSemeval2016CqaEn.FILE_PARAM, file,
-				PlainTextDataReader.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_A_TASK);
+				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_A_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -114,7 +114,7 @@ public class FeatureExtractionTest {
 				InputCollectionDataReader.class);
 		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
 				XmlSemeval2016CqaEn.FILE_PARAM, file,
-				PlainTextDataReader.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
+				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -132,7 +132,7 @@ public class FeatureExtractionTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(inputFile));
-		FeatureExtractionStatusCallBackListener listenerA = new FeatureExtractionStatusCallBackListener();
+		TestFeatureExtractionStatusCallBackListener listenerA = new TestFeatureExtractionStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -164,7 +164,7 @@ public class FeatureExtractionTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 110);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
-		FeatureExtractionStatusCallBackListener listenerB = new FeatureExtractionStatusCallBackListener();
+		TestFeatureExtractionStatusCallBackListener listenerB = new TestFeatureExtractionStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerB);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -213,15 +213,14 @@ public class FeatureExtractionTest {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
 //		generateAnalysisEngineDescritors(true);
-		String ids[] = Starter.depoyFeatureExtraction(uimaAsEngine, "myQueueName", 10,false,true,false);
+		String id = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616", "myQueueName", 10,false,true,false);
 		
 		String file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml";
 //		String file = generateInputTestFile(true);
 		runTestTaskB(true, file);
 		file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev-subtaskA.xml";
 		runTestTaskA(true, file);
-		for (String id : ids)
-			Starter.undeployPipeline(id,uimaAsEngine);
+		Starter.undeployPipeline(id,uimaAsEngine);
 
 		Thread.sleep(100);
 		uimaAsEngine.stop();

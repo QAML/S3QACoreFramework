@@ -302,7 +302,10 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		questionAnnotation.setConcatenated(true);
 		questionAnnotation.setRank(rank);
 		StringArray labels = new StringArray(questionJCas, 1);
-		labels.set(0, relevance);
+		if (relevance != null)
+			labels.set(0, relevance);
+		else
+			labels.set(0, "?");
 		labels.addToIndexes();
 		questionAnnotation.setLabels(labels);
 		questionAnnotation.addToIndexes();
@@ -384,7 +387,10 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		commentAnnotation.setID(id);
 		commentAnnotation.setRank(rank);
 		StringArray labels = new StringArray(commentJCas, 1);
-		labels.set(0, relevance);
+		if (relevance != null)
+			labels.set(0, relevance);
+		else
+			labels.set(0, "?");
 		labels.addToIndexes();
 		commentAnnotation.setLabels(labels);
 		commentAnnotation.addToIndexes();

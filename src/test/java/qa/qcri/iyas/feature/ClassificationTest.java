@@ -49,6 +49,7 @@ import qa.qcri.iyas.TestDescriptorGenerator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PlainTextDataReader;
+import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 
 public class ClassificationTest {
 	
@@ -127,9 +128,9 @@ public class ClassificationTest {
 	private CollectionReaderDescription getCollectionReaderDescriptorTaskB(String file) throws ResourceInitializationException, IOException {
 		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
 				InputCollectionDataReader.class);
-		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(PlainTextDataReader.class,
-				PlainTextDataReader.FILE_PARAM, file,
-				PlainTextDataReader.TASK_PARAM, PlainTextDataReader.INSTANCE_B_TASK);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
+				XmlSemeval2016CqaEn.FILE_PARAM, file,
+				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
 		
@@ -209,14 +210,15 @@ public class ClassificationTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		String ids[] = Starter.depoyFeatureExtraction(uimaAsEngine,"featureExtractionQueue",1,true,true,true);
-		String id2 = Starter.depoyClassification(uimaAsEngine,"classificationQueue",1,"tcp://localhost:61616","featureExtractionQueue");
+		String id1 = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616","featureExtractionQueue",1,true,false,true);
+		String id2 = Starter.depoyClassification(uimaAsEngine,"tcp://localhost:61616","classificationQueue",1,
+				"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/1521745849273.mdl",
+				"tcp://localhost:61616","featureExtractionQueue");
 				
 		String file = generateInputTestFile(true);
-		runTestTaskB(true, file);
+		runTestTaskB(true, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml");
 		runTestTaskA(true, file);
-		for (String id : ids)
-			Starter.undeployPipeline(id,uimaAsEngine);
+		Starter.undeployPipeline(id1,uimaAsEngine);
 		Starter.undeployPipeline(id2,uimaAsEngine);
 
 		Thread.sleep(100);

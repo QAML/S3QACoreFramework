@@ -155,7 +155,7 @@ public class LearningTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderA = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskA(inputFile));
-		FeatureExtractionStatusCallBackListener listenerA = new FeatureExtractionStatusCallBackListener();
+		TestFeatureExtractionStatusCallBackListener listenerA = new TestFeatureExtractionStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerA);
 		
 		uimaAsEngine.initialize(appCtx);
@@ -188,7 +188,7 @@ public class LearningTest {
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
 		
 		CollectionReader collectionReaderB = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptorTaskB(inputFile));
-		FeatureExtractionStatusCallBackListener listenerB = new FeatureExtractionStatusCallBackListener();
+		TestFeatureExtractionStatusCallBackListener listenerB = new TestFeatureExtractionStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listenerB);
 		
 		uimaAsEngine.initialize(appCtx);
