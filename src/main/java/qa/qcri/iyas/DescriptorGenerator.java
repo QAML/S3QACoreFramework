@@ -266,7 +266,7 @@ public class DescriptorGenerator {
 //	
 //	public static String generateInputJCasMultiplierPipelineAAEDeploymentDescriptor(String queueName) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 //		try {
-//			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
+//			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 //			new File(rootFolder+"/descriptors").mkdir();
 //			
 //			String aaeDescr = generateInputJCasMultiplierPipelineAAEDescriptor(rootFolder);
@@ -1071,7 +1071,7 @@ public class DescriptorGenerator {
 	
 	public static String generatePreprocessingPipelineDeploymentDescritor(String queueName, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
 		try {
-			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
 			String aaeDescr = generatePreprocessingPipelineDescriptor(rootFolder);
@@ -1317,7 +1317,7 @@ public class DescriptorGenerator {
 	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName,int scaleout,
 			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		try {
-			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
 			String aaeDescr = generateFeatureExtractionPipelineDescriptor(rootFolder,sims,rank,trees);
@@ -1381,7 +1381,7 @@ public class DescriptorGenerator {
 			saveDescriptor(descriptor, rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
 			
 			return rootFolder+"/descriptors"+"/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml";
-		} catch (URISyntaxException | JDOMException e) {
+		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -1446,7 +1446,7 @@ public class DescriptorGenerator {
 	public static String generateClassificationPipelineDeploymentDescriptor(String brokerURL, String queueName,String modelFile,
 			String featureExtractionURL,String featureExtractionQueueName) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		try {
-			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
 			String aaeDescr = generateClassificationPipelineDescriptor(rootFolder,modelFile);
@@ -1555,7 +1555,7 @@ public class DescriptorGenerator {
 			String featureExtractionURL,String featureExtractionQueueName,
 			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		try {
-			String rootFolder = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath();
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
 			String aaeDescr = generateLearningPipelineDescriptor(rootFolder, sims, rank, trees);

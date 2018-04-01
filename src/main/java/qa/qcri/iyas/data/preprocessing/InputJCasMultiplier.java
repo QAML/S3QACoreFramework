@@ -158,9 +158,9 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		super.initialize(context);
 		XMLReaderJDOMFactory factory;
 		try {
-			factory = new XMLReaderXSDFactory(new File(InputJCasMultiplier.class.getResource(DataReader.SCHEMA_PATH).toURI()));
+			factory = new XMLReaderXSDFactory(InputJCasMultiplier.class.getResource(DataReader.SCHEMA_PATH));
 			saxBuilder = new SAXBuilder(factory);
-		} catch (JDOMException | URISyntaxException e) {
+		} catch (JDOMException e) {
 			e.printStackTrace();
 			throw new ResourceInitializationException(e.getMessage(), null);
 		}

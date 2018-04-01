@@ -21,6 +21,7 @@ package qa.qcri.iyas.data.reader;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
@@ -76,17 +77,17 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 		}
 		
 		try {
-			File schemaFile = null;
+			URL schemaURL = null;
 			if (reader.getTask().equals(DataReader.INSTANCE_A_TASK))
-				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_A_PATH).toURI());
+				schemaURL = InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_A_PATH);
 			else if (reader.getTask().equals(DataReader.INSTANCE_B_TASK))
-				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_B_PATH).toURI());
+				schemaURL = InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_B_PATH);
 			else if (reader.getTask().equals(DataReader.INSTANCE_C_TASK))
-				schemaFile = new File(InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_C_PATH).toURI());
+				schemaURL = InputCollectionDataReader.class.getResource(DataReader.SCHEMA_INSTANCE_C_PATH);
 			
 			
 			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
-					schemaFile);
+					schemaURL);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
 			String nextStr = reader.next();	
 			saxBuilder.build(new StringReader(nextStr));
