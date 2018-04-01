@@ -560,7 +560,7 @@ public class Starter {
 		url3Opt.setArgName("broker URL");
 		url3Opt.setRequired(true);
 		
-		Option if2Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Input file");
+		Option if2Opt = new Option(INPUT_FILE_OPT,INPUT_FILE_LONG_OPT,true,"Input file");
 		if2Opt.setArgName("file path");
 		if2Opt.setRequired(true);
 		
@@ -592,7 +592,7 @@ public class Starter {
 		url5Opt.setArgName("broker URL");
 		url5Opt.setRequired(true);
 		
-		Option if3Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Input file");
+		Option if3Opt = new Option(INPUT_FILE_OPT,INPUT_FILE_LONG_OPT,true,"Input file");
 		if3Opt.setArgName("file path");
 		if3Opt.setRequired(true);
 		
