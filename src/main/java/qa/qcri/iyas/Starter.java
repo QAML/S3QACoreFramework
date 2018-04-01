@@ -17,7 +17,7 @@
 
 package qa.qcri.iyas;
 
-import static org.junit.Assert.fail;
+//import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,6 +56,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 import qa.qcri.iyas.type.AdditionalInfo;
+import qa.qcri.iyas.type.Model;
 
 
 
@@ -67,7 +68,7 @@ class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener
 	@Override
 	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
 		if (!aStatus.getStatusMessage().equals("success")) {
-			fail(aStatus.getStatusMessage());
+			throw new IllegalStateException(aStatus.getStatusMessage());
 		} else {
 			try {
 				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
@@ -100,7 +101,7 @@ class ClassificationStatusCallBackListener extends UimaAsBaseCallbackListener  {
 	@Override
 	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
 		if (!aStatus.getStatusMessage().equals("success")) {
-			fail(aStatus.getStatusMessage());
+			throw new IllegalStateException(aStatus.getStatusMessage());
 		} else {
 			try {
 				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
@@ -114,6 +115,27 @@ class ClassificationStatusCallBackListener extends UimaAsBaseCallbackListener  {
 					synchronized (count) {
 						System.out.println("Classified "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
 					}
+				}
+			} catch (CASException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+class LearningStatusCallBackListener extends UimaAsBaseCallbackListener  {
+	
+	public String modelFile;
+	
+	@Override
+	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
+		if (!aStatus.getStatusMessage().equals("success")) {
+			throw new IllegalStateException(aStatus.getStatusMessage());
+		} else {
+			try {
+				if (JCasUtil.exists(cas.getJCas(), Model.class)) {
+					Model model = JCasUtil.select(cas.getJCas(), Model.class).iterator().next();
+					modelFile = model.getFile();
 				}
 			} catch (CASException e) {
 				e.printStackTrace();
@@ -189,6 +211,18 @@ public class Starter {
 
 	
 	
+	private static final String DEPLOY_LEARNING_OPT = "dl";
+
+	private static final String DEPLOY_LEARNING_LONG_OPT = "deploy-learning";
+	
+	
+	
+	private static final String LEARNING_OPT = "l";
+
+	private static final String LEARNING_LONG_OPT = "learning";
+	
+	
+	
 	private static final String HELP_OPT = "h";
 
 	private static final String HELP_LONG_OPT = "help";
@@ -222,6 +256,20 @@ public class Starter {
 		
 		String descr = DescriptorGenerator.generateClassificationPipelineDeploymentDescriptor(
 				brokerURL,queueName,modelFile,featureExtractionURL, featureExtractionQueueName);
+		String id = uimaAsEngine.deploy(new File(descr).getAbsolutePath(), appCtx);
+		
+		return id;
+	}
+	
+	public static String depoyLearning(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,int scaleout,
+			String featureExtractionURL,String featureExtractionQueueName,boolean sims,boolean rank,boolean trees) throws Exception {
+		
+		Map<String,Object> appCtx = new HashMap<String,Object>();
+		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		
+		String descr = DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
+				brokerURL,queueName,featureExtractionURL, featureExtractionQueueName, sims, rank, trees);
 		String id = uimaAsEngine.deploy(new File(descr).getAbsolutePath(), appCtx);
 		
 		return id;
@@ -328,6 +376,41 @@ public class Starter {
 		out.close();
 	}
 	
+	public static void learn(String inputFile,String outputFile,String brokerURL,
+			String queueName, String task) throws Exception {
+		
+		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
+
+		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+		LearningStatusCallBackListener listener = new LearningStatusCallBackListener();
+		uimaAsEngine.addStatusCallbackListener(listener);
+		uimaAsEngine.setCollectionReader(collectionReader);
+		
+		Map<String,Object> appCtx = new HashMap<String,Object>();
+		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
+		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
+		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		
+		uimaAsEngine.initialize(appCtx);
+
+		double start = System.currentTimeMillis();
+		uimaAsEngine.process();
+		double end = System.currentTimeMillis();
+		double seconds = (end - start)/1000;
+		System.out.println("Learning completed in "+seconds+" seconds");
+		
+		uimaAsEngine.stop();
+		
+		File file = new File(outputFile);
+		System.out.println("Writing model file path on "+file.getAbsolutePath());
+		
+		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		out.write(listener.modelFile);
+		out.newLine();
+		out.close();
+	}
 	
 	
 	public static void main(String args[]) throws Exception {		
@@ -374,7 +457,7 @@ public class Starter {
 		queueName3Opt.setArgName("queue name");
 		queueName3Opt.setRequired(true);
 
-		Option queueNameFEOpt = new Option(FE_QUEUE_NAME_OPT,FE_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the classification pipeline is listening");
+		Option queueNameFEOpt = new Option(FE_QUEUE_NAME_OPT,FE_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the feature extraction pipeline is listening");
 		queueNameFEOpt.setArgName("queue name");
 		queueNameFEOpt.setRequired(true);
 		
@@ -391,6 +474,35 @@ public class Starter {
 		classificationDeploymentOpts.addOption(urlFEOpt);
 		classificationDeploymentOpts.addOption(queueNameFEOpt);
 		classificationDeploymentOpts.addOption(mfOpt);
+		
+		
+		//Learning Deployment options
+		//-dl -fqn featureExtractionQueue -qn learningQueue -ip 127.0.0.1 -s -r -t
+		Option deployLearningOpt = new Option(DEPLOY_LEARNING_OPT, DEPLOY_LEARNING_LONG_OPT, false, "Deploy learning pipeline");
+
+		Option queueName5Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the learning pipeline will receive the requests");
+		queueName5Opt.setArgName("queue name");
+		queueName5Opt.setRequired(true);
+
+		Option queue1NameFEOpt = new Option(FE_QUEUE_NAME_OPT,FE_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the feature extraction pipeline is listening");
+		queue1NameFEOpt.setArgName("queue name");
+		queue1NameFEOpt.setRequired(true);
+		
+		Option url1FEOpt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the learning pipeline has to connected");
+		url1FEOpt.setArgName("IP address");
+		url1FEOpt.setRequired(true);
+		
+		Option sims1Opt = new Option(USE_SIMS_OPT, USE_SIMS_LONG_OPT, false, "Use similarity features");
+		Option rank1Opt = new Option(USE_RANK_OPT, USE_RANK_LONG_OPT, false, "Use rank feature");
+		Option trees1Opt = new Option(USE_TREES_OPT, USE_TREES_LONG_OPT, false, "Use trees");
+		
+		Options learningDeploymentOpts = new Options();
+		learningDeploymentOpts.addOption(queueName5Opt);
+		learningDeploymentOpts.addOption(url1FEOpt);
+		learningDeploymentOpts.addOption(queue1NameFEOpt);
+		learningDeploymentOpts.addOption(sims1Opt);
+		learningDeploymentOpts.addOption(rank1Opt);
+		learningDeploymentOpts.addOption(trees1Opt);
 		
 		
 		//Undeployment options
@@ -448,9 +560,13 @@ public class Starter {
 		url3Opt.setArgName("broker URL");
 		url3Opt.setRequired(true);
 		
+		Option if2Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Input file");
+		if2Opt.setArgName("file path");
+		if2Opt.setRequired(true);
+		
 		Option of2Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Output file where the predictions will be saved");
-		ofOpt.setArgName("file path");
-		ofOpt.setRequired(true);
+		of2Opt.setArgName("file path");
+		of2Opt.setRequired(true);
 		
 		Option task1Opt = new Option(TASK_OPT, TASK_LONG_OPT, true, "Which re-ranking task perform: \"cr\" for comment re-ranking, \"qr\" for question re-ranking");
 		task1Opt.setArgName("task");
@@ -459,9 +575,41 @@ public class Starter {
 		Options classificationOpts = new Options();
 		classificationOpts.addOption(url3Opt);
 		classificationOpts.addOption(queueName4Opt);
-		classificationOpts.addOption(ifOpt);
+		classificationOpts.addOption(if2Opt);
 		classificationOpts.addOption(of2Opt);
 		classificationOpts.addOption(task1Opt);
+		
+		
+		//Learning options
+		//-l -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml -of model.txt -ip 127.0.0.1 -qn learningQueue -rt qr
+		Option learningOpt = new Option(LEARNING_OPT, LEARNING_LONG_OPT, false, "Train a model using the input dataset");
+		
+		Option queueName6Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the learning pipeline is listening");
+		queueName6Opt.setArgName("queue name");
+		queueName6Opt.setRequired(true);
+		
+		Option url5Opt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the learning pipeline is connected");
+		url5Opt.setArgName("broker URL");
+		url5Opt.setRequired(true);
+		
+		Option if3Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Input file");
+		if3Opt.setArgName("file path");
+		if3Opt.setRequired(true);
+		
+		Option of3Opt = new Option(OUTPUT_FILE_OPT,OUTPUT_FILE_LONG_OPT,true,"Output file where the trained model file path will be saved");
+		of3Opt.setArgName("file path");
+		of3Opt.setRequired(true);
+		
+		Option task2Opt = new Option(TASK_OPT, TASK_LONG_OPT, true, "Which re-ranking task perform: \"cr\" for comment re-ranking, \"qr\" for question re-ranking");
+		task2Opt.setArgName("task");
+		task2Opt.setRequired(true);
+		
+		Options learningOpts = new Options();
+		learningOpts.addOption(url5Opt);
+		learningOpts.addOption(queueName6Opt);
+		learningOpts.addOption(if3Opt);
+		learningOpts.addOption(of3Opt);
+		learningOpts.addOption(task2Opt);
 		
 		
 		Option helpOpt = new Option(HELP_OPT, HELP_LONG_OPT, false, "Help");
@@ -470,9 +618,11 @@ public class Starter {
 		optGr.addOption(startBrokerOpt);
 		optGr.addOption(deployFEOpt);
 		optGr.addOption(deployClassificationOpt);
+		optGr.addOption(deployLearningOpt);
 		optGr.addOption(undeployOpt);
 		optGr.addOption(extractFeaturesOpt);
 		optGr.addOption(classificationOpt);
+		optGr.addOption(learningOpt);
 		optGr.addOption(helpOpt);
 		optGr.setRequired(true);
 		
@@ -521,24 +671,51 @@ public class Starter {
 				String task = line.getOptionValue(TASK_OPT);
 				
 				classify(inputFile,outputFile,"tcp://"+ip+":61616",queueName,task);
-			} else if (line.hasOption(UNDEPLOY_OPT)) {
+			} else if (line.hasOption(DEPLOY_LEARNING_OPT)) {
+				line = parser.parse(learningDeploymentOpts, Arrays.copyOfRange(args,1,args.length));
+				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
+				String featureExtractionQueueName = line.getOptionValue(FE_QUEUE_NAME_OPT);
+				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				boolean useSims = line.hasOption(USE_SIMS_OPT);
+				boolean useRank = line.hasOption(USE_RANK_OPT);
+				boolean useTrees = line.hasOption(USE_TREES_OPT);
+				
+				Starter.depoyLearning(uimaAsEngine, "tcp://"+ip+":61616", queueName, 1, "tcp://"+ip+":61616",featureExtractionQueueName,useSims,useRank,useTrees);
+			} else if (line.hasOption(LEARNING_OPT)) {
+				line = parser.parse(learningOpts, Arrays.copyOfRange(args,1,args.length));
+				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
+				String outputFile = line.getOptionValue(OUTPUT_FILE_OPT);
+				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
+				String task = line.getOptionValue(TASK_OPT);
+				
+				learn(inputFile,outputFile,"tcp://"+ip+":61616",queueName,task);
+			}  else if (line.hasOption(UNDEPLOY_OPT)) {
 				line = parser.parse( undeploymentOpts, Arrays.copyOfRange(args,1,args.length));
 				String id = line.getOptionValue(ID_OPT);
 				undeployPipeline(id,uimaAsEngine);
 			} else if (line.hasOption(HELP_OPT)) {
-				printHelp(commandOptions, deployFEOpts, processOpts, classificationDeploymentOpts, classificationOpts, undeploymentOpts);
+				printHelp(commandOptions, deployFEOpts, processOpts, 
+						classificationDeploymentOpts, classificationOpts,
+						learningDeploymentOpts, learningOpts,
+						undeploymentOpts);
 			}
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
-			printHelp(commandOptions, deployFEOpts, processOpts, classificationDeploymentOpts, classificationOpts, undeploymentOpts);
+			printHelp(commandOptions, deployFEOpts, processOpts, 
+					classificationDeploymentOpts, classificationOpts,
+					learningDeploymentOpts, learningOpts,
+					undeploymentOpts);
 		} finally {
 			uimaAsEngine.stop();
 		}
 	}
 	
 	public static void printHelp(Options commandOptions,Options deployFEOpts,Options processOpts
-			,Options classificationDeploymentOpts,Options classificationOpts,Options undeploymentOpts) throws IOException {
+			,Options classificationDeploymentOpts,Options classificationOpts
+			,Options learningDeploymentOpts,Options learningOpts
+			,Options undeploymentOpts) throws IOException {
 		HelpFormatter formatter = new HelpFormatter();
 
 		StringWriter sw = new StringWriter();
@@ -561,11 +738,15 @@ public class Starter {
     	formatter.printOptions(pw, 1000, deployFEOpts, 4, 5);
     	pw.println("\nClassification pipeline deployment options:");
     	formatter.printOptions(pw, 2000, classificationDeploymentOpts, 4, 5);
+    	pw.println("\nLearning pipeline deployment options:");
+    	formatter.printOptions(pw, 2000, learningDeploymentOpts, 4, 5);
     	
     	pw.println("\nFeature extraction options:");
     	formatter.printOptions(pw, 2000, processOpts, 4, 5);
     	pw.println("\nClassification options:");
     	formatter.printOptions(pw, 2000, classificationOpts, 4, 5);
+    	pw.println("\nLearning options:");
+    	formatter.printOptions(pw, 2000, learningOpts, 4, 5);
     	
     	pw.flush();pw.println("\nUndeployment options:");
     	formatter.printOptions(pw, 2000, undeploymentOpts, 4, 5);
