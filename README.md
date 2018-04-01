@@ -20,5 +20,9 @@ To install the core pipeline, the following steps are needed:
 2. *Compile S3QACoreFramework and its dependencies*
    - go to the S3QACoreFramework project folder
    - type *mvn compile*
+   - create a jar: *mvn package -DskipTests dependency:copy-dependencies*
 
 
+### Getting Started
+
+See the tutorial section of the wiki on the github page of the project
