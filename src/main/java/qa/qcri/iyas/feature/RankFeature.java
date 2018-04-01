@@ -40,7 +40,7 @@ public class RankFeature extends Feature {
 		if (rank == -1)
 			throw new UIMAException("Rank attribute not found", null);
 		
-		return rank;
+		return 1.0/rank;
 	}
 
 }
