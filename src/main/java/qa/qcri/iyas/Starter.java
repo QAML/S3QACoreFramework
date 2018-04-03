@@ -231,7 +231,7 @@ public class Starter {
 	
 	public static void startBroker() throws Exception {
 		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://127.0.0.1:61616");
+		broker.addConnector("tcp://10.2.5.64:61616");
 		broker.start();
 	}
 	
