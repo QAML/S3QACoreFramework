@@ -229,9 +229,9 @@ public class Starter {
 
 
 	
-	public static void startBroker() throws Exception {
+	public static void startBroker(String ip) throws Exception {
 		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://10.2.5.64:61616");
+		broker.addConnector("tcp://"+ip+":61616");
 		broker.start();
 	}
 	
@@ -418,6 +418,13 @@ public class Starter {
 		
 		//Feature Extraction Deployment options
 		Option startBrokerOpt = new Option(START_BROKER_OPT, START_BROKER_LONG_OPT, false, "Start broker");
+		
+		Option url6Opt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker will listen");
+		url6Opt.setArgName("IP address");
+		url6Opt.setRequired(true);
+		
+		Options startBrokerOpts = new Options();
+		startBrokerOpts.addOption(url6Opt);
 		
 		
 		//Feature Extraction Deployment options
@@ -634,7 +641,10 @@ public class Starter {
 		try {
 			CommandLine line = parser.parse( commandOptions, Arrays.copyOfRange(args,0,Math.min(1, args.length)));
 			if (line.hasOption(START_BROKER_OPT)) {
-				startBroker();
+				line = parser.parse(startBrokerOpts, Arrays.copyOfRange(args,1,args.length));
+				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				
+				startBroker(ip);
 			} else if (line.hasOption(DEPLOY_FEATURE_EXTRACTION_OPT)) {
 				line = parser.parse( deployFEOpts, Arrays.copyOfRange(args,1,args.length));
 				int scaleout = Integer.parseInt(line.getOptionValue(SCALEOUT_NAME_OPT));
@@ -695,7 +705,7 @@ public class Starter {
 				String id = line.getOptionValue(ID_OPT);
 				undeployPipeline(id,uimaAsEngine);
 			} else if (line.hasOption(HELP_OPT)) {
-				printHelp(commandOptions, deployFEOpts, processOpts, 
+				printHelp(commandOptions,startBrokerOpts, deployFEOpts, processOpts, 
 						classificationDeploymentOpts, classificationOpts,
 						learningDeploymentOpts, learningOpts,
 						undeploymentOpts);
@@ -703,7 +713,7 @@ public class Starter {
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
-			printHelp(commandOptions, deployFEOpts, processOpts, 
+			printHelp(commandOptions,startBrokerOpts, deployFEOpts, processOpts, 
 					classificationDeploymentOpts, classificationOpts,
 					learningDeploymentOpts, learningOpts,
 					undeploymentOpts);
@@ -712,7 +722,7 @@ public class Starter {
 		}
 	}
 	
-	public static void printHelp(Options commandOptions,Options deployFEOpts,Options processOpts
+	public static void printHelp(Options commandOptions, Options startBrokerOpts, Options deployFEOpts,Options processOpts
 			,Options classificationDeploymentOpts,Options classificationOpts
 			,Options learningDeploymentOpts,Options learningOpts
 			,Options undeploymentOpts) throws IOException {
@@ -734,6 +744,8 @@ public class Starter {
     	pw.println("Commands:");
     	formatter.printOptions(pw, 1000, commandOptions, 2, 5);
     	
+    	pw.println("\nStart Broker options:");
+    	formatter.printOptions(pw, 1000, startBrokerOpts, 4, 5);
     	pw.println("\nFeature extraction pipeline deployment options:");
     	formatter.printOptions(pw, 1000, deployFEOpts, 4, 5);
     	pw.println("\nClassification pipeline deployment options:");
