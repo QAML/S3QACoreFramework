@@ -241,9 +241,16 @@
 
 		<!-- Introduced to use Alphabet class --> 
 		<dependency>
-			<groupId>cc.mallet</groupId>
-			<artifactId>mallet</artifactId>
-			<version>2.0.7-RC2</version>
+		    <groupId>cc.mallet</groupId>
+		    <artifactId>mallet</artifactId>
+		    <version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.trove4j.old</groupId>
+			<artifactId>trove4j.old</artifactId>
+			<version>2.1.0</version>
+ 			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/trove4j-2.1.0.jar</systemPath>
 		</dependency>
 		
 	</dependencies>
