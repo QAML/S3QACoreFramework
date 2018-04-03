@@ -231,7 +231,7 @@ public class Starter {
 	
 	public static void startBroker(String ip) throws Exception {
 		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://"+ip+":61616");
+		broker.addConnector("http://"+ip+":61616");
 		broker.start();
 	}
 	
@@ -653,7 +653,7 @@ public class Starter {
 				boolean useSims = line.hasOption(USE_SIMS_OPT);
 				boolean useRank = line.hasOption(USE_RANK_OPT);
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
-				String id = depoyFeatureExtraction(uimaAsEngine,"tcp://"+ip+":61616",queueName,scaleout,useSims,useRank,useTrees);
+				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,scaleout,useSims,useRank,useTrees);
 				System.out.println("Feature Extraction pipeline succefully deployed. Service ID: "+id);
 			} else if (line.hasOption(EXTRACT_FEATURES_OPT)) {
 				line = parser.parse(processOpts, Arrays.copyOfRange(args,1,args.length));
@@ -663,7 +663,7 @@ public class Starter {
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
 				String task = line.getOptionValue(TASK_OPT);
 				
-				extractFeatures(inputFile,outputFile,"tcp://"+ip+":61616",queueName,task);
+				extractFeatures(inputFile,outputFile,"http://"+ip+":61616",queueName,task);
 			} else if (line.hasOption(DEPLOY_CLASSIFICATION_OPT)) {
 				line = parser.parse(classificationDeploymentOpts, Arrays.copyOfRange(args,1,args.length));
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
@@ -671,7 +671,7 @@ public class Starter {
 				String ip = line.getOptionValue(IP_ADDRESS_OPT);
 				String modelFile = line.getOptionValue(MODEL_FILE_OPT);
 				
-				Starter.depoyClassification(uimaAsEngine, "tcp://"+ip+":61616", queueName, 1, modelFile, "tcp://"+ip+":61616", featureExtractionQueueName);
+				Starter.depoyClassification(uimaAsEngine, "http://"+ip+":61616", queueName, 1, modelFile, "http://"+ip+":61616", featureExtractionQueueName);
 			} else if (line.hasOption(CLASSIFICATION_OPT)) {
 				line = parser.parse(classificationOpts, Arrays.copyOfRange(args,1,args.length));
 				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
@@ -680,7 +680,7 @@ public class Starter {
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
 				String task = line.getOptionValue(TASK_OPT);
 				
-				classify(inputFile,outputFile,"tcp://"+ip+":61616",queueName,task);
+				classify(inputFile,outputFile,"http://"+ip+":61616",queueName,task);
 			} else if (line.hasOption(DEPLOY_LEARNING_OPT)) {
 				line = parser.parse(learningDeploymentOpts, Arrays.copyOfRange(args,1,args.length));
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
@@ -690,7 +690,7 @@ public class Starter {
 				boolean useRank = line.hasOption(USE_RANK_OPT);
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
 				
-				Starter.depoyLearning(uimaAsEngine, "tcp://"+ip+":61616", queueName, 1, "tcp://"+ip+":61616",featureExtractionQueueName,useSims,useRank,useTrees);
+				Starter.depoyLearning(uimaAsEngine, "http://"+ip+":61616", queueName, 1, "http://"+ip+":61616",featureExtractionQueueName,useSims,useRank,useTrees);
 			} else if (line.hasOption(LEARNING_OPT)) {
 				line = parser.parse(learningOpts, Arrays.copyOfRange(args,1,args.length));
 				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
@@ -699,7 +699,7 @@ public class Starter {
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
 				String task = line.getOptionValue(TASK_OPT);
 				
-				learn(inputFile,outputFile,"tcp://"+ip+":61616",queueName,task);
+				learn(inputFile,outputFile,"http://"+ip+":61616",queueName,task);
 			}  else if (line.hasOption(UNDEPLOY_OPT)) {
 				line = parser.parse( undeploymentOpts, Arrays.copyOfRange(args,1,args.length));
 				String id = line.getOptionValue(ID_OPT);
