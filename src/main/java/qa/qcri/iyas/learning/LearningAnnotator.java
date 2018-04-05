@@ -71,8 +71,11 @@ public class LearningAnnotator extends JCasMultiplier_ImplBase {
 
 	@Override
 	public AbstractCas next() throws AnalysisEngineProcessException {
-		JCas jcas = pendingJCases.remove(pendingJCases.keySet().iterator().next());
-		getContext().getLogger().log(Level.INFO, "Sending back CAS "+jcas.getDocumentText());
+		String requesterID = pendingJCases.keySet().iterator().next();
+		JCas jcas = pendingJCases.remove(requesterID);
+		examples.remove(requesterID);
+		received.remove(requesterID);
+		getContext().getLogger().log(Level.INFO, "Sending back CAS "+jcas.getDocumentText()+" to requester "+requesterID);
 		return jcas;
 	}
 
@@ -96,8 +99,11 @@ public class LearningAnnotator extends JCasMultiplier_ImplBase {
 		
 		examples.get(info.getRequesterID())[info.getIndex()] = learner.extractExample(jcas);
 		received.put(info.getRequesterID(), received.get(info.getRequesterID())+1);
+		getContext().getLogger().log(Level.INFO, "received "+received.get(info.getRequesterID())+" over "+examples.get(info.getRequesterID()).length+
+				" examples for requester "+info.getRequesterID());
 		
 		if (examples.get(info.getRequesterID()).length == received.get(info.getRequesterID())) {
+			getContext().getLogger().log(Level.INFO, "Starting learning for requester "+info.getRequesterID());
 			String output = learner.learn(examples.get(info.getRequesterID()));
 			examples.remove(info.getRequesterID());
 			received.remove(info.getRequesterID());
