@@ -35,6 +35,7 @@ import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Level;
 
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
@@ -70,7 +71,9 @@ public class LearningAnnotator extends JCasMultiplier_ImplBase {
 
 	@Override
 	public AbstractCas next() throws AnalysisEngineProcessException {
-		return pendingJCases.remove(pendingJCases.keySet().iterator().next());
+		JCas jcas = pendingJCases.remove(pendingJCases.keySet().iterator().next());
+		getContext().getLogger().log(Level.INFO, "Sending back CAS "+jcas.getDocumentText());
+		return jcas;
 	}
 
 	@Override
