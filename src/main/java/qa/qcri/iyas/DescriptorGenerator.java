@@ -504,49 +504,49 @@ public class DescriptorGenerator {
 		
 		String simName = null;
 		
-//		for(int[] interval : lemmaIntervals) {
-//			simName = "CosineBowSimilarity-Lemmas-NoStopwording-"+interval[0]+"-"+interval[1];
-//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-//			
-//			ExternalResourceFactory.bindResource(descr,
-//					simName, CosineBowSimilarity.class,"",
-//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
-//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
-//			
-//			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
-//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-//			
-//			ExternalResourceFactory.bindResource(descr,
-//					simName, CosineBowSimilarity.class,"",
-//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
-//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
-//		}
-//		
-//		
-//		for(int[] interval : posIntervals) {
-//			simName = "CosineBowSimilarity-POSTags-NoStopwording-"+interval[0]+"-"+interval[1];
-//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-//			
-//			ExternalResourceFactory.bindResource(descr,
-//					simName, CosineBowSimilarity.class,"",
-//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
-//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_POSTAGS);
-//		}
+		for(int[] interval : lemmaIntervals) {
+			simName = "CosineBowSimilarity-Lemmas-NoStopwording-"+interval[0]+"-"+interval[1];
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+			
+			ExternalResourceFactory.bindResource(descr,
+					simName, CosineBowSimilarity.class,"",
+					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
+					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+			
+			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+			
+			ExternalResourceFactory.bindResource(descr,
+					simName, CosineBowSimilarity.class,"",
+					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+		}
+		
+		
+		for(int[] interval : posIntervals) {
+			simName = "CosineBowSimilarity-POSTags-NoStopwording-"+interval[0]+"-"+interval[1];
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+			
+			ExternalResourceFactory.bindResource(descr,
+					simName, CosineBowSimilarity.class,"",
+					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false,
+					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_POSTAGS);
+		}
 		
 		
 		simName = "GreedyStringTilingSimilarity";
