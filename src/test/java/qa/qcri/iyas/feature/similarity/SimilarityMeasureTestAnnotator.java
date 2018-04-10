@@ -25,7 +25,7 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.jcas.JCas;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
-import qa.qcri.iyas.feature.Feature;
+import qa.qcri.iyas.feature.ThreadSafeFeature;
 import qa.qcri.iyas.type.representation.NumericFeature;
 
 public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
@@ -35,7 +35,7 @@ public class SimilarityMeasureTestAnnotator extends JCasAnnotator_ImplBase {
 	public final static String PARAM_SIMILARITY_RESOURCE = "similarityMeasure";
 
 	@ExternalResource(key = PARAM_SIMILARITY_RESOURCE)
-	Feature similarityMeasure;
+	ThreadSafeFeature similarityMeasure;
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {

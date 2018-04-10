@@ -29,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.DoubleArray;
 
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
-import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
+import qa.qcri.iyas.feature.similarity.ThreadSafeSimilarityMeasure;
 import qa.qcri.iyas.type.representation.DenseVector;
 
 @OperationalProperties(modifiesCas = true, outputsNewCases = false, multipleDeploymentAllowed = true)
@@ -59,9 +59,9 @@ public class VectorialFeaturesAnnotator extends JCasAnnotator_ImplBase  {
 			simVector.setFeatures(new DoubleArray(jcas,similarities.length));
 			for (int i=0;i<similarities.length;i++) {
 				Object obj = context.getResourceObject(similarities[i]);
-				Feature feature = null;
-				if (obj instanceof Feature)
-					feature = (Feature)obj;
+				ThreadSafeFeature feature = null;
+				if (obj instanceof ThreadSafeFeature)
+					feature = (ThreadSafeFeature)obj;
 				
 				double simValue = feature.getValue(jcas);
 				simVector.setFeatures(i, simValue);

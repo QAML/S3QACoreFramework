@@ -28,7 +28,7 @@ import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.SharedResourceObject;
 
-public abstract class Feature implements SharedResourceObject, ExternalResourceAware  {
+public abstract class ThreadSafeFeature implements SharedResourceObject, ExternalResourceAware  {
 
 	@ConfigurationParameter(name=ExternalResourceFactory.PARAM_RESOURCE_NAME)
 	private String resourceName;

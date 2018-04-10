@@ -25,6 +25,7 @@ import it.uniroma2.sag.kelp.kernel.DirectKernel;
 import it.uniroma2.sag.kelp.kernel.tree.PartialTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubSetTreeKernel;
 import it.uniroma2.sag.kelp.kernel.tree.SubTreeKernel;
+import it.uniroma2.sag.kelp.kernel.tree.deltamatrix.DynamicDeltaMatrix;
 import qa.qcri.iyas.util.tree.RichTree;
 import qa.qcri.iyas.util.tree.TokenTree;
 import qa.qcri.iyas.util.tree.TreeSerializer;
@@ -49,7 +50,7 @@ import qa.qcri.iyas.util.tree.TreeSerializer;
  * @author Giovanni Da San Martino
  *
  */
-public class TreeKernelSimilarity extends SimilarityMeasure {
+public class TreeKernelSimilarity extends ThreadSafeSimilarityMeasure {
 	
 	public enum TREE_TYPE {
 		DEPENDENCY_TREE("dependency_tree"), CONSTITUENCY_TREE("constituency_tree"), 
@@ -141,12 +142,18 @@ public class TreeKernelSimilarity extends SimilarityMeasure {
 		
 		DirectKernel<TreeRepresentation> tk = null;
 		
-		if(treeKernel==TREE_KERNEL_FUNCTION.PTK) {
-			tk = new PartialTreeKernel(lambda, 0.4f, 1f, "0");
+		if(treeKernel==TREE_KERNEL_FUNCTION.PTK) {//DynamicDeltaMatrix()
+			PartialTreeKernel ptk = new PartialTreeKernel(lambda, 0.4f, 1f, "0");
+			ptk.setDeltaMatrix(new DynamicDeltaMatrix());
+			tk = ptk;;
 		} else if(treeKernel==TREE_KERNEL_FUNCTION.SST) {
-			tk = new SubSetTreeKernel(lambda, "0");
+			SubSetTreeKernel sst = new SubSetTreeKernel(lambda, "0");
+			sst.setDeltaMatrix(new DynamicDeltaMatrix());
+			tk = sst;
 		} else if(treeKernel==TREE_KERNEL_FUNCTION.ST) {
-			tk = new SubTreeKernel(lambda, "0");
+			SubTreeKernel st = new SubTreeKernel(lambda, "0");
+			st.setDeltaMatrix(new DynamicDeltaMatrix());
+			tk = st;
 //		} else if(treeKernel==TREE_KERNEL_FUNCTION.SPTK) { //many more complex parameters need to be passed to the SPTK, such as the nodeSimilarity, leave them as future work
 //			tk = new SmoothedPartialTreeKernel(lambda, MU, terminalFactor, similarityThreshold, nodeSimilarity, representationIdentifier)
 		} else {

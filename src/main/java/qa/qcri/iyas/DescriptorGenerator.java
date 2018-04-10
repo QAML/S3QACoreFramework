@@ -73,7 +73,7 @@ import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.data.preprocessing.ProcessedJCASAggregator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
-import qa.qcri.iyas.feature.Feature;
+import qa.qcri.iyas.feature.ThreadSafeFeature;
 import qa.qcri.iyas.feature.RankFeature;
 import qa.qcri.iyas.feature.VectorialFeaturesAnnotator;
 import qa.qcri.iyas.feature.similarity.CosineBowSimilarity;
@@ -82,7 +82,7 @@ import qa.qcri.iyas.feature.similarity.GreedyStringTilingSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubsequenceComparatorSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubsequenceNormComparatorSimilarity;
 import qa.qcri.iyas.feature.similarity.LongestCommonSubstringComparatorSimilarity;
-import qa.qcri.iyas.feature.similarity.SimilarityMeasure;
+import qa.qcri.iyas.feature.similarity.ThreadSafeSimilarityMeasure;
 import qa.qcri.iyas.feature.similarity.TreeKernelSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramContainmentMeasureSimilarity;
 import qa.qcri.iyas.feature.similarity.WordNGramJaccardMeasureSimilarity;
@@ -506,7 +506,7 @@ public class DescriptorGenerator {
 		
 		for(int[] interval : lemmaIntervals) {
 			simName = "CosineBowSimilarity-Lemmas-NoStopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 			
 			ExternalResourceFactory.bindResource(descr,
@@ -518,24 +518,24 @@ public class DescriptorGenerator {
 					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
 					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
 			
-			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
-			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
-			
-			ExternalResourceFactory.bindResource(descr,
-					simName, CosineBowSimilarity.class,"",
-					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
-					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
-					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
-					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
-					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
+//			simName = "CosineBowSimilarity-Lemmas-Stopwording-"+interval[0]+"-"+interval[1];
+//			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
+//			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+//			
+//			ExternalResourceFactory.bindResource(descr,
+//					simName, CosineBowSimilarity.class,"",
+//					ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+//					CosineBowSimilarity.PARAM_NAME_STOPWORDS_OBJECT, Stopwords.STOPWORD_EN,
+//					CosineBowSimilarity.PARAM_NAME_REMOVE_STOPWORDS, true,
+//					CosineBowSimilarity.PARAM_NAME_MIN_N_GRAM_SIZE, interval[0],
+//					CosineBowSimilarity.PARAM_NAME_MAX_N_GRAM_SIZE, interval[1],
+//					CosineBowSimilarity.PARAM_NAME_REPRESENTATION_TYPE, CosineBowSimilarity.PARAMETER_LIST_LEMMAS);
 		}
 		
 		
 		for(int[] interval : posIntervals) {
 			simName = "CosineBowSimilarity-POSTags-NoStopwording-"+interval[0]+"-"+interval[1];
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 			
 			ExternalResourceFactory.bindResource(descr,
@@ -550,7 +550,7 @@ public class DescriptorGenerator {
 		
 		
 		simName = "GreedyStringTilingSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(descr,
@@ -561,7 +561,7 @@ public class DescriptorGenerator {
 				GreedyStringTilingSimilarity.PARAM_NAME_TILE_LENGTH, 3);
 		
 		simName = "LongestCommonSubsequenceComparatorSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(descr,
@@ -572,7 +572,7 @@ public class DescriptorGenerator {
 		
 		
 		simName = "LongestCommonSubsequenceNormComparatorSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(descr,
@@ -583,7 +583,7 @@ public class DescriptorGenerator {
 		
 		
 		simName = "LongestCommonSubstringComparatorSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(descr,
@@ -595,7 +595,7 @@ public class DescriptorGenerator {
 
 		for (int i=1;i<=4;i++) {
 			simName = "WordNGramJaccardMeasureSimilarity-"+i;
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 			
 			ExternalResourceFactory.bindResource(descr,
@@ -608,7 +608,7 @@ public class DescriptorGenerator {
 		
 		for (int i=1;i<=2;i++) {
 			simName = "WordNGramContainmentMeasureSimilarity-"+i;
-			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+			dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 			descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 			
 			ExternalResourceFactory.bindResource(descr,
@@ -621,7 +621,7 @@ public class DescriptorGenerator {
 		
 
 		simName = "CosineTokenSimilarity";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(descr,
@@ -631,17 +631,27 @@ public class DescriptorGenerator {
 				CosineTokenSimilarity.PARAM_NAME_REMOVE_STOPWORDS, false);
 		
 		
+		simName = "TreeKernelSimilarity";
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeSimilarityMeasure.class,false));
+		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
+		
+		ExternalResourceFactory.bindResource(descr,
+				simName, TreeKernelSimilarity.class,"",
+				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
+				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
+				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
+				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
+				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
+		
 //		simName = "TreeKernelSimilarity";
 //		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, SimilarityMeasure.class,false));
 //		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 //		
-//		ExternalResourceFactory.bindResource(descr,
-//				simName, TreeKernelSimilarity.class,"",
-//				ExternalResourceFactory.PARAM_RESOURCE_NAME,simName,
-//				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE,
-//				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK,
-//				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, true,
-//				TreeKernelSimilarity.PARAM_NAME_LAMBDA, 1.0f);
+//		ExternalResourceFactory.bindResource(descr,TreeKernelSimilarity.class,
+//				TreeKernelSimilarity.PARAM_NAME_TREE_TYPE, TreeKernelSimilarity.TREE_TYPE.POS_CHUNK_TREE.treeType(),
+//				TreeKernelSimilarity.PARAM_NAME_TREE_KERNEL, TreeKernelSimilarity.TREE_KERNEL_FUNCTION.PTK.kernelFunctionName(),
+//				TreeKernelSimilarity.PARAM_NAME_NORMALIZED, "true",
+//				TreeKernelSimilarity.PARAM_NAME_LAMBDA, "1.0f");
 		
 		return dependencyList;
 	}
@@ -676,7 +686,7 @@ public class DescriptorGenerator {
 		
 		List<ExternalResourceDependency> dependencyList = new LinkedList<>();
 		String simName = "RankFeanture";
-		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, Feature.class,false));
+		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(simName, ThreadSafeFeature.class,false));
 		rankAnnotatorAE_Descriptor.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
 		ExternalResourceFactory.bindResource(rankAnnotatorAE_Descriptor,

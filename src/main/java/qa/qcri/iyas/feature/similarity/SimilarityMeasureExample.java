@@ -21,7 +21,7 @@ package qa.qcri.iyas.feature.similarity;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 
-public class SimilarityMeasureExample extends SimilarityMeasure {
+public class SimilarityMeasureExample extends ThreadSafeSimilarityMeasure {
 	
 	/**
 	 * Name of the first parameter
@@ -43,7 +43,7 @@ public class SimilarityMeasureExample extends SimilarityMeasure {
 	double exampleParam2;
 	
 	/**
-	 * Given the two specified JCases, returns the similarity to be computed by this concrete implementation of {@link SimilarityMeasure}.
+	 * Given the two specified JCases, returns the similarity to be computed by this concrete implementation of {@link ThreadSafeSimilarityMeasure}.
 	 * In this example the JCases are not considered and a fake similarity value is returned.
 	 */
 	@Override

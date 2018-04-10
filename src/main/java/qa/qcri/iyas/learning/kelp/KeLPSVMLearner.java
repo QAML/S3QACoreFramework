@@ -150,9 +150,8 @@ public class KeLPSVMLearner extends Learner  {
 			for (int i=0;i<examples.length;i++)
 				trainingset.addExample((Example)examples[i]);
 			
-			if (applyRELTags) {
-				
-				trainingset = addRELtags(trainingset, "tree");
+			if (applyRELTags && treeKernel != null) {
+				trainingset = addRELtags(trainingset, treeKernel);
 			}
 			
 			LinearKernelCombination kernel = new LinearKernelCombination();

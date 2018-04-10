@@ -25,7 +25,7 @@ import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
 
-public class RankFeature extends Feature {
+public class RankFeature extends ThreadSafeFeature {
 
 	@Override
 	public double getValue(JCas jcas) throws UIMAException {

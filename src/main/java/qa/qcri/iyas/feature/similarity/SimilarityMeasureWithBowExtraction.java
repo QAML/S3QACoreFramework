@@ -23,7 +23,7 @@ import qa.qcri.iyas.data.preprocessing.BowProvider;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
 
 /**
- * The class extends {@link SimilarityMeasure} adding a method to extract the bag-of-word representation from a JCas. 
+ * The class extends {@link ThreadSafeSimilarityMeasure} adding a method to extract the bag-of-word representation from a JCas. 
  *   
  * 
  * @author Giovanni Da San Martino

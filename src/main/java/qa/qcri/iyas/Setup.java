@@ -18,8 +18,12 @@
  
 package qa.qcri.iyas;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -362,8 +366,22 @@ public class Setup {
 
 	public static void main(String[] args) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, InvalidXMLException {
 		
-		createPrimitiveAnalysisEngine();
-		createAggregateAnalysisEngine();
+		BufferedReader in = new BufferedReader(new FileReader("/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/scores"));
+		BufferedWriter out = new BufferedWriter(new FileWriter("/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/scores.txt"));
+		
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			String split1[] = line.split("\t");
+			double score = Double.parseDouble(split1[1]);
+			String split2[] = split1[0].split("_");
+			out.write(split2[0]+"\t"+split1[0]+"\t0\t"+score+"\t"+(score > 0));
+			out.newLine();
+		}
+		
+		in.close();
+		out.close();
+//		createPrimitiveAnalysisEngine();
+//		createAggregateAnalysisEngine();
 //		createDeploymentFiles();
 		
 //		AnalysisEngineDescription impl = AnalysisEngineFactory.createEngineDescription();

@@ -95,7 +95,7 @@ class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener
 
 class ClassificationStatusCallBackListener extends UimaAsBaseCallbackListener  {
 	
-	public float predictions[] = new float[0];
+	public Object predictions[][] = new Object[0][0];
 	private Integer count = 0;
 	
 	@Override
@@ -108,9 +108,10 @@ class ClassificationStatusCallBackListener extends UimaAsBaseCallbackListener  {
 					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
 					synchronized (predictions) {
 						if (predictions.length == 0)
-							predictions = new float[info.getTotalNumberOfExamples()];
+							predictions = new Object[info.getTotalNumberOfExamples()][2];
 					}
-					predictions[info.getIndex()] = Float.parseFloat(info.getPrediction());
+					predictions[info.getIndex()][0] = info.getInstanceID();
+					predictions[info.getIndex()][1] = Float.parseFloat(info.getPrediction());
 
 					synchronized (count) {
 						System.out.println("Classified "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
@@ -369,8 +370,8 @@ public class Starter {
 		System.out.println("Writing predictions on "+file.getAbsolutePath());
 		
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		for (Float ex : listener.predictions) {
-			out.write(ex+"");
+		for (Object ex[] : listener.predictions) {
+			out.write(ex[1].toString());
 			out.newLine();
 		}
 		out.close();

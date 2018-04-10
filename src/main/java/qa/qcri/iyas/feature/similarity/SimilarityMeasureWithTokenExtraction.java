@@ -34,7 +34,7 @@ import qa.qcri.iyas.util.tree.node.RichNode;
 import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 /**
- * The class extends {@link SimilarityMeasure} adding a method to extract the list of tokens from a JCas and return
+ * The class extends {@link ThreadSafeSimilarityMeasure} adding a method to extract the list of tokens from a JCas and return
  * them as a space-separated String. 
  * Such String is the input of some of the similarity measures of this package.  
  * 
@@ -43,7 +43,7 @@ import qa.qcri.iyas.util.tree.node.RichTokenNode;
  * @author Giovanni Da San Martino
  *
  */
-public abstract class SimilarityMeasureWithTokenExtraction extends SimilarityMeasure {
+public abstract class SimilarityMeasureWithTokenExtraction extends ThreadSafeSimilarityMeasure {
 	
 	public static final String PARAM_NAME_STOPWORDS_OBJECT = "stopwordsObject";
 	

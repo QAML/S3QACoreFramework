@@ -41,7 +41,7 @@ import org.junit.runner.notification.Failure;
 import qa.qcri.iyas.type.representation.NumericFeature;
 
 /**
- * A simple class to test a {@link SimilarityMeasure}.
+ * A simple class to test a {@link ThreadSafeSimilarityMeasure}.
  * 
  * @author Salvatore Romeo
  *
