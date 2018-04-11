@@ -18,7 +18,6 @@
  
 package qa.qcri.iyas.data.reader;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -29,8 +28,6 @@ import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.OperationalProperties;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.Session;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.jdom2.input.SAXBuilder;
@@ -50,7 +47,8 @@ import qa.qcri.iyas.type.AdditionalInfo;
 				   "qa.qcri.iyas.types.UserQuestionBody",
 				   "qa.qcri.iyas.types.RelatedQuestionSubject",
 				   "qa.qcri.iyas.types.RelatedQuestionBody",
-				   "qa.qcri.iyas.types.Comment"}
+				   "qa.qcri.iyas.types.Comment",
+				   "qa.qcri.iyas.type.AdditionalInfo"}
 )
 public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	

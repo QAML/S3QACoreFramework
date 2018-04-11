@@ -1571,7 +1571,7 @@ public class DescriptorGenerator {
 			
 			String aaeDescr = generateLearningPipelineDescriptor(rootFolder, sims, rank, trees);
 			
-			System.out.println("Generating XML description for ClassificationPipelineAAE_DeploymentDescriptor");
+			System.out.println("Generating XML description for LearningPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("Learning", 
 								           "LearningPipelineAAE",
 								           aaeDescr, 
@@ -1598,15 +1598,91 @@ public class DescriptorGenerator {
 			out.write(spdd.toXML());
 			out.close();
 			
-			
-//			Document descriptor = loadDescriptor(rootFolder+"/descriptors/ClassificationPipelineAAE_DeploymentDescriptor.xml");
-	//		addScaleoutElement(descriptor, "StandardTextAnnotator");
-	//		addScaleoutElement(descriptor, "FeatureComputer");
-	//		addScaleoutElement(descriptor, "ClassificationAnnotatorAAE");
-//			updateRemoteReplyQueueScaleoutAttribute(descriptor,"FeatureExtractor",10);
-//			saveDescriptor(descriptor, rootFolder+"/descriptors/ClassificationPipelineAAE_DeploymentDescriptor.xml");
-			
 			return rootFolder+"/descriptors/LearningPipelineAAE_DeploymentDescriptor.xml";
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	private static String generateLearningPipelineWithoutPreprocessingDescriptor(String root_folder,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		new File(root_folder+"/descriptors/classification").mkdirs();
+		
+		String lDescr = generateLearningAnnotatorAAEDescriptor(root_folder, sims, rank, trees);
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		param.setType("String");
+		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+		parameters.addConfigurationParameter(param);
+		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+
+		Import classificationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		classificationAEImport.setName(lDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LearningAnnotatorAAE", classificationAEImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("LearningAnnotatorAAE");
+
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/descriptors/learning/LearningPipelineWithoutPreprocessingAAE_Descriptor.xml").getAbsolutePath()));	
+	    
+	    return "descriptors.learning.LearningPipelineWithoutPreprocessingAAE_Descriptor";
+	}
+	
+	public static String generateLearningPipelineWithoutPreprocessingDeploymentDescriptor(String brokerURL, String queueName,
+			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+		try {
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
+			new File(rootFolder+"/descriptors").mkdir();
+			
+			String aaeDescr = generateLearningPipelineWithoutPreprocessingDescriptor(rootFolder, sims, rank, trees);
+			
+			System.out.println("Generating XML description for LearningPipelineWithoutPreprocessingAAE_DeploymentDescriptor");
+			ServiceContext pipelineContext = new ServiceContextImpl("Learning", 
+								           "LearningPipelineWithoutPreprocessingAAE",
+								           aaeDescr, 
+								           queueName, brokerURL);
+			pipelineContext.setCasPoolSize(10);
+
+			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("LearningAnnotatorAE", new DelegateConfiguration[0]);
+			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("LearningAnnotatorAAE", new DelegateConfiguration[]{delegate21});
+			
+			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
+					pipelineContext,spCldd2);
+			
+			BufferedWriter out = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(rootFolder+"/descriptors/LearningPipelineWithoutPreprocessingAAE_DeploymentDescriptor.xml")));
+			out.write(spdd.toXML());
+			out.close();
+						
+			return rootFolder+"/descriptors/LearningPipelineWithoutPreprocessingAAE_DeploymentDescriptor.xml";
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

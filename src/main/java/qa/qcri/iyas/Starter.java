@@ -54,6 +54,7 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
+import qa.qcri.iyas.data.reader.PreprocessedInputCollectionDataReader;
 import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
@@ -269,8 +270,14 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		
-		String descr = DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
-				brokerURL,queueName,featureExtractionURL, featureExtractionQueueName, sims, rank, trees);
+		String descr = null;
+		if (featureExtractionQueueName != null)
+			descr = DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
+					brokerURL,queueName,featureExtractionURL, featureExtractionQueueName, sims, rank, trees);
+		else
+			descr = DescriptorGenerator.generateLearningPipelineWithoutPreprocessingDeploymentDescriptor(
+					brokerURL,queueName, sims, rank, trees);
+		
 		String id = uimaAsEngine.deploy(new File(descr).getAbsolutePath(), appCtx);
 		
 		return id;
@@ -297,6 +304,14 @@ public class Starter {
 				XmlSemeval2016CqaEn.TASK_PARAM, t);
 		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
 				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+		
+		return collectionReaderDescr;
+	}
+	
+	private static CollectionReaderDescription getPreprocessedCollectionReaderDescriptor(String file) throws ResourceInitializationException, IOException {
+		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+				PreprocessedInputCollectionDataReader.class,
+				PreprocessedInputCollectionDataReader.INPUT_FILE_PARAM,file);	
 		
 		return collectionReaderDescr;
 	}
@@ -382,7 +397,13 @@ public class Starter {
 		
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
-		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+		CollectionReader collectionReader = null;
+		
+		if (task != null)
+			collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+		else
+			collectionReader = UIMAFramework.produceCollectionReader(getPreprocessedCollectionReaderDescriptor(inputFile));
+		
 		LearningStatusCallBackListener listener = new LearningStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listener);
 		uimaAsEngine.setCollectionReader(collectionReader);
@@ -494,7 +515,7 @@ public class Starter {
 
 		Option queue1NameFEOpt = new Option(FE_QUEUE_NAME_OPT,FE_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the feature extraction pipeline is listening");
 		queue1NameFEOpt.setArgName("queue name");
-		queue1NameFEOpt.setRequired(true);
+		queue1NameFEOpt.setRequired(false);
 		
 		Option url1FEOpt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the learning pipeline has to connected");
 		url1FEOpt.setArgName("IP address");
@@ -610,7 +631,7 @@ public class Starter {
 		
 		Option task2Opt = new Option(TASK_OPT, TASK_LONG_OPT, true, "Which re-ranking task perform: \"cr\" for comment re-ranking, \"qr\" for question re-ranking");
 		task2Opt.setArgName("task");
-		task2Opt.setRequired(true);
+		task2Opt.setRequired(false);
 		
 		Options learningOpts = new Options();
 		learningOpts.addOption(url5Opt);
