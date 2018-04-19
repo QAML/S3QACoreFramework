@@ -184,9 +184,9 @@ public class StandardPreprocessor extends TextPreprocessor {
 	@Override
 	public String preprocess(String text, String lang) {
 		if (lang.equals("en"))
-			return enPreprocess(text);
+			return enPreprocess(text.toLowerCase());
 		else if (lang.equals("ar"))
-			return arPreprocess(text);
+			return arPreprocess(text.toLowerCase());
 		
 		return null;
 	}
