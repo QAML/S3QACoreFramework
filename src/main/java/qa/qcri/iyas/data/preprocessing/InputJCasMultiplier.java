@@ -206,7 +206,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		String subject = preprocessor.preprocess(userQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(userQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
-		String question = preprocessor.concatenateBodyAndSubject(subject, body);
+		String question = preprocessor.concatenateBodyAndSubject(subject, body, true);
 		
 		JCas questionJCas = getEmptyJCas();
 		questionJCas.setDocumentLanguage(lang);
@@ -290,7 +290,7 @@ public class InputJCasMultiplier extends JCasMultiplier_ImplBase {
 		
 		String subject = preprocessor.preprocess(relatedQuestion.getChild(DataReader.SUBJECT_TAG).getText(),lang);
 		String body = preprocessor.preprocess(relatedQuestion.getChild(DataReader.BODY_TAG).getText(),lang);
-		String question = preprocessor.concatenateBodyAndSubject(subject, body);
+		String question = preprocessor.concatenateBodyAndSubject(subject, body, true);
 		
 		JCas questionJCas = getEmptyJCas();
 		questionJCas.setDocumentLanguage(lang);

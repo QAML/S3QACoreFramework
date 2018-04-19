@@ -75,5 +75,5 @@ public abstract class TextPreprocessor extends Resource_ImplBase {
 	 */
 	public abstract String preprocess(String text, String lang);
 	
-	public abstract String concatenateBodyAndSubject(String subject,String body);
+	public abstract String concatenateBodyAndSubject(String subject,String body,boolean lowercase);
 }
