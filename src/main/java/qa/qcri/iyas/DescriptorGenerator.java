@@ -34,7 +34,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import org.apache.uima.flow.impl.FixedFlowController;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -66,6 +66,8 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import qa.qcri.iyas.classification.ClassificationAnnotator;
 import qa.qcri.iyas.classification.kelp.KeLPClassifier;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
@@ -179,7 +181,7 @@ public class DescriptorGenerator {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
 		System.out.println("Generating XML description for InputJCasMultiplierAE_Descriptor");
-		AnalysisEngineDescription inputJCasMultiplierAEDescriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription inputJCasMultiplierAEDescriptor = createEngineDescription(
 				InputJCasMultiplier.class,
 				InputJCasMultiplier.CONCATENATE_PARAM,concatenate);
 		ExternalResourceFactory.bindResource(inputJCasMultiplierAEDescriptor,
@@ -188,7 +190,7 @@ public class DescriptorGenerator {
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/InputJCasMultiplierAE_Descriptor.xml"));
 	
 		System.out.println("Generating XML description for InputJCasMultiplierAAE_Descriptor");
-		AnalysisEngineDescription inputJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription inputJCasMultiplierAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		inputJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		inputJCasMultiplierAAE.setPrimitive(false);
@@ -308,25 +310,25 @@ public class DescriptorGenerator {
 		System.out.println("Generating XML description for StandardSimpleFeatureExtractor primitives");
 		
 		System.out.println("	Generating XML description for SegmenterAE_Descriptor");
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(
-				OpenNlpSegmenter.class);
+		AnalysisEngineDescription segmenter = createEngineDescription(
+				StanfordSegmenter.class);
 		segmenter.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
 	
 		System.out.println("	Generating XML description for POSTaggerAE_Descriptor");
-		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(
-				OpenNlpPosTagger.class);
+		AnalysisEngineDescription posTagger = createEngineDescription(
+				StanfordPosTagger.class);
 		posTagger.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/POSTaggerAE_Descriptor.xml"));
 
 		System.out.println("	Generating XML description for LemmatizerAE_Descriptor");
-		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription lemmatizer = createEngineDescription(
 				StanfordLemmatizer.class);
 		lemmatizer.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
 
 		System.out.println("	Generating XML description for ChunkerAE_Descriptor");
-		AnalysisEngineDescription chunker = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription chunker = createEngineDescription(
 				OpenNlpChunker.class);
 		chunker.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
@@ -334,7 +336,7 @@ public class DescriptorGenerator {
 		
 		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
-		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		standardPreprocessingAnnotatorAAE.setPrimitive(false);
@@ -383,7 +385,7 @@ public class DescriptorGenerator {
 		
 		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
-		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		standardPreprocessingAnnotatorAAE.setPrimitive(false);
@@ -413,7 +415,7 @@ public class DescriptorGenerator {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
 		System.out.println("Generating XML description for ProcessedJCASAggregatorAE_Descriptor");
-		AnalysisEngineDescription processedJCASAggregatorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription processedJCASAggregatorAEDescriptor = createEngineDescription(
 				ProcessedJCASAggregator.class);
 //		ExternalResourceFactory.bindResource(processedJCASAggregatorAEDescriptor,
 //				ProcessedJCASAggregator.PARAM_PROCESSED_INSTANCES_MANAGER_RESOURCE, ProcessedInstancesManager.class,"",
@@ -422,7 +424,7 @@ public class DescriptorGenerator {
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ProcessedJCASAggregatorAE_Descriptor.xml"));
 		
 		System.out.println("Generating XML description for ProcessedJCASAggregatorAAE_Descriptor");
-		AnalysisEngineDescription processedJCasMultiplierAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription processedJCasMultiplierAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		processedJCasMultiplierAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		processedJCasMultiplierAAE.setPrimitive(false);
@@ -452,13 +454,13 @@ public class DescriptorGenerator {
 	private static String generateJCasPairGeneratorAAEDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		System.out.println("Generating XML description for JCasPairGeneratorAE_Descriptor");
-		AnalysisEngineDescription jcasPairGeneratorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription jcasPairGeneratorAEDescriptor = createEngineDescription(
 				JCasPairGenerator.class);
 		jcasPairGeneratorAEDescriptor.toXML(
 				new FileOutputStream(root_folder+"/descriptors/feature/JCasPairGeneratorAE_Descriptor.xml"));
 		
 		System.out.println("Generating XML description for JCasPairGeneratorAAE_Descriptor");
-		AnalysisEngineDescription jcasPairGeneratorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription jcasPairGeneratorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		jcasPairGeneratorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		jcasPairGeneratorAAE.setPrimitive(false);
@@ -658,7 +660,7 @@ public class DescriptorGenerator {
 	
 	private static String generateSimsAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature/similarity").mkdirs();
-		AnalysisEngineDescription similarityAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription similarityAnnotatorAE_Descriptor = createEngineDescription(
 				VectorialFeaturesAnnotator.class,
 				VectorialFeaturesAnnotator.PARAM_NAME_OUT_VECTOR_NAME,"qq-sims");
 		
@@ -680,7 +682,7 @@ public class DescriptorGenerator {
 	
 	private static String generateRankAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
-		AnalysisEngineDescription rankAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription rankAnnotatorAE_Descriptor = createEngineDescription(
 				VectorialFeaturesAnnotator.class,
 				VectorialFeaturesAnnotator.PARAM_NAME_OUT_VECTOR_NAME,"rank");
 		
@@ -721,7 +723,7 @@ public class DescriptorGenerator {
 		
 		System.out.println("Generating XML description for FeatureComputerAAE_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
-		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		standardPreprocessingAnnotatorAAE.setPrimitive(false);
@@ -765,7 +767,7 @@ public class DescriptorGenerator {
 		
 		System.out.println("Generating XML description for FeatureComputer_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
-		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		standardPreprocessingAnnotatorAAE.setPrimitive(false);
@@ -819,7 +821,7 @@ public class DescriptorGenerator {
 	
 	private static String generateDecorationAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/representation").mkdirs();
-		AnalysisEngineDescription decorationAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription decorationAnnotatorAE_Descriptor = createEngineDescription(
 				DecorationAnnotator.class);
 		
 		List<ExternalResourceDependency> dependencyList = bindDecorators(decorationAnnotatorAE_Descriptor);
@@ -844,7 +846,7 @@ public class DescriptorGenerator {
 		String aaeDescr = generateDecorationAEDescriptor(root_folder);
 		
 		System.out.println("Generating XML description for DecorationAnnotatorAAE_Descriptor");
-		AnalysisEngineDescription decoratorrAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription decoratorrAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		decoratorrAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		decoratorrAAE.setPrimitive(false);
@@ -874,7 +876,7 @@ public class DescriptorGenerator {
 	private static String generateKeLPRepresentationExtractorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/representation").mkdirs();
 		System.out.println("Generating XML description for KeLPRepresentationExtractorAE_Descriptor");
-		AnalysisEngineDescription representationExtractorAEDescriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription representationExtractorAEDescriptor = createEngineDescription(
 				RepresentantationExtractor.class);
 		
 		ExternalResourceFactory.bindResource(representationExtractorAEDescriptor,
@@ -884,7 +886,7 @@ public class DescriptorGenerator {
 				new FileOutputStream(root_folder+"/descriptors/representation/KeLPRepresentationExtractorAE_Descriptor.xml"));
 	
 		System.out.println("Generating XML description for KeLPRepresentationExtractorAAE_Descriptor");
-		AnalysisEngineDescription representationExtractorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription representationExtractorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		representationExtractorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		representationExtractorAAE.setPrimitive(false);
@@ -912,7 +914,7 @@ public class DescriptorGenerator {
 	
 	private static String generateClassificationAnnotatorAEDescriptor(String root_folder,String modelFile) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
-		AnalysisEngineDescription classifiactionAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription classifiactionAnnotatorAE_Descriptor = createEngineDescription(
 				ClassificationAnnotator.class);
 		
 		System.out.println("Generating XML description for ClassificationAnnotatorAE_Descriptor");
@@ -935,7 +937,7 @@ public class DescriptorGenerator {
 		String aeDescr = generateClassificationAnnotatorAEDescriptor(root_folder,modelFile);
 		
 		System.out.println("Generating XML description for ClassificationAnnotatorAAE_Descriptor");
-		AnalysisEngineDescription classificationAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription classificationAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		classificationAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		classificationAnnotatorAAE.setPrimitive(false);
@@ -963,7 +965,7 @@ public class DescriptorGenerator {
 	
 	private static String generateLearningAnnotatorAEDescriptor(String root_folder, boolean useSims, boolean useRank, boolean useTrees) throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/learning").mkdirs();
-		AnalysisEngineDescription learningAnnotatorAE_Descriptor = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription learningAnnotatorAE_Descriptor = createEngineDescription(
 				LearningAnnotator.class);
 		
 		System.out.println("Generating XML description for LearningAnnotatorAE_Descriptor");
@@ -993,7 +995,7 @@ public class DescriptorGenerator {
 		String descr = generateLearningAnnotatorAEDescriptor(root_folder, useSims, useRank, useTrees);
 		
 		System.out.println("Generating XML description for LearningAnnotatorAAE_Descriptor");
-		AnalysisEngineDescription learningAnnotatorAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription learningAnnotatorAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		learningAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		learningAnnotatorAAE.setPrimitive(false);
@@ -1033,7 +1035,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1152,7 +1154,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1234,7 +1236,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1286,7 +1288,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1412,7 +1414,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1520,7 +1522,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);
@@ -1619,7 +1621,7 @@ public class DescriptorGenerator {
 		flowControllerDeclaration.setImport(flowControllerImport);
 		flowControllerDeclaration.setKey("FixedFlowController");
 		
-		AnalysisEngineDescription pipelineAAE = AnalysisEngineFactory.createEngineDescription(
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
 		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
 		pipelineAAE.setPrimitive(false);

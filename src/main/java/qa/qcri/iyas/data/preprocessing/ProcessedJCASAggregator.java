@@ -33,6 +33,8 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.cqa.Comment;
 import qa.qcri.iyas.type.cqa.InstanceA;
@@ -172,6 +174,12 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 			
 			if (JCasUtil.exists(jcas, UserQuestionBody.class) || JCasUtil.exists(jcas, UserQuestionSubject.class))
 				info.removeFromIndexes();
+			
+			for (Sentence sent : JCasUtil.select(jcas, Sentence.class)) {
+				for (Token token : JCasUtil.selectCovered(Token.class, sent)) {
+					int i = 0;
+				}
+			}
 			
 			try {
 				boolean ready = processedInstancesManager.addJCasToInstanceB(requesterID,userQuestionID,jcas);

@@ -73,7 +73,7 @@ public class LearningTest {
 			if (concatenate) {
 				mapB.put("body_"+qid, sp.concatenateBodyAndSubject(
 						sp.preprocess(org_subject,"en"),
-						sp.preprocess(org_body,"en")));
+						sp.preprocess(org_body,"en"),false));
 			} else {
 				mapB.put("subject_"+qid, sp.preprocess(org_subject,"en"));
 				mapB.put("body_"+qid, sp.preprocess(org_body,"en"));
@@ -88,7 +88,7 @@ public class LearningTest {
 				if (concatenate) {
 					mapB.put("rel_body_"+rid, sp.concatenateBodyAndSubject(
 							sp.preprocess(rel_subject,"en"),
-							sp.preprocess(rel_body,"en")));
+							sp.preprocess(rel_body,"en"),false));
 				} else {
 					mapB.put("rel_subject_"+rid, sp.preprocess(rel_subject,"en"));
 					mapB.put("rel_body_"+rid, sp.preprocess(rel_body,"en"));
@@ -99,7 +99,7 @@ public class LearningTest {
 				if (concatenate) {
 					mapA.put("body_"+rid, sp.concatenateBodyAndSubject(
 							sp.preprocess(rel_subject,"en"), 
-							sp.preprocess(rel_body,"en")));
+							sp.preprocess(rel_body,"en"),false));
 				} else {
 					mapA.put("subject_"+rid, sp.preprocess(rel_subject,"en"));
 					mapA.put("body_"+rid, sp.preprocess(rel_body,"en"));

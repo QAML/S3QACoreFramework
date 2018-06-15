@@ -18,16 +18,22 @@
  
 package qa.qcri.iyas.representation.kelp;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceProcessException;
 import org.uimafit.util.JCasUtil;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import it.uniroma2.sag.kelp.data.example.ExamplePair;
 import it.uniroma2.sag.kelp.data.example.SimpleExample;
 import it.uniroma2.sag.kelp.data.label.StringLabel;
+import it.uniroma2.sag.kelp.data.representation.structure.StructureElement;
+import it.uniroma2.sag.kelp.data.representation.structure.StructureElementFactory;
 import it.uniroma2.sag.kelp.data.representation.tree.TreeRepresentation;
+import it.uniroma2.sag.kelp.data.representation.tree.node.TreeNode;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.representation.Serializer;
 import qa.qcri.iyas.type.representation.DenseVector;
@@ -40,10 +46,27 @@ import qa.qcri.iyas.type.representation.TreePair;
 import qa.qcri.iyas.util.tree.RichTree;
 import qa.qcri.iyas.util.tree.TokenTree;
 import qa.qcri.iyas.util.tree.node.RichNode;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 public class KeLPSerializer extends Serializer {
 	
-	private static TreeSerializer treeSerializer = new TreeSerializer().useRoundBrackets().enableRelationalTags();
+//	private static TreeSerializer treeSerializer = new TreeSerializer().useRoundBrackets().enableRelationalTags();
+	
+	private static TreeNode getSubTree(RichNode richNode,TreeNode father,int currentID[]) throws InstantiationException {
+		StructureElement nodeElement = StructureElementFactory.getInstance().parseStructureElement(richNode.getRepresentation(RichNode.OUTPUT_PAR_SEMANTIC_KERNEL));
+		TreeNode node = new TreeNode(currentID[0],nodeElement,father);
+		currentID[0]++;
+		ArrayList<TreeNode> subTrees = node.getChildren();
+		for (RichNode child : richNode.getChildren()) {
+			TreeNode subTree = getSubTree(child,node,currentID);
+			if (subTree != null)
+				subTrees.add(subTree);
+		}
+		if (subTrees.size() == 0 && !(richNode instanceof RichTokenNode))
+			return null;
+		else
+			return node;
+	}
 	
 	private TreeRepresentation getTreeRepresentation(JCas jcas) throws Exception {
 		Collection<Tree> trees = JCasUtil.select(jcas, Tree.class);
@@ -52,12 +75,24 @@ public class KeLPSerializer extends Serializer {
 		Tree tree = trees.iterator().next();
 		if (tree instanceof PosChunkTree) {
 			TokenTree posChunkTree = RichTree.getPosChunkTree(jcas);
-			TreeRepresentation treeRepr = new TreeRepresentation();
-			treeRepr.setDataFromText(KeLPSerializer.treeSerializer.serializeTree(posChunkTree, RichNode.OUTPUT_PAR_SEMANTIC_KERNEL));
+
+			StructureElement rootElement = StructureElementFactory.getInstance().parseStructureElement(posChunkTree.getRepresentation(RichNode.OUTPUT_PAR_SEMANTIC_KERNEL));
+			
+			TreeNode root = new TreeNode(1,rootElement,null);
+			ArrayList<TreeNode> subTrees = root.getChildren();
+			int currentID[] = new int[]{2};
+			for (RichNode child : posChunkTree.getChildren()) {
+				TreeNode subTree = getSubTree(child,root,currentID);
+				if (subTree != null) {
+					subTrees.add(subTree);
+				}
+			}
+			
+			TreeRepresentation treeRepr = new TreeRepresentation(root);
 			
 			return treeRepr;
 		} else {
-			throw new ResourceProcessException("Unsupported operation tree type.",null);
+			throw new ResourceProcessException("Unsupported tree type.",null);
 		}
 	}
 

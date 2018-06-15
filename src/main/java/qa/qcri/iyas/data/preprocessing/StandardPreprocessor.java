@@ -36,8 +36,8 @@ import org.jsoup.nodes.TextNode;
  */
 public class StandardPreprocessor extends TextPreprocessor {
 	
-	private static final String WWW = "3WSUBS";
-
+private static final String WWW = "3WSUBS";
+	
 	private String unescape(String text) {
 		Set<String> allMatches = new TreeSet<String>();
 		Matcher m = Pattern.compile("&(\\s(\\d+));").matcher(text);
@@ -164,21 +164,32 @@ public class StandardPreprocessor extends TextPreprocessor {
 //	}
 	
 	public String concatenateBodyAndSubject(String subject,String body,boolean lowercase) {
-		String text = null;
+//		String text = null;
+//		if (body.toLowerCase().startsWith(subject.toLowerCase())) {
+//			text = body;
+//		}
+//		
+//		if (body.length() > 0) {
+//			if (Character.isUpperCase(body.charAt(0))) {
+//				text = subject+ ". " + body; 
+//		    }
+//		}
+//		text = subject+ " " + body;
+//		
+//		if (lowercase)
+//			return text.toLowerCase();
+//		else
+//			return text;
+		
 		if (body.toLowerCase().startsWith(subject.toLowerCase())) {
-			text = body;
+			return body;
 		}
 		if (body.length() > 0) {
-			if (Character.isUpperCase(body.charAt(0))) {
-				text = subject+ ". " + body; 
+			if (Character.isUpperCase(body.charAt(0)) && !subject.substring(subject.length()-1).matches("\\p{Punct}")) {
+				return subject+ ". " + body; 
 		    }
 		}
-		text = subject+ " " + body;
-		
-		if (lowercase)
-			return text.toLowerCase();
-		else
-			return text;
+		return subject+ " " + body;
 	}
 	
 	/**

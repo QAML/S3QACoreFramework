@@ -19,36 +19,21 @@
 package qa.qcri.iyas.util;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.fit.component.ExternalResourceAware;
-import org.apache.uima.fit.component.initialize.ConfigurationParameterInitializer;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.DataResource;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
-import org.apache.uima.resource.SharedResourceObject;
-import org.apache.uima.util.CasCreationUtils;
 
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.util.CasCopier;
+
 import qa.qcri.iyas.type.cqa.Comment;
-import qa.qcri.iyas.type.cqa.RelatedQuestion;
 import qa.qcri.iyas.type.cqa.RelatedQuestionBody;
 import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
-import qa.qcri.iyas.type.cqa.UserQuestion;
 import qa.qcri.iyas.type.cqa.UserQuestionBody;
 import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 

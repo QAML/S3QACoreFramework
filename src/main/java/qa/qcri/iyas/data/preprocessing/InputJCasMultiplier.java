@@ -18,10 +18,8 @@
  
 package qa.qcri.iyas.data.preprocessing;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.LinkedList;
 

@@ -78,11 +78,11 @@ public class JCasPairGeneratorTest {
 				
 				mapB.put("left_"+rid, sp.concatenateBodyAndSubject(
 						sp.preprocess(org_subject,"en"),
-						sp.preprocess(org_body,"en")));
+						sp.preprocess(org_body,"en"),false));
 				
 				mapB.put("right_"+rid, sp.concatenateBodyAndSubject(
 						sp.preprocess(rel_subject,"en"),
-						sp.preprocess(rel_body,"en")));
+						sp.preprocess(rel_body,"en"),false));
 				
 				Map<String,String> mapA = new HashMap<String,String>();
 				
@@ -93,7 +93,7 @@ public class JCasPairGeneratorTest {
 					
 					mapA.put("left_"+cid, sp.concatenateBodyAndSubject(
 							sp.preprocess(rel_subject,"en"), 
-							sp.preprocess(rel_body,"en")));
+							sp.preprocess(rel_body,"en"),false));
 					
 					mapA.put("right_"+cid, sp.preprocess(comment,"en"));
 				}

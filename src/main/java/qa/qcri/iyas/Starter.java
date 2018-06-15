@@ -450,7 +450,7 @@ public class Starter {
 		
 		
 		//Feature Extraction Deployment options
-		//-dfe -ip 127.0.0.1 -qn featureExtractionQueue -sc 10 -s -t -r
+		//-dfe -ip 127.0.0.1 -qn featureExtractionQueue -sc 1 -s -t -r
 		Option deployFEOpt = new Option(DEPLOY_FEATURE_EXTRACTION_OPT, DEPLOY_FEATURE_EXTRACTION_LONG_OPT, false, "Deploy feature extraction pipeline");
 		
 		Option queueName1Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the deploy pipeline will receive the requests");
@@ -546,7 +546,7 @@ public class Starter {
 		
 		
 		//Feature Extraction options
-		//-ef -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml -of representations.klp -ip 127.0.0.1 -qn featureExtractionQueue -rt cr
+		//-ef -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml -of representations.klp -ip 127.0.0.1 -qn featureExtractionQueue -rt qr
 		Option extractFeaturesOpt = new Option(EXTRACT_FEATURES_OPT, EXTRACT_FEATURES_LONG_OPT, false, "Extract features for an input dataset");
 		
 		Option queueName2Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the feature extraction pipeline is listening");
