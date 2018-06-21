@@ -18,7 +18,9 @@
  
 package qa.qcri.iyas.data.preprocessing;
 
+import java.io.StringReader;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -29,6 +31,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import edu.stanford.nlp.international.arabic.process.ArabicTokenizer;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.process.Tokenizer;
+import edu.stanford.nlp.process.TokenizerFactory;
+
 /**
  * Standard implementation for {@link TextPreprocessor}. This preprocessing has been used for SemEval English and Arabic.
  * @author Salvatore Romeo
@@ -36,7 +44,27 @@ import org.jsoup.nodes.TextNode;
  */
 public class StandardPreprocessor extends TextPreprocessor {
 	
-private static final String WWW = "3WSUBS";
+	private static final String WWW = "3WSUBS";
+	
+	private static Properties options = new Properties();
+	static {
+	    options.setProperty("normArDigits", "true");
+	    options.setProperty("normArPunc", "true");
+	    options.setProperty("normAlif", "true");
+	    options.setProperty("normYa", "true");
+	    
+	    options.setProperty("removeDiacritics", "true");
+	    options.setProperty("removeTatweel", "true");
+	    options.setProperty("removeQuranChars", "true");
+	    options.setProperty("removeLengthening", "true");
+	}
+	
+	private static TokenizerFactory<CoreLabel> factory = ArabicTokenizer.factory();
+	static {
+	    for (String option : options.stringPropertyNames()) {
+	    	factory.setOptions(option);
+	  }
+	}
 	
 	private String unescape(String text) {
 		Set<String> allMatches = new TreeSet<String>();
@@ -103,7 +131,21 @@ private static final String WWW = "3WSUBS";
 //		
 //		return new String(chars);
 		
-		return normalizedText;
+		
+		Tokenizer<CoreLabel> tokenizer = factory.getTokenizer(new StringReader(normalizedText));
+				
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		while (tokenizer.hasNext()) {
+			String word = tokenizer.next().word();
+			if (!first) {
+				sb.append(" ");
+			}
+			sb.append(word);
+			first = false;
+		}
+
+		return sb.toString();
 	}
 	
 	private String enPreprocess(String informalText){

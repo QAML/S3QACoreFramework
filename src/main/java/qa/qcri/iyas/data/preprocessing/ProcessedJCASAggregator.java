@@ -46,6 +46,7 @@ import qa.qcri.iyas.type.cqa.RelatedQuestionSubject;
 import qa.qcri.iyas.type.cqa.UserQuestionBody;
 import qa.qcri.iyas.type.cqa.UserQuestionSubject;
 import qa.qcri.iyas.util.ProcessedInstancesManager;
+import qa.qcri.iyas.util.tree.node.RichTokenNode;
 
 @OperationalProperties(modifiesCas = false, outputsNewCases = true, multipleDeploymentAllowed = true)
 @TypeCapability(
@@ -136,6 +137,10 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	//TODO: add release if the JCas are not automatically released when an exception occurs
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		for (Token token : JCasUtil.select(jcas, Token.class)) {
+			RichTokenNode richTokenNode = new RichTokenNode(token);
+		}
+		
 		Collection<AdditionalInfo> infos = JCasUtil.select(jcas, AdditionalInfo.class);
 		if (infos.size() != 1)
 			throw new AnalysisEngineProcessException("Expected an AdditionalInfo annotation, found "+infos.size(),null);
@@ -175,11 +180,11 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 			if (JCasUtil.exists(jcas, UserQuestionBody.class) || JCasUtil.exists(jcas, UserQuestionSubject.class))
 				info.removeFromIndexes();
 			
-			for (Sentence sent : JCasUtil.select(jcas, Sentence.class)) {
-				for (Token token : JCasUtil.selectCovered(Token.class, sent)) {
-					int i = 0;
-				}
-			}
+//			for (Sentence sent : JCasUtil.select(jcas, Sentence.class)) {
+//				for (Token token : JCasUtil.selectCovered(Token.class, sent)) {
+//					int i = 0;
+//				}
+//			}
 			
 			try {
 				boolean ready = processedInstancesManager.addJCasToInstanceB(requesterID,userQuestionID,jcas);
@@ -209,6 +214,8 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 //				throw new AnalysisEngineProcessException(e);
 //			}
 			throw new AnalysisEngineProcessException("Task C currently not supported",null);
+		} else {
+			throw new AnalysisEngineProcessException("No Task specified",null);
 		}
 	}
 

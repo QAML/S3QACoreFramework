@@ -213,7 +213,7 @@ public class FeatureExtractionTest {
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
 //		generateAnalysisEngineDescritors(true);
-		String id = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616", "myQueueName", 10,false,true,false);
+		String id = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616", "myQueueName","en", 10,false,true,false);
 		
 		String file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml";
 //		String file = generateInputTestFile(true);

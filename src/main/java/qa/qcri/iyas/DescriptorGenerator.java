@@ -66,10 +66,13 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordParser;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import qa.qcri.iyas.classification.ClassificationAnnotator;
 import qa.qcri.iyas.classification.kelp.KeLPClassifier;
+import qa.qcri.iyas.data.preprocessing.ArabicLemmatizerAnalysisEngine;
+import qa.qcri.iyas.data.preprocessing.ArabicSegmenterAnalysisEngine;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.data.preprocessing.ProcessedJCASAggregator;
@@ -304,35 +307,62 @@ public class DescriptorGenerator {
 //		}
 //	}
 	
-	private static String generateStandardTextAnnotatorAAEDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
+	private static String generateStandardTextAnnotatorAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		//Generates the AE descriptor for StandardPreprocessingAnnotator
 		System.out.println("Generating XML description for StandardSimpleFeatureExtractor primitives");
 		
 		System.out.println("	Generating XML description for SegmenterAE_Descriptor");
-		AnalysisEngineDescription segmenter = createEngineDescription(
-				StanfordSegmenter.class);
-		segmenter.toXML(
-				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
-	
+		if (lang.equals("en")) {
+			AnalysisEngineDescription segmenter = createEngineDescription(
+					StanfordSegmenter.class);
+			segmenter.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
+		} else if (lang.equals("ar")) {
+			AnalysisEngineDescription segmenter = createEngineDescription(
+					ArabicSegmenterAnalysisEngine.class);
+			segmenter.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
+		} else {
+			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
+		}
+		
 		System.out.println("	Generating XML description for POSTaggerAE_Descriptor");
 		AnalysisEngineDescription posTagger = createEngineDescription(
-				StanfordPosTagger.class);
+				StanfordPosTagger.class,StanfordPosTagger.PARAM_LANGUAGE,lang);
 		posTagger.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/POSTaggerAE_Descriptor.xml"));
 
 		System.out.println("	Generating XML description for LemmatizerAE_Descriptor");
-		AnalysisEngineDescription lemmatizer = createEngineDescription(
-				StanfordLemmatizer.class);
-		lemmatizer.toXML(
-				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
-
+		if (lang.equals("en")) {
+			AnalysisEngineDescription lemmatizer = createEngineDescription(
+					StanfordLemmatizer.class);
+			lemmatizer.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
+		} else if (lang.equals("ar")) {
+			AnalysisEngineDescription lemmatizer = createEngineDescription(
+					ArabicLemmatizerAnalysisEngine.class);
+			lemmatizer.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
+		} else {
+			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
+		}
+		
+		
 		System.out.println("	Generating XML description for ChunkerAE_Descriptor");
-		AnalysisEngineDescription chunker = createEngineDescription(
-				OpenNlpChunker.class);
-		chunker.toXML(
-				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
-
+		if (lang.equals("en")) {
+			AnalysisEngineDescription chunker = createEngineDescription(
+					OpenNlpChunker.class);
+			chunker.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
+		} else if (lang.equals("ar")) {
+			AnalysisEngineDescription chunker = createEngineDescription(
+					StanfordParser.class);
+			chunker.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
+		} else {
+			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
+		}
 		
 		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
@@ -377,10 +407,10 @@ public class DescriptorGenerator {
 		return "descriptors.preprocessing.StandardTextAnnotatorAAE_Descriptor";
 	}
 	
-	private static String generateStandardTextAnnotatorDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
+	private static String generateStandardTextAnnotatorDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
-		String aaeDescr = generateStandardTextAnnotatorAAEDescriptor(root_folder);
+		String aaeDescr = generateStandardTextAnnotatorAAEDescriptor(root_folder, lang);
 
 		
 		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
@@ -793,7 +823,7 @@ public class DescriptorGenerator {
 		return "descriptors/feature/FeatureComputer_Descriptor";
 	}
 	
-	private static List<ExternalResourceDependency> bindDecorators(AnalysisEngineDescription descr) throws InvalidXMLException {
+	private static List<ExternalResourceDependency> bindDecorators(AnalysisEngineDescription descr, String lang ) throws InvalidXMLException, ResourceInitializationException {
 		List<ExternalResourceDependency> dependencyList = new LinkedList<>();
 
 		String decoratorName = null;
@@ -803,10 +833,18 @@ public class DescriptorGenerator {
 		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(decoratorName, JCasDecorator.class,false));
 		descr.setExternalResourceDependencies(dependencyList.toArray(new ExternalResourceDependency[0]));
 		
+		TreePairDecorator.TreeType treeType = null;
+		if (lang.equals("en"))
+			treeType = TreePairDecorator.TreeType.POS_CHUNK_TREE;
+		else if (lang.equals("ar"))
+			treeType = TreePairDecorator.TreeType.CONSTITUENCY_TREE;
+		else
+			throw new ResourceInitializationException("Unsupported language: "+lang,null);
+			
 		ExternalResourceFactory.bindResource(descr,
 				decoratorName, TreePairDecorator.class,"",
 				ExternalResourceFactory.PARAM_RESOURCE_NAME,decoratorName,
-				TreePairDecorator.PARAM_NAME_TREE_TYPE, TreePairDecorator.TreeType.POS_CHUNK_TREE);
+				TreePairDecorator.PARAM_NAME_TREE_TYPE, treeType);
 		
 		decoratorName = "identifier";
 		dependencyList.add(ExternalResourceFactory.createExternalResourceDependency(decoratorName, JCasDecorator.class,false));
@@ -819,12 +857,12 @@ public class DescriptorGenerator {
 		return dependencyList;
 	}
 	
-	private static String generateDecorationAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateDecorationAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/representation").mkdirs();
 		AnalysisEngineDescription decorationAnnotatorAE_Descriptor = createEngineDescription(
 				DecorationAnnotator.class);
 		
-		List<ExternalResourceDependency> dependencyList = bindDecorators(decorationAnnotatorAE_Descriptor);
+		List<ExternalResourceDependency> dependencyList = bindDecorators(decorationAnnotatorAE_Descriptor,lang);
 		String decoratorNames[] = new String[dependencyList.size()];
 		for (int i=0;i<decoratorNames.length;i++) {
 			decoratorNames[i] = dependencyList.get(i).getKey();
@@ -841,9 +879,9 @@ public class DescriptorGenerator {
 		
 	}
 	
-	private static String generateDecorationAAEDescriptor(String root_folder,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateDecorationAAEDescriptor(String root_folder, String lang,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/representation").mkdirs();
-		String aaeDescr = generateDecorationAEDescriptor(root_folder);
+		String aaeDescr = generateDecorationAEDescriptor(root_folder, lang);
 		
 		System.out.println("Generating XML description for DecorationAnnotatorAAE_Descriptor");
 		AnalysisEngineDescription decoratorrAAE = createEngineDescription(
@@ -1021,11 +1059,11 @@ public class DescriptorGenerator {
 	    return "descriptors.learning.LearningAnnotatorAAE_Descriptor";
 	}
 	
-	private static String generatePreprocessingPipelineDescriptor(String root_folder) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
+	private static String generatePreprocessingPipelineDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
 		String ijmDescr = DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-		String stDescr = DescriptorGenerator.generateStandardTextAnnotatorDescriptor(root_folder);
+		String stDescr = DescriptorGenerator.generateStandardTextAnnotatorDescriptor(root_folder,lang);
 		String pjaDescr = DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(root_folder);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1082,12 +1120,12 @@ public class DescriptorGenerator {
 	    return "descriptors.preprocessing.PreprocessingPipelineAAE_Descriptor";
 	}
 	
-	public static String generatePreprocessingPipelineDeploymentDescritor(String queueName, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
+	public static String generatePreprocessingPipelineDeploymentDescritor(String queueName, String lang, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
 		try {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generatePreprocessingPipelineDescriptor(rootFolder);
+			String aaeDescr = generatePreprocessingPipelineDescriptor(rootFolder,lang);
 			
 			System.out.println("Generating XML description for PreprocessingPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("PreprocessingPipeline", 
@@ -1135,15 +1173,15 @@ public class DescriptorGenerator {
 		return null;
 	}
 	
-	private static String generateFeatureExtractionAAEDescriptor(String root_folder,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateFeatureExtractionAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
 		String ijmDescr = generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-		String stDescr = generateStandardTextAnnotatorDescriptor(root_folder);
+		String stDescr = generateStandardTextAnnotatorDescriptor(root_folder,lang);
 		String pjaDescr = generateProcessedJCasAggregatorAAEDescriptor(root_folder);
 		String jpgDescr = generateJCasPairGeneratorAAEDescriptor(root_folder);
 		String fcDescr = generateFeatureComputerDescriptor(root_folder,sims,rank);
-		String dDescr = generateDecorationAAEDescriptor(root_folder,trees);
+		String dDescr = generateDecorationAAEDescriptor(root_folder,lang,trees);
 		String krDescr = generateKeLPRepresentationExtractorAAEDescriptor(root_folder);
 		
 		
@@ -1223,10 +1261,10 @@ public class DescriptorGenerator {
 	    
 	}
 	
-	private static String generateFeatureExtractionPipelineAAEDescriptor(String root_folder,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateFeatureExtractionPipelineAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
-		String descr = generateFeatureExtractionAAEDescriptor(root_folder,sims,rank,trees);
+		String descr = generateFeatureExtractionAAEDescriptor(root_folder, lang,sims,rank,trees);
 		
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1275,10 +1313,10 @@ public class DescriptorGenerator {
 	    
 	}
 	
-	private static String generateFeatureExtractionPipelineDescriptor(String root_folder,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateFeatureExtractionPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
-		String descr = generateFeatureExtractionPipelineAAEDescriptor(root_folder,sims,rank,trees);
+		String descr = generateFeatureExtractionPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
 		
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1327,13 +1365,13 @@ public class DescriptorGenerator {
 	    
 	}
 	
-	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName,int scaleout,
+	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName, String lang,int scaleout,
 			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		try {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateFeatureExtractionPipelineDescriptor(rootFolder,sims,rank,trees);
+			String aaeDescr = generateFeatureExtractionPipelineDescriptor(rootFolder,lang,sims,rank,trees);
 			
 			System.out.println("Generating XML description for FeatureExtractionPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("FeatureExtraction", 
@@ -1401,10 +1439,10 @@ public class DescriptorGenerator {
 		}
 	}
 	
-	private static String generateClassificationPipelineDescriptor(String root_folder,String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+	private static String generateClassificationPipelineDescriptor(String root_folder, String lang, String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,true,true,true);
+		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,lang,true,true,true);
 		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder,modelFile);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1456,13 +1494,13 @@ public class DescriptorGenerator {
 	    return "descriptors.classification.ClassificationPipelineAAE_Descriptor";
 	}
 	
-	public static String generateClassificationPipelineDeploymentDescriptor(String brokerURL, String queueName,String modelFile,
+	public static String generateClassificationPipelineDeploymentDescriptor(String brokerURL, String queueName, String lang,String modelFile,
 			String featureExtractionURL,String featureExtractionQueueName) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		try {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateClassificationPipelineDescriptor(rootFolder,modelFile);
+			String aaeDescr = generateClassificationPipelineDescriptor(rootFolder,lang,modelFile);
 			
 			System.out.println("Generating XML description for ClassificationPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("Classification", 
@@ -1509,10 +1547,10 @@ public class DescriptorGenerator {
 	
 	
 	
-	private static String generateLearningPipelineDescriptor(String root_folder,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
+	private static String generateLearningPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder, sims, rank, trees);
+		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,lang, sims, rank, trees);
 		String lDescr = generateLearningAnnotatorAAEDescriptor(root_folder, sims, rank, trees);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1564,14 +1602,14 @@ public class DescriptorGenerator {
 	    return "descriptors.learning.LearningPipelineAAE_Descriptor";
 	}
 	
-	public static String generateLearningPipelineDeploymentDescriptor(String brokerURL, String queueName,
+	public static String generateLearningPipelineDeploymentDescriptor(String brokerURL, String queueName, String lang,
 			String featureExtractionURL,String featureExtractionQueueName,
 			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		try {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateLearningPipelineDescriptor(rootFolder, sims, rank, trees);
+			String aaeDescr = generateLearningPipelineDescriptor(rootFolder,lang, sims, rank, trees);
 			
 			System.out.println("Generating XML description for LearningPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("Learning", 

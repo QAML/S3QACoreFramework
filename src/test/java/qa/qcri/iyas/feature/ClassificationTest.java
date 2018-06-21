@@ -210,8 +210,8 @@ public class ClassificationTest {
 
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		
-		String id1 = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616","featureExtractionQueue",1,true,false,true);
-		String id2 = Starter.depoyClassification(uimaAsEngine,"tcp://localhost:61616","classificationQueue",1,
+		String id1 = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616","en","featureExtractionQueue",1,true,false,true);
+		String id2 = Starter.depoyClassification(uimaAsEngine,"tcp://localhost:61616","en","classificationQueue",1,
 				"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/1521745849273.mdl",
 				"tcp://localhost:61616","featureExtractionQueue");
 				

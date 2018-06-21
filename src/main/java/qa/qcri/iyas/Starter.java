@@ -49,12 +49,17 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceProcessException;
 
+import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PreprocessedInputCollectionDataReader;
+import qa.qcri.iyas.data.reader.VolatileDataReader;
 import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
@@ -71,25 +76,26 @@ class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener
 		if (!aStatus.getStatusMessage().equals("success")) {
 			throw new IllegalStateException(aStatus.getStatusMessage());
 		} else {
-			try {
-				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
-					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
-					synchronized (representations) {
-						if (representations.length == 0)
-							representations = new String[info.getTotalNumberOfExamples()];
-					}
-					representations[info.getIndex()] = cas.getDocumentText();
-
-					synchronized (count) {
-						System.out.println("Processed "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
-					}
-					
-//					System.out.println(info.getIndex() + " " + info.getTotalNumberOfExamples()
-//					+ " " + info.getInstanceID() + " " + cas.getDocumentText());
-				}
-			} catch (CASException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
+//					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
+//					synchronized (representations) {
+//						if (representations.length == 0)
+//							representations = new String[info.getTotalNumberOfExamples()];
+//					}
+//					representations[info.getIndex()] = cas.getDocumentText();
+//
+//					synchronized (count) {
+//						System.out.println("Processed "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
+//					}
+//					
+////					System.out.println(info.getIndex() + " " + info.getTotalNumberOfExamples()
+////					+ " " + info.getInstanceID() + " " + cas.getDocumentText());
+//				}
+//			} catch (CASException e) {
+//				e.printStackTrace();
+//			}
+			System.out.println(cas.getDocumentText());
 		}
 	}
 }
@@ -142,6 +148,18 @@ class LearningStatusCallBackListener extends UimaAsBaseCallbackListener  {
 			} catch (CASException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+}
+
+class TestStatusCallBackListener extends UimaAsBaseCallbackListener  {
+		
+	@Override
+	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
+		if (!aStatus.getStatusMessage().equals("success")) {
+			throw new IllegalStateException(aStatus.getStatusMessage());
+		} else {
+			System.out.println(cas.getDocumentText());
 		}
 	}
 }
@@ -229,7 +247,12 @@ public class Starter {
 
 	private static final String HELP_LONG_OPT = "help";
 
-
+	
+	
+	private static final String LANGUAGE_OPT = "L";
+	
+	private static final String LANGUAGE_LONG_OPT = "lang";
+	
 	
 	public static void startBroker(String ip) throws Exception {
 		BrokerService broker = new BrokerService();
@@ -237,19 +260,19 @@ public class Starter {
 		broker.start();
 	}
 	
-	public static String depoyFeatureExtraction(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,int scaleout,
+	public static String depoyFeatureExtraction(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName, String lang,int scaleout,
 			boolean sims,boolean rank,boolean trees) throws Exception {
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 
-		String feDescr = DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(brokerURL,queueName, scaleout,sims,rank,trees);
+		String feDescr = DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(brokerURL,queueName, lang, scaleout,sims,rank,trees);
 		String id = uimaAsEngine.deploy(new File(feDescr).getAbsolutePath(), appCtx);
 		
 		return id;
 	}
 	
-	public static String depoyClassification(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,int scaleout,String modelFile,
+	public static String depoyClassification(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName, String lang,int scaleout,String modelFile,
 			String featureExtractionURL,String featureExtractionQueueName) throws Exception {
 		
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -257,13 +280,13 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
 		
 		String descr = DescriptorGenerator.generateClassificationPipelineDeploymentDescriptor(
-				brokerURL,queueName,modelFile,featureExtractionURL, featureExtractionQueueName);
+				brokerURL,queueName,lang,modelFile,featureExtractionURL, featureExtractionQueueName);
 		String id = uimaAsEngine.deploy(new File(descr).getAbsolutePath(), appCtx);
 		
 		return id;
 	}
 	
-	public static String depoyLearning(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,int scaleout,
+	public static String depoyLearning(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName, String lang,int scaleout,
 			String featureExtractionURL,String featureExtractionQueueName,boolean sims,boolean rank,boolean trees) throws Exception {
 		
 		Map<String,Object> appCtx = new HashMap<String,Object>();
@@ -273,7 +296,7 @@ public class Starter {
 		String descr = null;
 		if (featureExtractionQueueName != null)
 			descr = DescriptorGenerator.generateLearningPipelineDeploymentDescriptor(
-					brokerURL,queueName,featureExtractionURL, featureExtractionQueueName, sims, rank, trees);
+					brokerURL,queueName,lang,featureExtractionURL, featureExtractionQueueName, sims, rank, trees);
 		else
 			descr = DescriptorGenerator.generateLearningPipelineWithoutPreprocessingDeploymentDescriptor(
 					brokerURL,queueName, sims, rank, trees);
@@ -435,8 +458,48 @@ public class Starter {
 	}
 	
 	
+	
 	public static void main(String args[]) throws Exception {		
+		
+//		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+//				InputCollectionDataReader.class);
+//		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(VolatileDataReader.class,
+//				VolatileDataReader.TASK_PARAM, VolatileDataReader.INSTANCE_B_TASK);
+////		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
+////				XmlSemeval2016CqaEn.FILE_PARAM, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml",
+////				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
+//		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
+//				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+//		
+//		
+//		UimaAsynchronousEngine uimaAsEngine1 = new BaseUIMAAsynchronousEngine_impl();
+//		
+//		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(collectionReaderDescr);
+//		FeatureExtractionStatusCallBackListener listener = new FeatureExtractionStatusCallBackListener();
+//		uimaAsEngine1.addStatusCallbackListener(listener);
+//		uimaAsEngine1.setCollectionReader(collectionReader);
+//
+//		Map<String,Object> appCtx = new HashMap<String,Object>();
+//		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+//		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+//		appCtx.put(UimaAsynchronousEngine.ServerUri, "http://127.0.0.1:61616");
+//		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "featureExtractionQueue");
+//		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+//		
+//		uimaAsEngine1.initialize(appCtx);
+//		
+//		double start = System.currentTimeMillis();
+//		uimaAsEngine1.process();
+//		double end = System.currentTimeMillis();
+//		double seconds = (end - start)/1000;
+//		System.out.println("Feature extraction completed in "+seconds+" seconds");
+//		System.exit(0);
+		
 		CommandLineParser parser = new DefaultParser();
+		
+		Option langOpt = new Option(LANGUAGE_OPT,LANGUAGE_LONG_OPT,true,"Language of the text to be processed.");
+		langOpt.setArgName("language");
+		langOpt.setRequired(true);
 		
 		//Feature Extraction Deployment options
 		Option startBrokerOpt = new Option(START_BROKER_OPT, START_BROKER_LONG_OPT, false, "Start broker");
@@ -476,6 +539,7 @@ public class Starter {
 		deployFEOpts.addOption(simsOpt);
 		deployFEOpts.addOption(rankOpt);
 		deployFEOpts.addOption(treesOpt);
+		deployFEOpts.addOption(langOpt);
 		
 		
 		//Classification Deployment options
@@ -503,7 +567,8 @@ public class Starter {
 		classificationDeploymentOpts.addOption(urlFEOpt);
 		classificationDeploymentOpts.addOption(queueNameFEOpt);
 		classificationDeploymentOpts.addOption(mfOpt);
-		
+		classificationDeploymentOpts.addOption(langOpt);
+
 		
 		//Learning Deployment options
 		//-dl -fqn featureExtractionQueue -qn learningQueue -ip 127.0.0.1 -s -r -t
@@ -532,7 +597,8 @@ public class Starter {
 		learningDeploymentOpts.addOption(sims1Opt);
 		learningDeploymentOpts.addOption(rank1Opt);
 		learningDeploymentOpts.addOption(trees1Opt);
-		
+		learningDeploymentOpts.addOption(langOpt);
+
 		
 		//Undeployment options
 		Option undeployOpt = new Option(UNDEPLOY_OPT, UNDEPLOY_LONG_OPT, false, "Undeploy a pipeline");
@@ -658,7 +724,6 @@ public class Starter {
 		Options commandOptions = new Options();
 		commandOptions.addOptionGroup(optGr);
 		
-		
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 		try {
 			CommandLine line = parser.parse( commandOptions, Arrays.copyOfRange(args,0,Math.min(1, args.length)));
@@ -675,7 +740,8 @@ public class Starter {
 				boolean useSims = line.hasOption(USE_SIMS_OPT);
 				boolean useRank = line.hasOption(USE_RANK_OPT);
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
-				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,scaleout,useSims,useRank,useTrees);
+				String lang = line.getOptionValue(LANGUAGE_OPT);
+				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,lang,scaleout,useSims,useRank,useTrees);
 				System.out.println("Feature Extraction pipeline succefully deployed. Service ID: "+id);
 			} else if (line.hasOption(EXTRACT_FEATURES_OPT)) {
 				line = parser.parse(processOpts, Arrays.copyOfRange(args,1,args.length));
@@ -692,8 +758,9 @@ public class Starter {
 				String featureExtractionQueueName = line.getOptionValue(FE_QUEUE_NAME_OPT);
 				String ip = line.getOptionValue(IP_ADDRESS_OPT);
 				String modelFile = line.getOptionValue(MODEL_FILE_OPT);
-				
-				Starter.depoyClassification(uimaAsEngine, "http://"+ip+":61616", queueName, 1, modelFile, "http://"+ip+":61616", featureExtractionQueueName);
+				String lang = line.getOptionValue(LANGUAGE_OPT);
+
+				Starter.depoyClassification(uimaAsEngine, "http://"+ip+":61616", queueName,lang, 1, modelFile, "http://"+ip+":61616", featureExtractionQueueName);
 			} else if (line.hasOption(CLASSIFICATION_OPT)) {
 				line = parser.parse(classificationOpts, Arrays.copyOfRange(args,1,args.length));
 				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
@@ -711,8 +778,9 @@ public class Starter {
 				boolean useSims = line.hasOption(USE_SIMS_OPT);
 				boolean useRank = line.hasOption(USE_RANK_OPT);
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
-				
-				Starter.depoyLearning(uimaAsEngine, "http://"+ip+":61616", queueName, 1, "http://"+ip+":61616",featureExtractionQueueName,useSims,useRank,useTrees);
+				String lang = line.getOptionValue(LANGUAGE_OPT);
+
+				Starter.depoyLearning(uimaAsEngine, "http://"+ip+":61616", queueName,lang, 1, "http://"+ip+":61616",featureExtractionQueueName,useSims,useRank,useTrees);
 			} else if (line.hasOption(LEARNING_OPT)) {
 				line = parser.parse(learningOpts, Arrays.copyOfRange(args,1,args.length));
 				String inputFile = line.getOptionValue(INPUT_FILE_OPT);

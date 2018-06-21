@@ -36,6 +36,7 @@ import it.uniroma2.sag.kelp.data.representation.tree.TreeRepresentation;
 import it.uniroma2.sag.kelp.data.representation.tree.node.TreeNode;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
 import qa.qcri.iyas.representation.Serializer;
+import qa.qcri.iyas.type.representation.ConstituencyTree;
 import qa.qcri.iyas.type.representation.DenseVector;
 import qa.qcri.iyas.type.representation.Label;
 import qa.qcri.iyas.type.representation.PosChunkTree;
@@ -91,8 +92,26 @@ public class KeLPSerializer extends Serializer {
 			TreeRepresentation treeRepr = new TreeRepresentation(root);
 			
 			return treeRepr;
+		} else if (tree instanceof ConstituencyTree) {
+			TokenTree posChunkTree = RichTree.getConstituencyTree(jcas);
+
+			StructureElement rootElement = StructureElementFactory.getInstance().parseStructureElement(posChunkTree.getRepresentation(RichNode.OUTPUT_PAR_SEMANTIC_KERNEL));
+			
+			TreeNode root = new TreeNode(1,rootElement,null);
+			ArrayList<TreeNode> subTrees = root.getChildren();
+			int currentID[] = new int[]{2};
+			for (RichNode child : posChunkTree.getChildren()) {
+				TreeNode subTree = getSubTree(child,root,currentID);
+				if (subTree != null) {
+					subTrees.add(subTree);
+				}
+			}
+			
+			TreeRepresentation treeRepr = new TreeRepresentation(root);
+			
+			return treeRepr;
 		} else {
-			throw new ResourceProcessException("Unsupported tree type.",null);
+			throw new ResourceProcessException("Unsupported tree type: "+tree.getClass(),null);
 		}
 	}
 
