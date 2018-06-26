@@ -74,6 +74,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			identifier = ""+System.currentTimeMillis();
 		}
 		
+		String nextStr = null;
 		try {
 			URL schemaURL = null;
 			if (reader.getTask().equals(DataReader.INSTANCE_A_TASK))
@@ -87,7 +88,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(
 					schemaURL);
 			SAXBuilder saxBuilder = new SAXBuilder(factory);
-			String nextStr = reader.next();	
+			nextStr = reader.next();	
 			saxBuilder.build(new StringReader(nextStr));
 
 			AdditionalInfo info = new AdditionalInfo(jcas);
@@ -98,6 +99,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			
 			jcas.setDocumentText(nextStr);
 		} catch (Exception e) {
+			System.out.println(nextStr);
 			e.printStackTrace();
 			throw new CollectionException(e);
 		}

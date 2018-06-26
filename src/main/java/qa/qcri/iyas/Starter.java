@@ -60,6 +60,7 @@ import qa.qcri.iyas.data.reader.DataReader;
 import qa.qcri.iyas.data.reader.InputCollectionDataReader;
 import qa.qcri.iyas.data.reader.PreprocessedInputCollectionDataReader;
 import qa.qcri.iyas.data.reader.VolatileDataReader;
+import qa.qcri.iyas.data.reader.XmlSemeval2016CqaAr;
 import qa.qcri.iyas.data.reader.XmlSemeval2016CqaEn;
 import qa.qcri.iyas.type.AdditionalInfo;
 import qa.qcri.iyas.type.Model;
@@ -76,25 +77,25 @@ class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener
 		if (!aStatus.getStatusMessage().equals("success")) {
 			throw new IllegalStateException(aStatus.getStatusMessage());
 		} else {
-//			try {
-//				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
-//					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
-//					synchronized (representations) {
-//						if (representations.length == 0)
-//							representations = new String[info.getTotalNumberOfExamples()];
-//					}
-//					representations[info.getIndex()] = cas.getDocumentText();
-//
-//					synchronized (count) {
-//						System.out.println("Processed "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
-//					}
-//					
-////					System.out.println(info.getIndex() + " " + info.getTotalNumberOfExamples()
-////					+ " " + info.getInstanceID() + " " + cas.getDocumentText());
-//				}
-//			} catch (CASException e) {
-//				e.printStackTrace();
-//			}
+			try {
+				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {
+					AdditionalInfo info = JCasUtil.select(cas.getJCas(), AdditionalInfo.class).iterator().next();
+					synchronized (representations) {
+						if (representations.length == 0)
+							representations = new String[info.getTotalNumberOfExamples()];
+					}
+					representations[info.getIndex()] = cas.getDocumentText();
+
+					synchronized (count) {
+						System.out.println("Processed "+(count++)+" over "+info.getTotalNumberOfExamples()+" examples");
+					}
+					
+//					System.out.println(info.getIndex() + " " + info.getTotalNumberOfExamples()
+//					+ " " + info.getInstanceID() + " " + cas.getDocumentText());
+				}
+			} catch (CASException e) {
+				e.printStackTrace();
+			}
 			System.out.println(cas.getDocumentText());
 		}
 	}
@@ -201,10 +202,11 @@ public class Starter {
 	
 	
 	
-	private static final String EXTRACT_FEATURES_OPT = "ef";
-	
-	private static final String EXTRACT_FEATURES_LONG_OPT = "extraction-features";
+	private static final String ENGLISH_FEATURE_EXTRACTION_OPT = "ef";
+	private static final String ENGLISH_FEATURE_EXTRACTION_LONG_OPT = "english-feature-extraction";
 
+	private static final String ARABIC_FEATURE_EXTRACTION_OPT = "af";
+	private static final String ARABIC_FEATURE_EXTRACTION_LONG_OPT = "arabic-feature-extraction";
 	
 	
 	private static final String DEPLOY_CLASSIFICATION_OPT = "dc";
@@ -311,7 +313,19 @@ public class Starter {
 	}
 	
 	
-	private static CollectionReaderDescription getCollectionReaderDescriptor(String file,String task) throws ResourceInitializationException, IOException {
+	private static CollectionReaderDescription getArabicSemEvalCollectionReaderDescriptor(String file) throws ResourceInitializationException, IOException {
+		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+				InputCollectionDataReader.class);
+		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaAr.class,
+				XmlSemeval2016CqaAr.FILE_PARAM, file,
+				XmlSemeval2016CqaAr.TASK_PARAM, XmlSemeval2016CqaAr.INSTANCE_B_TASK);
+		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
+				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+		
+		return collectionReaderDescr;
+	}
+	
+	private static CollectionReaderDescription getEnglishSemEvalCollectionReaderDescriptor(String file,String task) throws ResourceInitializationException, IOException {
 		String t = null;
 		if (task.equals("cr"))
 			t = XmlSemeval2016CqaEn.INSTANCE_A_TASK;
@@ -339,12 +353,50 @@ public class Starter {
 		return collectionReaderDescr;
 	}
 	
-	public static void extractFeatures(String inputFile,String outputFile,String brokerURL,
+	public static void extractFeaturesEnglish(String inputFile,String outputFile,String brokerURL,
 			String queueName, String task) throws Exception {
 		
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
-		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getEnglishSemEvalCollectionReaderDescriptor(inputFile,task));
+		FeatureExtractionStatusCallBackListener listener = new FeatureExtractionStatusCallBackListener();
+		uimaAsEngine.addStatusCallbackListener(listener);
+		uimaAsEngine.setCollectionReader(collectionReader);
+		
+		Map<String,Object> appCtx = new HashMap<String,Object>();
+		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
+		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
+		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		
+		uimaAsEngine.initialize(appCtx);
+
+		double start = System.currentTimeMillis();
+		uimaAsEngine.process();
+		double end = System.currentTimeMillis();
+		double seconds = (end - start)/1000;
+		System.out.println("Feature extraction completed in "+seconds+" seconds");
+		
+		uimaAsEngine.stop();
+		
+		File file = new File(outputFile);
+		System.out.println("Writing extracted features on "+file.getAbsolutePath());
+		
+		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		for (String ex : listener.representations) {
+			out.write(ex);
+			out.newLine();
+		}
+		out.close();
+	}
+	
+	public static void extractFeaturesArabic(String inputFile,String outputFile,String brokerURL,
+			String queueName) throws Exception {
+		
+		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
+
+		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getArabicSemEvalCollectionReaderDescriptor(inputFile));
 		FeatureExtractionStatusCallBackListener listener = new FeatureExtractionStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listener);
 		uimaAsEngine.setCollectionReader(collectionReader);
@@ -382,7 +434,7 @@ public class Starter {
 		
 		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
 
-		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(getEnglishSemEvalCollectionReaderDescriptor(inputFile,task));
 		ClassificationStatusCallBackListener listener = new ClassificationStatusCallBackListener();
 		uimaAsEngine.addStatusCallbackListener(listener);
 		uimaAsEngine.setCollectionReader(collectionReader);
@@ -423,7 +475,7 @@ public class Starter {
 		CollectionReader collectionReader = null;
 		
 		if (task != null)
-			collectionReader = UIMAFramework.produceCollectionReader(getCollectionReaderDescriptor(inputFile,task));
+			collectionReader = UIMAFramework.produceCollectionReader(getEnglishSemEvalCollectionReaderDescriptor(inputFile,task));
 		else
 			collectionReader = UIMAFramework.produceCollectionReader(getPreprocessedCollectionReaderDescriptor(inputFile));
 		
@@ -513,7 +565,8 @@ public class Starter {
 		
 		
 		//Feature Extraction Deployment options
-		//-dfe -ip 127.0.0.1 -qn featureExtractionQueue -sc 1 -s -t -r
+		//-dfe -L en -ip 127.0.0.1 -qn englishFeatureExtractionQueue -sc 1 -s -t -r
+		//-dfe -L ar -ip 127.0.0.1 -qn arabicFeatureExtractionQueue -sc 1 -s -t
 		Option deployFEOpt = new Option(DEPLOY_FEATURE_EXTRACTION_OPT, DEPLOY_FEATURE_EXTRACTION_LONG_OPT, false, "Deploy feature extraction pipeline");
 		
 		Option queueName1Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the deploy pipeline will receive the requests");
@@ -611,9 +664,10 @@ public class Starter {
 		undeploymentOpts.addOption(idOpt);
 		
 		
-		//Feature Extraction options
-		//-ef -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml -of representations.klp -ip 127.0.0.1 -qn featureExtractionQueue -rt qr
-		Option extractFeaturesOpt = new Option(EXTRACT_FEATURES_OPT, EXTRACT_FEATURES_LONG_OPT, false, "Extract features for an input dataset");
+		//English Feature Extraction options
+		//-ef -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml -of representations.klp -ip 127.0.0.1 -qn englishFeatureExtractionQueue -rt qr
+		//-af -if /home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/Arabic/SemEval2016-Task3-CQA-MD-dev.xml -of representations.klp -ip 127.0.0.1 -qn arabicFeatureExtractionQueue
+		Option englishExtractFeaturesOpt = new Option(ENGLISH_FEATURE_EXTRACTION_OPT, ENGLISH_FEATURE_EXTRACTION_LONG_OPT, false, "Extract features for an input english dataset");
 		
 		Option queueName2Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the feature extraction pipeline is listening");
 		queueName2Opt.setArgName("queue name");
@@ -635,12 +689,22 @@ public class Starter {
 		taskOpt.setArgName("task");
 		taskOpt.setRequired(true);
 		
-		Options processOpts = new Options();
-		processOpts.addOption(url2Opt);
-		processOpts.addOption(queueName2Opt);
-		processOpts.addOption(ifOpt);
-		processOpts.addOption(ofOpt);
-		processOpts.addOption(taskOpt);
+		Options processEnOpts = new Options();
+		processEnOpts.addOption(url2Opt);
+		processEnOpts.addOption(queueName2Opt);
+		processEnOpts.addOption(ifOpt);
+		processEnOpts.addOption(ofOpt);
+		processEnOpts.addOption(taskOpt);
+		
+		
+		//Arabic Feature Extraction options
+		Option arabicExtractFeaturesOpt = new Option(ARABIC_FEATURE_EXTRACTION_OPT, ARABIC_FEATURE_EXTRACTION_LONG_OPT, false, "Extract features for an arabic input dataset");
+		
+		Options processArOpts = new Options();
+		processArOpts.addOption(url2Opt);
+		processArOpts.addOption(queueName2Opt);
+		processArOpts.addOption(ifOpt);
+		processArOpts.addOption(ofOpt);
 		
 		
 		//Classification options
@@ -715,7 +779,8 @@ public class Starter {
 		optGr.addOption(deployClassificationOpt);
 		optGr.addOption(deployLearningOpt);
 		optGr.addOption(undeployOpt);
-		optGr.addOption(extractFeaturesOpt);
+		optGr.addOption(arabicExtractFeaturesOpt);
+		optGr.addOption(englishExtractFeaturesOpt);
 		optGr.addOption(classificationOpt);
 		optGr.addOption(learningOpt);
 		optGr.addOption(helpOpt);
@@ -743,15 +808,23 @@ public class Starter {
 				String lang = line.getOptionValue(LANGUAGE_OPT);
 				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,lang,scaleout,useSims,useRank,useTrees);
 				System.out.println("Feature Extraction pipeline succefully deployed. Service ID: "+id);
-			} else if (line.hasOption(EXTRACT_FEATURES_OPT)) {
-				line = parser.parse(processOpts, Arrays.copyOfRange(args,1,args.length));
+			} else if (line.hasOption(ENGLISH_FEATURE_EXTRACTION_OPT)) {
+				line = parser.parse(processEnOpts, Arrays.copyOfRange(args,1,args.length));
 				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
 				String outputFile = line.getOptionValue(OUTPUT_FILE_OPT);
 				String ip = line.getOptionValue(IP_ADDRESS_OPT);
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
 				String task = line.getOptionValue(TASK_OPT);
 				
-				extractFeatures(inputFile,outputFile,"http://"+ip+":61616",queueName,task);
+				extractFeaturesEnglish(inputFile,outputFile,"http://"+ip+":61616",queueName,task);
+			}  else if (line.hasOption(ARABIC_FEATURE_EXTRACTION_OPT)) {
+				line = parser.parse(processArOpts, Arrays.copyOfRange(args,1,args.length));
+				String inputFile = line.getOptionValue(INPUT_FILE_OPT);
+				String outputFile = line.getOptionValue(OUTPUT_FILE_OPT);
+				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
+				
+				extractFeaturesArabic(inputFile,outputFile,"http://"+ip+":61616",queueName);
 			} else if (line.hasOption(DEPLOY_CLASSIFICATION_OPT)) {
 				line = parser.parse(classificationDeploymentOpts, Arrays.copyOfRange(args,1,args.length));
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
@@ -795,7 +868,7 @@ public class Starter {
 				String id = line.getOptionValue(ID_OPT);
 				undeployPipeline(id,uimaAsEngine);
 			} else if (line.hasOption(HELP_OPT)) {
-				printHelp(commandOptions,startBrokerOpts, deployFEOpts, processOpts, 
+				printHelp(commandOptions,startBrokerOpts, deployFEOpts, processArOpts, processEnOpts, 
 						classificationDeploymentOpts, classificationOpts,
 						learningDeploymentOpts, learningOpts,
 						undeploymentOpts);
@@ -803,7 +876,7 @@ public class Starter {
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
-			printHelp(commandOptions,startBrokerOpts, deployFEOpts, processOpts, 
+			printHelp(commandOptions,startBrokerOpts, deployFEOpts, processArOpts, processEnOpts, 
 					classificationDeploymentOpts, classificationOpts,
 					learningDeploymentOpts, learningOpts,
 					undeploymentOpts);
@@ -812,7 +885,7 @@ public class Starter {
 		}
 	}
 	
-	public static void printHelp(Options commandOptions, Options startBrokerOpts, Options deployFEOpts,Options processOpts
+	public static void printHelp(Options commandOptions, Options startBrokerOpts, Options deployFEOpts,Options processArOpts,Options processEnOpts
 			,Options classificationDeploymentOpts,Options classificationOpts
 			,Options learningDeploymentOpts,Options learningOpts
 			,Options undeploymentOpts) throws IOException {
@@ -843,8 +916,10 @@ public class Starter {
     	pw.println("\nLearning pipeline deployment options:");
     	formatter.printOptions(pw, 2000, learningDeploymentOpts, 4, 5);
     	
-    	pw.println("\nFeature extraction options:");
-    	formatter.printOptions(pw, 2000, processOpts, 4, 5);
+    	pw.println("\nArabic Feature extraction options:");
+    	formatter.printOptions(pw, 2000, processArOpts, 4, 5);
+    	pw.println("\nEnglish Feature extraction options:");
+    	formatter.printOptions(pw, 2000, processEnOpts, 4, 5);
     	pw.println("\nClassification options:");
     	formatter.printOptions(pw, 2000, classificationOpts, 4, 5);
     	pw.println("\nLearning options:");

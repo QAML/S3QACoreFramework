@@ -77,7 +77,7 @@ public class StandardPreprocessor extends TextPreprocessor {
 			text = text.replace(match, match.replace(" ", "#"));
 		}
 		
-		return StringEscapeUtils.unescapeHtml(text).replace("(", " ").replace(")", " ");
+		return StringEscapeUtils.unescapeXml(text).replace("(", " ").replace(")", " ");
 	}
 	
 	private String replaceArabicNumbers(String text) {
@@ -136,6 +136,7 @@ public class StandardPreprocessor extends TextPreprocessor {
 				
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
+		int c = 0;
 		while (tokenizer.hasNext()) {
 			String word = tokenizer.next().word();
 			if (!first) {
@@ -143,8 +144,12 @@ public class StandardPreprocessor extends TextPreprocessor {
 			}
 			sb.append(word);
 			first = false;
+			c++;
+			if (c >= 30 && word.matches("\\p{Punct}"))
+				break;
 		}
-
+		System.out.println(c);
+		
 		return sb.toString();
 	}
 	

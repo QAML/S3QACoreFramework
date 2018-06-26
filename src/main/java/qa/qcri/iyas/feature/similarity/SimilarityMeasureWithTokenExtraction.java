@@ -59,6 +59,8 @@ public abstract class SimilarityMeasureWithTokenExtraction extends ThreadSafeSim
 		
 		List<RichTokenNode> richTokens = new ArrayList<>();
 		for (Token token : JCasUtil.select(cas, Token.class)) {
+			if (token.getPos() == null && token.getLemma().getValue().matches("\\p{Punct}"))
+				continue;
 			RichTokenNode richTokenNode = new RichTokenNode(token);
 			richTokens.add(richTokenNode);
 		}

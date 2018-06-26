@@ -120,7 +120,10 @@ public class RichTokenNode extends BaseRichNode {
 				break;			
 			case RichNode.OUTPUT_PAR_POSTAG:
 				pos = this.token.getPos();
-				output = pos.getPosValue();
+				if (pos == null)
+					System.out.print(0);
+				else
+					output = pos.getPosValue();
 				break;
 			case RichNode.OUTPUT_PAR_SEMANTIC_KERNEL:
 				pos = this.token.getPos();
