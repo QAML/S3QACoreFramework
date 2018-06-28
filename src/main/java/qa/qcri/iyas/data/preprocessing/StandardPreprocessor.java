@@ -103,13 +103,13 @@ public class StandardPreprocessor extends TextPreprocessor {
 		
 		normalizedText = normalizedText.replace('_', '-'); //substitutes _ with - in order not to mess with the stanford parser
 		
-		normalizedText = normalizedText.replaceAll("!+", "!");//eliminates multiple occurrences of !
+		normalizedText = normalizedText.replaceAll("!+", "! ");//eliminates multiple occurrences of !
 		
-		normalizedText = normalizedText.replaceAll("[?]+", "?");//eliminates multiple occurrences of ?
+		normalizedText = normalizedText.replaceAll("[?]+", "? ");//eliminates multiple occurrences of ?
 		
-		normalizedText = normalizedText.replaceAll("([!]*[?]+[!]*)+", "?");//substitute ?!? into ?
+		normalizedText = normalizedText.replaceAll("([!]*[?]+[!]*)+", "? ");//substitute ?!? into ?
 		
-		normalizedText = normalizedText.replaceAll("[.]+", ".");//eliminates multiple occurrences of .
+		normalizedText = normalizedText.replaceAll("[.]+", ". ");//eliminates multiple occurrences of .
 	
 		normalizedText = normalizedText.replaceAll("\\[[^\\]\\[]*\\]", "");//eliminates text in squared brackets (they usually are not informative and they confuse the parser)
 		
@@ -137,18 +137,22 @@ public class StandardPreprocessor extends TextPreprocessor {
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
 		int c = 0;
+		String lastWord = null;
 		while (tokenizer.hasNext()) {
 			String word = tokenizer.next().word();
 			if (!first) {
-				sb.append(" ");
+				if (lastWord.matches("\\d+") && word.matches("\\d+"))
+					sb.append("-");
+				else
+					sb.append(" ");
 			}
 			sb.append(word);
 			first = false;
 			c++;
-			if (c >= 30 && word.matches("\\p{Punct}"))
+			if (c >= 50 || c >= 30 && word.matches("\\p{Punct}"))
 				break;
+			lastWord = word;
 		}
-		System.out.println(c);
 		
 		return sb.toString();
 	}

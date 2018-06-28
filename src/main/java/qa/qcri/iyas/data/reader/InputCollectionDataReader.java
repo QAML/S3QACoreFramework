@@ -59,6 +59,8 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	@ExternalResource(key = INPUT_READER_PARAM)
 	private DataReader reader;
 	
+	private boolean error = false;
+	
 	@Override
 	public void close() {
 		try {
@@ -99,8 +101,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 			
 			jcas.setDocumentText(nextStr);
 		} catch (Exception e) {
-			System.out.println(nextStr);
-			e.printStackTrace();
+			error = true;
 			throw new CollectionException(e);
 		}
 	}
@@ -110,7 +111,7 @@ public class InputCollectionDataReader extends JCasCollectionReader_ImplBase {
 	}
 	@Override
 	public boolean hasNext() throws IOException, CollectionException {
-		return reader.hasNext();
+		return reader.hasNext() & !error;
 	}
 
 }

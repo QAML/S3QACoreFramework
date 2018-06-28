@@ -137,9 +137,9 @@ public class ProcessedJCASAggregator extends JCasMultiplier_ImplBase {
 	//TODO: add release if the JCas are not automatically released when an exception occurs
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		for (Token token : JCasUtil.select(jcas, Token.class)) {
-			RichTokenNode richTokenNode = new RichTokenNode(token);
-		}
+//		for (Token token : JCasUtil.select(jcas, Token.class)) {
+//			RichTokenNode richTokenNode = new RichTokenNode(token);
+//		}
 		
 		Collection<AdditionalInfo> infos = JCasUtil.select(jcas, AdditionalInfo.class);
 		if (infos.size() != 1)

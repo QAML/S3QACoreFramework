@@ -72,9 +72,11 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import qa.qcri.iyas.classification.ClassificationAnnotator;
 import qa.qcri.iyas.classification.kelp.KeLPClassifier;
 import qa.qcri.iyas.data.preprocessing.ArabicLemmatizerAnalysisEngine;
+import qa.qcri.iyas.data.preprocessing.ArabicParserAnalysisEngine;
 import qa.qcri.iyas.data.preprocessing.ArabicSegmenterAnalysisEngine;
 import qa.qcri.iyas.data.preprocessing.InputJCasMultiplier;
 import qa.qcri.iyas.data.preprocessing.JCasPairGenerator;
+import qa.qcri.iyas.data.preprocessing.LemmaCorrectorAnalysisEngine;
 import qa.qcri.iyas.data.preprocessing.ProcessedJCASAggregator;
 import qa.qcri.iyas.data.preprocessing.StandardPreprocessor;
 import qa.qcri.iyas.data.preprocessing.Stopwords;
@@ -348,6 +350,12 @@ public class DescriptorGenerator {
 			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
 		}
 		
+//		System.out.println("	Generating XML description for LemmaCorrectorAE_Descriptor");
+//		AnalysisEngineDescription lemmaCorrector = createEngineDescription(
+//				LemmaCorrectorAnalysisEngine.class);
+//		lemmaCorrector.toXML(
+//				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmaCorrectorAE_Descriptor.xml"));
+		
 		
 		System.out.println("	Generating XML description for ChunkerAE_Descriptor");
 		if (lang.equals("en")) {
@@ -357,7 +365,7 @@ public class DescriptorGenerator {
 					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
 		} else if (lang.equals("ar")) {
 			AnalysisEngineDescription chunker = createEngineDescription(
-					StanfordParser.class);
+					ArabicParserAnalysisEngine.class);
 			chunker.toXML(
 					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
 		} else {
@@ -383,9 +391,13 @@ public class DescriptorGenerator {
 		posTaggerAEImport.setName("descriptors.preprocessing.POSTaggerAE_Descriptor");
 		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("POSTaggerAE", posTaggerAEImport);
 		
-		Import lammatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		lammatizerAEImport.setName("descriptors.preprocessing.LemmatizerAE_Descriptor");
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmatizerAE", lammatizerAEImport);
+		Import lemmatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		lemmatizerAEImport.setName("descriptors.preprocessing.LemmatizerAE_Descriptor");
+		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmatizerAE", lemmatizerAEImport);
+		
+//		Import lemmaCorrectorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		lemmaCorrectorAEImport.setName("descriptors.preprocessing.LemmaCorrectorAE_Descriptor");
+//		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmaCorrectorAE", lemmaCorrectorAEImport);
 		
 		Import chunkerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		chunkerAEImport.setName("descriptors.preprocessing.ChunkerAE_Descriptor");
@@ -395,6 +407,7 @@ public class DescriptorGenerator {
 		flowNames.add("SegmenterAE");
 		flowNames.add("POSTaggerAE");
 		flowNames.add("LemmatizerAE");
+//		flowNames.add("LemmaCorrectorAE");
 		flowNames.add("ChunkerAE");
 		
 		FixedFlow fixedFlow = new FixedFlow_impl();
