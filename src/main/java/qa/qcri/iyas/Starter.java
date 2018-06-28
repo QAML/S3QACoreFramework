@@ -516,52 +516,52 @@ public class Starter {
 	
 	public static void main(String args[]) throws Exception {		
 		
-		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
-				InputCollectionDataReader.class);
-		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(VolatileDataReader.class,
-				VolatileDataReader.TASK_PARAM, VolatileDataReader.INSTANCE_B_TASK);
-//		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
-//				XmlSemeval2016CqaEn.FILE_PARAM, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml",
-//				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
-		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
-				InputCollectionDataReader.INPUT_READER_PARAM, reader);
-		
-		
-		UimaAsynchronousEngine uimaAsEngine1 = new BaseUIMAAsynchronousEngine_impl();
-		
-		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(collectionReaderDescr);
-		FeatureExtractionStatusCallBackListener listener = new FeatureExtractionStatusCallBackListener();
-		uimaAsEngine1.addStatusCallbackListener(listener);
-		uimaAsEngine1.setCollectionReader(collectionReader);
-
-		Map<String,Object> appCtx = new HashMap<String,Object>();
-		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
-		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
-		appCtx.put(UimaAsynchronousEngine.ServerUri, "http://127.0.0.1:61616");
-		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "arabicFeatureExtractionQueue");
-		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
-		
-		uimaAsEngine1.initialize(appCtx);
-		
-		double start = System.currentTimeMillis();
-		uimaAsEngine1.process();
-		double end = System.currentTimeMillis();
-		double seconds = (end - start)/1000;
-		System.out.println("Feature extraction completed in "+seconds+" seconds");
-		
-		File file = new File("representations.klp");
-		System.out.println("Writing extracted features on "+file.getAbsolutePath());
-		
-		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		for (String ex : listener.representations) {
-			if (ex == null)
-				continue;
-			out.write(ex);
-			out.newLine();
-		}
-		out.close();
-		
-		System.exit(0);
+//		CollectionReaderDescription collectionReaderDescr = CollectionReaderFactory.createReaderDescription(
+//				InputCollectionDataReader.class);
+//		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(VolatileDataReader.class,
+//				VolatileDataReader.TASK_PARAM, VolatileDataReader.INSTANCE_B_TASK);
+////		ExternalResourceDescription reader = ExternalResourceFactory.createExternalResourceDescription(XmlSemeval2016CqaEn.class,
+////				XmlSemeval2016CqaEn.FILE_PARAM, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml",
+////				XmlSemeval2016CqaEn.TASK_PARAM, XmlSemeval2016CqaEn.INSTANCE_B_TASK);
+//		ExternalResourceFactory.bindExternalResource(collectionReaderDescr, 
+//				InputCollectionDataReader.INPUT_READER_PARAM, reader);
+//		
+//		
+//		UimaAsynchronousEngine uimaAsEngine1 = new BaseUIMAAsynchronousEngine_impl();
+//		
+//		CollectionReader collectionReader = UIMAFramework.produceCollectionReader(collectionReaderDescr);
+//		FeatureExtractionStatusCallBackListener listener = new FeatureExtractionStatusCallBackListener();
+//		uimaAsEngine1.addStatusCallbackListener(listener);
+//		uimaAsEngine1.setCollectionReader(collectionReader);
+//
+//		Map<String,Object> appCtx = new HashMap<String,Object>();
+//		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+//		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+//		appCtx.put(UimaAsynchronousEngine.ServerUri, "http://127.0.0.1:61616");
+//		appCtx.put(UimaAsynchronousEngine.ENDPOINT, "arabicFeatureExtractionQueue");
+//		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+//		
+//		uimaAsEngine1.initialize(appCtx);
+//		
+//		double start = System.currentTimeMillis();
+//		uimaAsEngine1.process();
+//		double end = System.currentTimeMillis();
+//		double seconds = (end - start)/1000;
+//		System.out.println("Feature extraction completed in "+seconds+" seconds");
+//		
+//		File file = new File("representations.klp");
+//		System.out.println("Writing extracted features on "+file.getAbsolutePath());
+//		
+//		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+//		for (String ex : listener.representations) {
+//			if (ex == null)
+//				continue;
+//			out.write(ex);
+//			out.newLine();
+//		}
+//		out.close();
+//		
+//		System.exit(0);
 		
 		CommandLineParser parser = new DefaultParser();
 		
