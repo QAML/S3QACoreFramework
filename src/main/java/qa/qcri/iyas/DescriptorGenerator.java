@@ -1582,7 +1582,8 @@ public class DescriptorGenerator {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
 		String ijmDescr = generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-		String stDescr = generateStandardTextAnnotatorPipelineDescriptor(root_folder,lang);
+//		String stDescr = generateStandardTextAnnotatorPipelineDescriptor(root_folder,lang);
+		String stDescr = generateStandardTextAnnotatorPipelineAAEDescriptor(root_folder,lang);
 		String pjaDescr = generateProcessedJCasAggregatorAAEDescriptor(root_folder);
 		String jpgDescr = generateJCasPairGeneratorAAEDescriptor(root_folder);
 		String fcDescr = generateFeatureComputationPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
@@ -1801,17 +1802,17 @@ public class DescriptorGenerator {
 			delegate11.setCasPoolSize(10);
 			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
 			
-//			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
-//			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
-//					delegate21});
+			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
+					delegate21});
 			
-			RemoteDelegateConfiguration spCldd2 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
-					"StandardTextAnnotator",standardTextAnnotatorURL,
-					standardTextAnnotatorQueueName,SerializationStrategy.xmi);
-			spCldd2.setCasMultiplier(false);
-			spCldd2.setCasPoolSize(100);
-			spCldd2.setRemoteReplyQueueScaleout(5);
-			spCldd2.setRemote(true);
+//			RemoteDelegateConfiguration spCldd2 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
+//					"StandardTextAnnotator",standardTextAnnotatorURL,
+//					standardTextAnnotatorQueueName,SerializationStrategy.xmi);
+//			spCldd2.setCasMultiplier(false);
+//			spCldd2.setCasPoolSize(100);
+//			spCldd2.setRemoteReplyQueueScaleout(5);
+//			spCldd2.setRemote(true);
 			
 			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
 			delegate31.setCasMultiplier(true);
@@ -1846,6 +1847,7 @@ public class DescriptorGenerator {
 			
 			
 			Document descriptor = loadDescriptor(rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
+			addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
 			addScaleoutElementFirstLevel(descriptor, "FeatureComputation",scaleout);
 			saveDescriptor(descriptor, rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
 			

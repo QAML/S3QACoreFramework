@@ -637,7 +637,7 @@ public class Starter {
 		
 		//Feature Extraction Deployment options
 		//-dfe -L ar -ip 127.0.0.1 -qn arabicFeatureExtractionQueue -tq arabicTextAnnotationQueue -ti 127.0.0.1 -s -t
-		//-dfe -L en -ip 127.0.0.1 -qn englishFeatureExtractionQueue -tq englishTextAnnotationQueue -ti 127.0.0.1 -s -t -r
+		//-dfe -L en -ip 127.0.0.1 -sc 5 -qn englishFeatureExtractionQueue -tq englishTextAnnotationQueue -ti 127.0.0.1 -s -t -r
 		Option deployFEOpt = new Option(DEPLOY_FEATURE_EXTRACTION_OPT, DEPLOY_FEATURE_EXTRACTION_LONG_OPT, false, "Deploy feature extraction pipeline");
 		
 		Option queueName1Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the deploy pipeline will receive the requests");
