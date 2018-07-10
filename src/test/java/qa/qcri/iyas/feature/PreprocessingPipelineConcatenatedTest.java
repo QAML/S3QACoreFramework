@@ -144,7 +144,7 @@ public class PreprocessingPipelineConcatenatedTest {
 	}
 	
 	private String generateAnalysisEngineDescritors() throws InvalidXMLException, ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, JDOMException {
-		return DescriptorGenerator.generatePreprocessingPipelineDeploymentDescritor("myQueueName","en",10);
+		return DescriptorGenerator.generateStandardTextAnnotatorPipelineDeploymentDescriptor("tcp://localhost:61616","myQueueName","en",10);
 	}
 	
 	private void runTestTaskA(boolean concatenate,String inputFile) throws Exception {

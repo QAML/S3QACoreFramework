@@ -204,26 +204,26 @@ public class ClassificationTest {
 	
 	public void multiplierTest() throws Exception {
 		
-		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://localhost:61616");
-		broker.start();
-
-		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
-		
-		String id1 = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616","en","featureExtractionQueue",1,true,false,true);
-		String id2 = Starter.depoyClassification(uimaAsEngine,"tcp://localhost:61616","en","classificationQueue",1,
-				"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/1521745849273.mdl",
-				"tcp://localhost:61616","featureExtractionQueue");
-				
-		String file = generateInputTestFile(true);
-		runTestTaskB(true, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml");
-		runTestTaskA(true, file);
-		Starter.undeployPipeline(id1,uimaAsEngine);
-		Starter.undeployPipeline(id2,uimaAsEngine);
-
-		Thread.sleep(100);
-		uimaAsEngine.stop();
-		broker.stop();
+//		BrokerService broker = new BrokerService();
+//		broker.addConnector("tcp://localhost:61616");
+//		broker.start();
+//
+//		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
+//		
+//		String id1 = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616","en","featureExtractionQueue",1,true,false,true);
+//		String id2 = Starter.depoyClassification(uimaAsEngine,"tcp://localhost:61616","en","classificationQueue",1,
+//				"/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/1521745849273.mdl",
+//				"tcp://localhost:61616","featureExtractionQueue");
+//				
+//		String file = generateInputTestFile(true);
+//		runTestTaskB(true, "/home/sromeo/workspaces/UIMA/workspace/S3QACoreFramework/src/test/resources/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml");
+//		runTestTaskA(true, file);
+//		Starter.undeployPipeline(id1,uimaAsEngine);
+//		Starter.undeployPipeline(id2,uimaAsEngine);
+//
+//		Thread.sleep(100);
+//		uimaAsEngine.stop();
+//		broker.stop();
 		
 	}
 	

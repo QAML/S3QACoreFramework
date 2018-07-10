@@ -171,19 +171,28 @@ class TestStatusCallBackListener extends UimaAsBaseCallbackListener  {
 public class Starter {
 	
 	private static final String QUEUE_NAME_OPT = "qn";
-	private static final String SCALEOUT_NAME_OPT = "sc";
+	private static final String TEXT_ANNOTATION_QUEUE_NAME_OPT = "tq";
+	private static final String SCALEOUT_OPT = "sc";
 	private static final String INPUT_FILE_OPT = "if";
 	private static final String OUTPUT_FILE_OPT = "of";
 	private static final String IP_ADDRESS_OPT = "ip";
+	private static final String TEXT_ANNOTATION_IP_ADDRESS_OPT = "ti";
 	private static final String TASK_OPT = "rt";
 	
 	private static final String QUEUE_NAME_LONG_OPT = "queue-name";
+	private static final String TEXT_ANNOTATION_QUEUE_NAME_LONG_OPT = "text-annotation-queue";
 	private static final String SCALEOUT_LONG_NAME_OPT = "scaleout";
 	private static final String INPUT_FILE_LONG_OPT = "input-file";
 	private static final String OUTPUT_FILE_LONG_OPT = "output-file";
 	private static final String IP_ADDRESS_LONG_OPT = "ip-address";
+	private static final String TEXT_ANNOTATION_IP_ADDRESS_LONG_OPT = "text-annotation-ip";
 	private static final String TASK_LONG_OPT = "reranking-task";
 	
+	
+	private static final String DEPLOY_TEXT_ANNOTATION_OPT = "dta";
+
+	private static final String DEPLOY_TEXT_ANNOTATION_LONG_OPT = "deploy-text-annotation";
+
 	
 	private static final String DEPLOY_FEATURE_EXTRACTION_OPT = "dfe";
 	private static final String USE_SIMS_OPT = "s";
@@ -265,13 +274,29 @@ public class Starter {
 		broker.start();
 	}
 	
-	public static String depoyFeatureExtraction(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName, String lang,int scaleout,
+	public static String depoyTextAnnotation(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,
+			String lang, int scaleout) throws Exception {
+		Map<String,Object> appCtx = new HashMap<String,Object>();
+		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
+		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
+
+		String feDescr = DescriptorGenerator.generateStandardTextAnnotatorPipelineDeploymentDescriptor(brokerURL, queueName, lang, scaleout);
+		String id = uimaAsEngine.deploy(new File(feDescr).getAbsolutePath(), appCtx);
+		
+		return id;
+	}
+	
+	public static String depoyFeatureExtraction(UimaAsynchronousEngine uimaAsEngine,String brokerURL,String queueName,
+			String standardTextAnnotatorURL, String standardTextAnnotatorQueueName, String lang, int scaleout,
 			boolean sims,boolean rank,boolean trees) throws Exception {
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
-
-		String feDescr = DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(brokerURL,queueName, lang, scaleout,sims,rank,trees);
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
+		
+		String feDescr = DescriptorGenerator.generateFeatureExtractionPipelineDeploymentDescriptor(brokerURL, queueName, 
+				standardTextAnnotatorURL, standardTextAnnotatorQueueName, lang, scaleout, sims,rank,trees);
 		String id = uimaAsEngine.deploy(new File(feDescr).getAbsolutePath(), appCtx);
 		
 		return id;
@@ -283,6 +308,7 @@ public class Starter {
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		String descr = DescriptorGenerator.generateClassificationPipelineDeploymentDescriptor(
 				brokerURL,queueName,lang,modelFile,featureExtractionURL, featureExtractionQueueName);
@@ -297,6 +323,7 @@ public class Starter {
 		Map<String,Object> appCtx = new HashMap<String,Object>();
 		appCtx.put(UimaAsynchronousEngine.DD2SpringXsltFilePath,System.getenv("UIMA_HOME") + "/bin/dd2spring.xsl");
 		appCtx.put(UimaAsynchronousEngine.SaxonClasspath,"file:" + System.getenv("UIMA_HOME") + "/saxon/saxon8.jar");
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		String descr = null;
 		if (featureExtractionQueueName != null)
@@ -372,6 +399,7 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
 		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		uimaAsEngine.initialize(appCtx);
 
@@ -410,6 +438,7 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
 		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		uimaAsEngine.initialize(appCtx);
 
@@ -448,6 +477,7 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
 		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		uimaAsEngine.initialize(appCtx);
 
@@ -492,6 +522,7 @@ public class Starter {
 		appCtx.put(UimaAsynchronousEngine.ServerUri, brokerURL);
 		appCtx.put(UimaAsynchronousEngine.ENDPOINT, queueName);
 		appCtx.put(UimaAsynchronousEngine.CasPoolSize, 100);
+		appCtx.put(UimaAsynchronousEngine.Timeout, 1000000000);
 		
 		uimaAsEngine.initialize(appCtx);
 
@@ -569,7 +600,7 @@ public class Starter {
 		langOpt.setArgName("language");
 		langOpt.setRequired(true);
 		
-		//Feature Extraction Deployment options
+		//Broker starter options
 		Option startBrokerOpt = new Option(START_BROKER_OPT, START_BROKER_LONG_OPT, false, "Start broker");
 		
 		Option url6Opt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker will listen");
@@ -580,16 +611,44 @@ public class Starter {
 		startBrokerOpts.addOption(url6Opt);
 		
 		
+		//Text Annotation Deployment options
+		//-dta -L ar -ip 127.0.0.1 -qn arabicTextAnnotationQueue -sc 2
+		//-dta -L en -ip 127.0.0.1 -qn englishTextAnnotationQueue -sc 10
+		Option deployTAOpt = new Option(DEPLOY_TEXT_ANNOTATION_OPT, DEPLOY_TEXT_ANNOTATION_LONG_OPT, false, "Deploy text annotation pipeline");
+		
+		Option queueName7Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the deploy pipeline will receive the requests");
+		queueName7Opt.setArgName("queue name");
+		queueName7Opt.setRequired(true);
+		
+		Option scaleout1Opt = new Option(SCALEOUT_OPT,SCALEOUT_LONG_NAME_OPT,true,"Number of instances to be instantiated for the text annotation pipeline");
+		scaleout1Opt.setArgName("scaleout");
+		scaleout1Opt.setRequired(true);
+
+		Option url8Opt = new Option(IP_ADDRESS_OPT,IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the text annotation pipeline has to connected");
+		url8Opt.setArgName("IP address");
+		url8Opt.setRequired(true);
+
+		Options deployTAOpts = new Options();
+		deployTAOpts.addOption(queueName7Opt);
+		deployTAOpts.addOption(scaleout1Opt);
+		deployTAOpts.addOption(url8Opt);
+		deployTAOpts.addOption(langOpt);
+		
+		
 		//Feature Extraction Deployment options
-		//-dfe -L en -ip 127.0.0.1 -qn englishFeatureExtractionQueue -sc 1 -s -t -r
-		//-dfe -L ar -ip 127.0.0.1 -qn arabicFeatureExtractionQueue -sc 1 -s -t
+		//-dfe -L ar -ip 127.0.0.1 -qn arabicFeatureExtractionQueue -tq arabicTextAnnotationQueue -ti 127.0.0.1 -s -t
+		//-dfe -L en -ip 127.0.0.1 -qn englishFeatureExtractionQueue -tq englishTextAnnotationQueue -ti 127.0.0.1 -s -t -r
 		Option deployFEOpt = new Option(DEPLOY_FEATURE_EXTRACTION_OPT, DEPLOY_FEATURE_EXTRACTION_LONG_OPT, false, "Deploy feature extraction pipeline");
 		
 		Option queueName1Opt = new Option(QUEUE_NAME_OPT,QUEUE_NAME_LONG_OPT,true,"Name of the queue where the deploy pipeline will receive the requests");
 		queueName1Opt.setArgName("queue name");
 		queueName1Opt.setRequired(true);
 		
-		Option scaleoutOpt = new Option(SCALEOUT_NAME_OPT,SCALEOUT_LONG_NAME_OPT,true,"Number of instances to be instantiated for the feature extraction pipeline");
+		Option textAnnQueueNameOpt = new Option(TEXT_ANNOTATION_QUEUE_NAME_OPT,TEXT_ANNOTATION_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the text annotation pipeline is listening");
+		textAnnQueueNameOpt.setArgName("queue name");
+		textAnnQueueNameOpt.setRequired(true);
+		
+		Option scaleoutOpt = new Option(SCALEOUT_OPT,SCALEOUT_LONG_NAME_OPT,true,"Number of instances to be instantiated for the feature computation sub-pipeline");
 		scaleoutOpt.setArgName("scaleout");
 		scaleoutOpt.setRequired(true);
 
@@ -597,14 +656,20 @@ public class Starter {
 		url4Opt.setArgName("IP address");
 		url4Opt.setRequired(true);
 		
+		Option url7Opt = new Option(TEXT_ANNOTATION_IP_ADDRESS_OPT,TEXT_ANNOTATION_IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the text annotation pipeline is registered");
+		url7Opt.setArgName("IP address");
+		url7Opt.setRequired(true);
+		
 		Option simsOpt = new Option(USE_SIMS_OPT, USE_SIMS_LONG_OPT, false, "Extract similarity features");
 		Option rankOpt = new Option(USE_RANK_OPT, USE_RANK_LONG_OPT, false, "Extract rank feature");
 		Option treesOpt = new Option(USE_TREES_OPT, USE_TREES_LONG_OPT, false, "Extract trees");
 
 		Options deployFEOpts = new Options();
 		deployFEOpts.addOption(queueName1Opt);
-		deployFEOpts.addOption(scaleoutOpt);
+		deployFEOpts.addOption(textAnnQueueNameOpt);
 		deployFEOpts.addOption(url4Opt);
+		deployFEOpts.addOption(url7Opt);
+		deployFEOpts.addOption(scaleoutOpt);
 		deployFEOpts.addOption(simsOpt);
 		deployFEOpts.addOption(rankOpt);
 		deployFEOpts.addOption(treesOpt);
@@ -791,6 +856,7 @@ public class Starter {
 		
 		OptionGroup optGr = new OptionGroup();
 		optGr.addOption(startBrokerOpt);
+		optGr.addOption(deployTAOpt);
 		optGr.addOption(deployFEOpt);
 		optGr.addOption(deployClassificationOpt);
 		optGr.addOption(deployLearningOpt);
@@ -813,16 +879,27 @@ public class Starter {
 				String ip = line.getOptionValue(IP_ADDRESS_OPT);
 				
 				startBroker(ip);
-			} else if (line.hasOption(DEPLOY_FEATURE_EXTRACTION_OPT)) {
-				line = parser.parse( deployFEOpts, Arrays.copyOfRange(args,1,args.length));
-				int scaleout = Integer.parseInt(line.getOptionValue(SCALEOUT_NAME_OPT));
+			} else if (line.hasOption(DEPLOY_TEXT_ANNOTATION_OPT)) {
+				line = parser.parse(deployTAOpts, Arrays.copyOfRange(args,1,args.length));
 				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
 				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				int scaleout = Integer.parseInt(line.getOptionValue(SCALEOUT_OPT));
+				String lang = line.getOptionValue(LANGUAGE_OPT);
+				String id = depoyTextAnnotation(uimaAsEngine,"http://"+ip+":61616",queueName,lang,scaleout);
+				System.out.println("Feature Extraction pipeline succefully deployed. Service ID: "+id);
+			} else if (line.hasOption(DEPLOY_FEATURE_EXTRACTION_OPT)) {
+				line = parser.parse( deployFEOpts, Arrays.copyOfRange(args,1,args.length));
+				String queueName = line.getOptionValue(QUEUE_NAME_OPT);
+				String ip = line.getOptionValue(IP_ADDRESS_OPT);
+				String textAnnatationIP = line.getOptionValue(TEXT_ANNOTATION_IP_ADDRESS_OPT);
+				String textAnnatationQueue = line.getOptionValue(TEXT_ANNOTATION_QUEUE_NAME_OPT);
+				int scaleout = Integer.parseInt(line.getOptionValue(SCALEOUT_OPT));
 				boolean useSims = line.hasOption(USE_SIMS_OPT);
 				boolean useRank = line.hasOption(USE_RANK_OPT);
 				boolean useTrees = line.hasOption(USE_TREES_OPT);
 				String lang = line.getOptionValue(LANGUAGE_OPT);
-				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,lang,scaleout,useSims,useRank,useTrees);
+				String id = depoyFeatureExtraction(uimaAsEngine,"http://"+ip+":61616",queueName,"http://"+textAnnatationIP+":61616",
+						textAnnatationQueue,lang,scaleout,useSims,useRank,useTrees);
 				System.out.println("Feature Extraction pipeline succefully deployed. Service ID: "+id);
 			} else if (line.hasOption(ENGLISH_FEATURE_EXTRACTION_OPT)) {
 				line = parser.parse(processEnOpts, Arrays.copyOfRange(args,1,args.length));
@@ -884,7 +961,7 @@ public class Starter {
 				String id = line.getOptionValue(ID_OPT);
 				undeployPipeline(id,uimaAsEngine);
 			} else if (line.hasOption(HELP_OPT)) {
-				printHelp(commandOptions,startBrokerOpts, deployFEOpts, processArOpts, processEnOpts, 
+				printHelp(commandOptions,startBrokerOpts, deployTAOpts, deployFEOpts, processArOpts, processEnOpts, 
 						classificationDeploymentOpts, classificationOpts,
 						learningDeploymentOpts, learningOpts,
 						undeploymentOpts);
@@ -892,7 +969,7 @@ public class Starter {
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
-			printHelp(commandOptions,startBrokerOpts, deployFEOpts, processArOpts, processEnOpts, 
+			printHelp(commandOptions,startBrokerOpts, deployTAOpts, deployFEOpts, processArOpts, processEnOpts, 
 					classificationDeploymentOpts, classificationOpts,
 					learningDeploymentOpts, learningOpts,
 					undeploymentOpts);
@@ -901,7 +978,7 @@ public class Starter {
 		}
 	}
 	
-	public static void printHelp(Options commandOptions, Options startBrokerOpts, Options deployFEOpts,Options processArOpts,Options processEnOpts
+	public static void printHelp(Options commandOptions, Options startBrokerOpts, Options deployTAOpts,Options deployFEOpts,Options processArOpts,Options processEnOpts
 			,Options classificationDeploymentOpts,Options classificationOpts
 			,Options learningDeploymentOpts,Options learningOpts
 			,Options undeploymentOpts) throws IOException {
@@ -925,6 +1002,8 @@ public class Starter {
     	
     	pw.println("\nStart Broker options:");
     	formatter.printOptions(pw, 1000, startBrokerOpts, 4, 5);
+    	pw.println("\nText annotation pipeline deployment options:");
+    	formatter.printOptions(pw, 1000, deployTAOpts, 4, 5);
     	pw.println("\nFeature extraction pipeline deployment options:");
     	formatter.printOptions(pw, 1000, deployFEOpts, 4, 5);
     	pw.println("\nClassification pipeline deployment options:");

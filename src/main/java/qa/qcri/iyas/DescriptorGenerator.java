@@ -182,6 +182,13 @@ public class DescriptorGenerator {
 		annotatorElement.addContent(scaleoutElement);
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	private static String generateInputJCasMultiplierAAEDescriptor(String root_folder,boolean concatenate) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
@@ -309,68 +316,192 @@ public class DescriptorGenerator {
 //		}
 //	}
 	
-	private static String generateStandardTextAnnotatorAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
+	
+	
+	
+	
+	private static String generateSegmenterAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
-		//Generates the AE descriptor for StandardPreprocessingAnnotator
-		System.out.println("Generating XML description for StandardSimpleFeatureExtractor primitives");
 		
 		System.out.println("	Generating XML description for SegmenterAE_Descriptor");
-		if (lang.equals("en")) {
-			AnalysisEngineDescription segmenter = createEngineDescription(
-					StanfordSegmenter.class);
-			segmenter.toXML(
-					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
-		} else if (lang.equals("ar")) {
+		if (lang.equals("ar")) {
 			AnalysisEngineDescription segmenter = createEngineDescription(
 					ArabicSegmenterAnalysisEngine.class);
+			segmenter.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
+		} else if (lang.equals("en")) {
+			AnalysisEngineDescription segmenter = createEngineDescription(
+					StanfordSegmenter.class);
 			segmenter.toXML(
 					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAE_Descriptor.xml"));
 		} else {
 			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
 		}
+		
+		System.out.println("	Generating XML description for SegmenterAAE_Descriptor");
+		AnalysisEngineDescription segmenterAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		segmenterAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		segmenterAAE.setPrimitive(false);
+
+		segmenterAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		segmenterAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		segmenterAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
+		
+		Import segmenterAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		segmenterAEImport.setName("descriptors.preprocessing.SegmenterAE_Descriptor");
+		segmenterAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("SegmenterAE", segmenterAEImport);
+		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("SegmenterAE");
+		
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    segmenterAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    segmenterAAE.toXML(
+				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/SegmenterAAE_Descriptor.xml"));		
+		
+	    return "descriptors.preprocessing.SegmenterAAE_Descriptor";
+	}
+	
+	private static String generatePOSTaggerAAEDescriptor(String root_folder,String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
 		System.out.println("	Generating XML description for POSTaggerAE_Descriptor");
 		AnalysisEngineDescription posTagger = createEngineDescription(
 				StanfordPosTagger.class,StanfordPosTagger.PARAM_LANGUAGE,lang);
 		posTagger.toXML(
 				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/POSTaggerAE_Descriptor.xml"));
+	
+		System.out.println("	Generating XML description for POSTaggerAAE_Descriptor");
+		AnalysisEngineDescription posTaggerAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		posTaggerAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		posTaggerAAE.setPrimitive(false);
 
+		posTaggerAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		posTaggerAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		posTaggerAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
+		
+		Import posTaggerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		posTaggerAEImport.setName("descriptors.preprocessing.POSTaggerAE_Descriptor");
+		posTaggerAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("POSTaggerAE", posTaggerAEImport);
+		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("POSTaggerAE");
+		
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    posTaggerAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    posTaggerAAE.toXML(
+				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/POSTaggerAAE_Descriptor.xml"));		
+		
+	    return "descriptors.preprocessing.POSTaggerAAE_Descriptor";
+	}
+	
+	private static String generateLemmatizerAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+		
 		System.out.println("	Generating XML description for LemmatizerAE_Descriptor");
-		if (lang.equals("en")) {
-			AnalysisEngineDescription lemmatizer = createEngineDescription(
-					StanfordLemmatizer.class);
-			lemmatizer.toXML(
-					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
-		} else if (lang.equals("ar")) {
+		if (lang.equals("ar")) {
 			AnalysisEngineDescription lemmatizer = createEngineDescription(
 					ArabicLemmatizerAnalysisEngine.class);
 			lemmatizer.toXML(
 					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
+		} else if (lang.equals("en")) {
+			AnalysisEngineDescription lemmatizer = createEngineDescription(
+					StanfordLemmatizer.class);
+			lemmatizer.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAE_Descriptor.xml"));
 		} else {
 			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
 		}
+
+		System.out.println("	Generating XML description for LemmatizerAAE_Descriptor");
+		AnalysisEngineDescription lemmatizerAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		lemmatizerAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		lemmatizerAAE.setPrimitive(false);
+
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
 		
-//		System.out.println("	Generating XML description for LemmaCorrectorAE_Descriptor");
-//		AnalysisEngineDescription lemmaCorrector = createEngineDescription(
-//				LemmaCorrectorAnalysisEngine.class);
-//		lemmaCorrector.toXML(
-//				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmaCorrectorAE_Descriptor.xml"));
+		Import lemmatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		lemmatizerAEImport.setName("descriptors.preprocessing.LemmatizerAE_Descriptor");
+		lemmatizerAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmatizerAE", lemmatizerAEImport);
 		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("LemmatizerAE");
 		
-		System.out.println("	Generating XML description for ChunkerAE_Descriptor");
-		if (lang.equals("en")) {
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    lemmatizerAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    lemmatizerAAE.toXML(
+				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/LemmatizerAAE_Descriptor.xml"));		
+		
+	    return "descriptors.preprocessing.LemmatizerAAE_Descriptor";
+	}
+	
+	private static String generateParserAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+		
+		System.out.println("	Generating XML description for ParserAE_Descriptor");
+		if (lang.equals("ar")) {
+			AnalysisEngineDescription parser = createEngineDescription(
+					ArabicParserAnalysisEngine.class);
+			parser.toXML(
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ParserAE_Descriptor.xml"));
+		} else if (lang.equals("en")) {
 			AnalysisEngineDescription chunker = createEngineDescription(
 					OpenNlpChunker.class);
 			chunker.toXML(
-					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
-		} else if (lang.equals("ar")) {
-			AnalysisEngineDescription chunker = createEngineDescription(
-					ArabicParserAnalysisEngine.class);
-			chunker.toXML(
-					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ChunkerAE_Descriptor.xml"));
+					new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ParserAE_Descriptor.xml"));
 		} else {
 			throw new ResourceInitializationException("Unsupporte language: "+lang,null);
 		}
+
+		System.out.println("	Generating XML description for ParserAAE_Descriptor");
+		AnalysisEngineDescription lemmatizerAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		lemmatizerAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		lemmatizerAAE.setPrimitive(false);
+
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		lemmatizerAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
+		
+		Import lemmatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		lemmatizerAEImport.setName("descriptors.preprocessing.ParserAE_Descriptor");
+		lemmatizerAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ParserAE", lemmatizerAEImport);
+		
+		List<String> flowNames1 = new ArrayList<String>();
+		flowNames1.add("ParserAE");
+		
+		FixedFlow fixedFlow1 = new FixedFlow_impl();
+	    fixedFlow1.setFixedFlow(flowNames1.toArray(new String[flowNames1.size()]));
+	    lemmatizerAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow1);
+		
+	    lemmatizerAAE.toXML(
+				new FileOutputStream(root_folder+"/descriptors/preprocessing"+"/ParserAAE_Descriptor.xml"));		
+		
+	    return "descriptors.preprocessing.ParserAAE_Descriptor";
+	}
+	
+
+	
+	private static String generateStandardTextAnnotatorAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException, InvalidXMLException {
+		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+		//Generates the AE descriptor for StandardPreprocessingAnnotator
+		System.out.println("Generating XML description for StandardSimpleFeatureExtractor primitives");
+		
+		String segmenter = generateSegmenterAAEDescriptor(root_folder,lang);
+		String posTagger = generatePOSTaggerAAEDescriptor(root_folder,lang);
+		String lemmatizer = generateLemmatizerAAEDescriptor(root_folder,lang);
+		String parser = generateParserAAEDescriptor(root_folder, lang);
 		
 		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
 		//Generates a AAE descriptor with only the MyAnnotator
@@ -384,31 +515,26 @@ public class DescriptorGenerator {
 		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
 
 		Import segmenterAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		segmenterAEImport.setName("descriptors.preprocessing.SegmenterAE_Descriptor");
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("SegmenterAE", segmenterAEImport);
+		segmenterAEImport.setName(segmenter);
+		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("SegmenterAAE", segmenterAEImport);
 		
 		Import posTaggerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		posTaggerAEImport.setName("descriptors.preprocessing.POSTaggerAE_Descriptor");
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("POSTaggerAE", posTaggerAEImport);
+		posTaggerAEImport.setName(posTagger);
+		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("POSTaggerAAE", posTaggerAEImport);
 		
 		Import lemmatizerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		lemmatizerAEImport.setName("descriptors.preprocessing.LemmatizerAE_Descriptor");
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmatizerAE", lemmatizerAEImport);
+		lemmatizerAEImport.setName(lemmatizer);
+		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmatizerAAE", lemmatizerAEImport);
 		
-//		Import lemmaCorrectorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-//		lemmaCorrectorAEImport.setName("descriptors.preprocessing.LemmaCorrectorAE_Descriptor");
-//		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LemmaCorrectorAE", lemmaCorrectorAEImport);
-		
-		Import chunkerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		chunkerAEImport.setName("descriptors.preprocessing.ChunkerAE_Descriptor");
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ChunkerAE", chunkerAEImport);
+		Import parserAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		parserAEImport.setName(parser);
+		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ParserAAE", parserAEImport);
 		
 		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("SegmenterAE");
-		flowNames.add("POSTaggerAE");
-		flowNames.add("LemmatizerAE");
-//		flowNames.add("LemmaCorrectorAE");
-		flowNames.add("ChunkerAE");
+		flowNames.add("SegmenterAAE");
+		flowNames.add("POSTaggerAAE");
+		flowNames.add("LemmatizerAAE");
+		flowNames.add("ParserAAE");
 		
 		FixedFlow fixedFlow = new FixedFlow_impl();
 	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
@@ -420,39 +546,199 @@ public class DescriptorGenerator {
 		return "descriptors.preprocessing.StandardTextAnnotatorAAE_Descriptor";
 	}
 	
-	private static String generateStandardTextAnnotatorDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
+	private static String generateStandardTextAnnotatorPipelineAAEDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
 		
-		String aaeDescr = generateStandardTextAnnotatorAAEDescriptor(root_folder, lang);
-
+		String descr = generateStandardTextAnnotatorAAEDescriptor(root_folder, lang);
 		
-		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
-		//Generates a AAE descriptor with only the MyAnnotator
-		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
 				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		standardPreprocessingAnnotatorAAE.setPrimitive(false);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
 		
-		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
-		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
 		
-		Import standardTextAnnotatorAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		standardTextAnnotatorAAEImport.setName(aaeDescr);
-		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotatorAAE", standardTextAnnotatorAAEImport);
+//		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+//		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+		
+		
+		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		aaeImport.setName(descr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotatorAAE", aaeImport);
 		
 		List<String> flowNames = new ArrayList<String>();
 		flowNames.add("StandardTextAnnotatorAAE");
 		
 		FixedFlow fixedFlow = new FixedFlow_impl();
 	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
-	    standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing/StandardTextAnnotatorPipelineAAE_Descriptor.xml").getAbsolutePath()));
 	    
-		standardPreprocessingAnnotatorAAE.toXML(
-				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing"+"/StandardTextAnnotator_Descriptor.xml").getAbsolutePath()));
-		
-		return "descriptors.preprocessing.StandardTextAnnotator_Descriptor";
+	    return "descriptors.preprocessing.StandardTextAnnotatorPipelineAAE_Descriptor";
+	    
 	}
+	
+	private static String generateStandardTextAnnotatorPipelineDescriptor(String root_folder, String lang) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+		
+		String descr = generateStandardTextAnnotatorPipelineAAEDescriptor(root_folder, lang);
+		
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
+		
+		
+//		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+//		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+		
+		
+		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		aaeImport.setName(descr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotator", aaeImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("StandardTextAnnotator");
+		
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing/StandardTextAnnotatorPipeline_Descriptor.xml").getAbsolutePath()));
+	    
+	    return "descriptors.preprocessing.StandardTextAnnotatorPipeline_Descriptor";
+	    
+	}
+	
+	public static String generateStandardTextAnnotatorPipelineDeploymentDescriptor(String brokerURL,String queueName, String lang, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
+//		try {
+			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
+			new File(rootFolder+"/descriptors").mkdir();
+			
+			String aaeDescr = generateStandardTextAnnotatorPipelineDescriptor(rootFolder,lang);
+			
+			System.out.println("Generating XML description for StandardTextAnnotatorPipelineAAE_DeploymentDescriptor");
+			ServiceContext pipelineContext = new ServiceContextImpl("StandardTextAnnotator", 
+								           "StandardTextAnnotatorPipelineAAE_Descriptor",
+								           aaeDescr, 
+								           queueName, brokerURL);
+			
+			
+//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("SegmenterAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("SegmenterAAE", new DelegateConfiguration[]{delegate11});
+//			
+//			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("POSTaggerAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("POSTaggerAAE", new DelegateConfiguration[]{delegate21});
+//		
+//			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("LemmatizerAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("LemmatizerAAE", new DelegateConfiguration[]{delegate31});
+//			
+//			ColocatedDelegateConfiguration delegate41 = new ColocatedDelegateConfigurationImpl("ParserAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration spCldd4 = new ColocatedDelegateConfigurationImpl("ParserAAE", new DelegateConfiguration[]{delegate41});
+			
+//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("SegmenterAAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration delegate12 = new ColocatedDelegateConfigurationImpl("POSTaggerAAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration delegate13 = new ColocatedDelegateConfigurationImpl("LemmatizerAAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration delegate14 = new ColocatedDelegateConfigurationImpl("ParserAAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[]{delegate11,delegate12,delegate13,delegate14});
+			
+			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0]);
+			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{delegate11});
+			
+			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
+					pipelineContext,spCldd1);
+			
+			BufferedWriter out = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(rootFolder+"/descriptors/StandardTextAnnotatorPipelineAAE_DeploymentDescriptor.xml")));
+			out.write(spdd.toXML());
+			out.close();
+			
+			Document descriptor = loadDescriptor(rootFolder+"/descriptors/StandardTextAnnotatorPipelineAAE_DeploymentDescriptor.xml");
+			addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
+			saveDescriptor(descriptor, rootFolder+"/descriptors/StandardTextAnnotatorPipelineAAE_DeploymentDescriptor.xml");
+			
+			return rootFolder+"/descriptors"+"/StandardTextAnnotatorPipelineAAE_DeploymentDescriptor.xml";
+//		} catch (JDOMException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
+	}
+	
+//	private static String generateStandardTextAnnotatorDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, IOException, SAXException {
+//		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+//		
+//		String aaeDescr = generateStandardTextAnnotatorAAEDescriptor(root_folder, lang);
+//
+//		
+//		System.out.println("Generating XML description for StandardPreprocessingAnnotatorAAE_Descriptor");
+//		//Generates a AAE descriptor with only the MyAnnotator
+//		AnalysisEngineDescription standardPreprocessingAnnotatorAAE = createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		standardPreprocessingAnnotatorAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		standardPreprocessingAnnotatorAAE.setPrimitive(false);
+//		
+//		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+//		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(false);
+//		
+//		Import standardTextAnnotatorAAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		standardTextAnnotatorAAEImport.setName(aaeDescr);
+//		standardPreprocessingAnnotatorAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotatorAAE", standardTextAnnotatorAAEImport);
+//		
+//		List<String> flowNames = new ArrayList<String>();
+//		flowNames.add("StandardTextAnnotatorAAE");
+//		
+//		FixedFlow fixedFlow = new FixedFlow_impl();
+//	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+//	    standardPreprocessingAnnotatorAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+//	    
+//		standardPreprocessingAnnotatorAAE.toXML(
+//				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing"+"/StandardTextAnnotator_Descriptor.xml").getAbsolutePath()));
+//		
+//		return "descriptors.preprocessing.StandardTextAnnotator_Descriptor";
+//	}
 	
 	private static String generateProcessedJCasAggregatorAAEDescriptor(String root_folder) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/preprocessing").mkdirs();
@@ -1072,12 +1358,128 @@ public class DescriptorGenerator {
 	    return "descriptors.learning.LearningAnnotatorAAE_Descriptor";
 	}
 	
-	private static String generatePreprocessingPipelineDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
-		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+//	private static String generatePreprocessingPipelineDescriptor(String root_folder, String lang) throws ResourceInitializationException, FileNotFoundException, SAXException, IOException, URISyntaxException, InvalidXMLException {
+//		new File(root_folder+"/descriptors/preprocessing").mkdirs();
+//		
+//		String ijmDescr = DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(root_folder,true);
+//		String stDescr = DescriptorGenerator.generateStandardTextAnnotatorDescriptor(root_folder,lang);
+//		String pjaDescr = DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(root_folder);
+//		
+//		//Generates a AAE descriptor for the testing pipeline
+//		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+//	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+//		flowControllerDeclaration.setImport(flowControllerImport);
+//		flowControllerDeclaration.setKey("FixedFlowController");
+//		
+//		AnalysisEngineDescription pipelineAAE = createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		pipelineAAE.setPrimitive(false);
+//
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+//		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+//		
+//		
+//		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		inputJCasMultiplierAEImport.setName(ijmDescr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE", inputJCasMultiplierAEImport);
+//		
+//		Import standardTextAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		standardTextAnnotatorAEImport.setName(stDescr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotator", standardTextAnnotatorAEImport);
+//		
+//		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		processedJCasMultiplierAEImport.setName(pjaDescr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE", processedJCasMultiplierAEImport);
+//		
+//		List<String> flowNames = new ArrayList<String>();
+//		flowNames.add("InputJCasMultiplierAAE");
+//		flowNames.add("StandardTextAnnotator");
+//		flowNames.add("ProcessedJCASAggregatorAAE");
+//		
+//		FixedFlow fixedFlow = new FixedFlow_impl();
+//	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+//	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+//  
+//	    pipelineAAE.toXML(
+//				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing/PreprocessingPipelineAAE_Descriptor.xml").getAbsolutePath()));
+//	    
+//	    return "descriptors.preprocessing.PreprocessingPipelineAAE_Descriptor";
+//	}
+//	
+//	public static String generatePreprocessingPipelineDeploymentDescritor(String brokerURL,String queueName, String lang, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
+//		try {
+//			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
+//			new File(rootFolder+"/descriptors").mkdir();
+//			
+//			String aaeDescr = generatePreprocessingPipelineDescriptor(rootFolder,lang);
+//			
+//			System.out.println("Generating XML description for PreprocessingPipelineAAE_DeploymentDescriptor");
+//			ServiceContext pipelineContext = new ServiceContextImpl("PreprocessingPipeline", 
+//								           "PreprocessingPipeline",
+//								           aaeDescr, 
+//								           queueName, brokerURL);
+//			pipelineContext.setCasPoolSize(10);
+//			
+//			
+//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
+//			delegate11.setCasMultiplier(true);
+//			delegate11.setCasPoolSize(10);
+//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
+//
+//
+//			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+//			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
+//					delegate21});
+//			
+//			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
+//			delegate31.setCasMultiplier(true);
+//			delegate31.setCasPoolSize(10);
+//			ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate31});
+//			
+//			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
+//					pipelineContext,spCldd1,spCldd2,spCldd3);
+//			
+//			BufferedWriter out = new BufferedWriter(
+//					new OutputStreamWriter(
+//							new FileOutputStream(rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml")));
+//			out.write(spdd.toXML());
+//			out.close();
+//			
+//			Document descriptor = loadDescriptor(rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml");
+//			addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
+//			saveDescriptor(descriptor, rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml");
+//			
+//			return rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml";
+//			
+//		} catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		return null;
+//	}
+	
+	private static String generateFeatureComputationAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/feature").mkdirs();
 		
-		String ijmDescr = DescriptorGenerator.generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-		String stDescr = DescriptorGenerator.generateStandardTextAnnotatorDescriptor(root_folder,lang);
-		String pjaDescr = DescriptorGenerator.generateProcessedJCasAggregatorAAEDescriptor(root_folder);
+		System.out.println("Generating XML description for FeatureComputationAAE_Descriptor");
+		String fcDescr = generateFeatureComputerDescriptor(root_folder,sims,rank);
+		String dDescr = generateDecorationAAEDescriptor(root_folder,lang,trees);
+		String krDescr = generateKeLPRepresentationExtractorAAEDescriptor(root_folder);
+		
 		
 		//Generates a AAE descriptor for the testing pipeline
 		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
@@ -1095,6 +1497,58 @@ public class DescriptorGenerator {
 		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
 		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
 		
+		
+		Import featureComputerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		featureComputerAEImport.setName(fcDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureComputer", featureComputerAEImport);
+		
+		Import decorationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		decorationAEImport.setName(dDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("DecorationAnnotatorAAE", decorationAEImport);
+		
+		Import representationExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		representationExtractionAEImport.setName(krDescr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("KeLPRepresentationExtractorAAE", representationExtractionAEImport);
+		
+		List<String> flowNames = new ArrayList<String>();
+		flowNames.add("FeatureComputer");
+		flowNames.add("DecorationAnnotatorAAE");
+		flowNames.add("KeLPRepresentationExtractorAAE");
+		
+		FixedFlow fixedFlow = new FixedFlow_impl();
+	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+  
+	    pipelineAAE.toXML(
+				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureComputationAAE_Descriptor.xml").getAbsolutePath()));
+	    
+	    return "descriptors.feature.FeatureComputationAAE_Descriptor";
+	    
+	}
+	
+	private static String generateFeatureComputationPipelineAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+		new File(root_folder+"/descriptors/feature").mkdirs();
+		
+		String descr = generateFeatureComputationAAEDescriptor(root_folder, lang,sims,rank,trees);
+		
+		
+		//Generates a AAE descriptor for the testing pipeline
+		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+		flowControllerDeclaration.setImport(flowControllerImport);
+		flowControllerDeclaration.setKey("FixedFlowController");
+		
+		AnalysisEngineDescription pipelineAAE = createEngineDescription(
+				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+		pipelineAAE.setPrimitive(false);
+
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+		
+		
 		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
 		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
 		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
@@ -1106,96 +1560,35 @@ public class DescriptorGenerator {
 		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
 		
 		
-		Import inputJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		inputJCasMultiplierAEImport.setName(ijmDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("InputJCasMultiplierAAE", inputJCasMultiplierAEImport);
-		
-		Import standardTextAnnotatorAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		standardTextAnnotatorAEImport.setName(stDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("StandardTextAnnotator", standardTextAnnotatorAEImport);
-		
-		Import processedJCasMultiplierAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		processedJCasMultiplierAEImport.setName(pjaDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ProcessedJCASAggregatorAAE", processedJCasMultiplierAEImport);
+		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+		aaeImport.setName(descr);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureComputationAAE", aaeImport);
 		
 		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("InputJCasMultiplierAAE");
-		flowNames.add("StandardTextAnnotator");
-		flowNames.add("ProcessedJCASAggregatorAAE");
+		flowNames.add("FeatureComputationAAE");
 		
 		FixedFlow fixedFlow = new FixedFlow_impl();
 	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
 	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
   
 	    pipelineAAE.toXML(
-				new FileOutputStream(new File(root_folder+"/descriptors/preprocessing/PreprocessingPipelineAAE_Descriptor.xml").getAbsolutePath()));
+				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureComputationPipelineAAE_Descriptor.xml").getAbsolutePath()));
 	    
-	    return "descriptors.preprocessing.PreprocessingPipelineAAE_Descriptor";
-	}
-	
-	public static String generatePreprocessingPipelineDeploymentDescritor(String queueName, String lang, int scaleout) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
-		try {
-			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
-			new File(rootFolder+"/descriptors").mkdir();
-			
-			String aaeDescr = generatePreprocessingPipelineDescriptor(rootFolder,lang);
-			
-			System.out.println("Generating XML description for PreprocessingPipelineAAE_DeploymentDescriptor");
-			ServiceContext pipelineContext = new ServiceContextImpl("PreprocessingPipeline", 
-								           "PreprocessingPipeline",
-								           aaeDescr, 
-								           queueName, "tcp://localhost:61616");
-			pipelineContext.setCasPoolSize(10);
-			
-			
-			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
-			delegate11.setCasMultiplier(true);
-			delegate11.setCasPoolSize(10);
-			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
-
-
-			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
-			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
-					delegate21});
-			
-			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
-			delegate31.setCasMultiplier(true);
-			delegate31.setCasPoolSize(10);
-			ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate31});
-			
-			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
-					pipelineContext,spCldd1,spCldd2,spCldd3);
-			
-			BufferedWriter out = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml")));
-			out.write(spdd.toXML());
-			out.close();
-			
-			Document descriptor = loadDescriptor(rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml");
-			addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
-			saveDescriptor(descriptor, rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml");
-			
-			return rootFolder+"/descriptors"+"/PreprocessingPipelineAAE_DeploymentDescriptor.xml";
-			
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		
-		
-		return null;
+	    return "descriptors.feature.FeatureComputationPipelineAAE_Descriptor";
+	    
 	}
 	
 	private static String generateFeatureExtractionAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
 		String ijmDescr = generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-		String stDescr = generateStandardTextAnnotatorDescriptor(root_folder,lang);
+		String stDescr = generateStandardTextAnnotatorPipelineDescriptor(root_folder,lang);
 		String pjaDescr = generateProcessedJCasAggregatorAAEDescriptor(root_folder);
 		String jpgDescr = generateJCasPairGeneratorAAEDescriptor(root_folder);
-		String fcDescr = generateFeatureComputerDescriptor(root_folder,sims,rank);
-		String dDescr = generateDecorationAAEDescriptor(root_folder,lang,trees);
-		String krDescr = generateKeLPRepresentationExtractorAAEDescriptor(root_folder);
+		String fcDescr = generateFeatureComputationPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
+//		String fcDescr = generateFeatureComputerDescriptor(root_folder,sims,rank);
+//		String dDescr = generateDecorationAAEDescriptor(root_folder,lang,trees);
+//		String krDescr = generateKeLPRepresentationExtractorAAEDescriptor(root_folder);
 		
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1244,24 +1637,24 @@ public class DescriptorGenerator {
 		
 		Import featureComputerAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		featureComputerAEImport.setName(fcDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureComputer", featureComputerAEImport);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureComputation", featureComputerAEImport);
 		
-		Import decorationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		decorationAEImport.setName(dDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("DecorationAnnotatorAAE", decorationAEImport);
-		
-		Import representationExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		representationExtractionAEImport.setName(krDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("KeLPRepresentationExtractorAAE", representationExtractionAEImport);
+//		Import decorationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		decorationAEImport.setName(dDescr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("DecorationAnnotatorAAE", decorationAEImport);
+//		
+//		Import representationExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		representationExtractionAEImport.setName(krDescr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("KeLPRepresentationExtractorAAE", representationExtractionAEImport);
 		
 		List<String> flowNames = new ArrayList<String>();
 		flowNames.add("InputJCasMultiplierAAE");
 		flowNames.add("StandardTextAnnotator");
 		flowNames.add("ProcessedJCASAggregatorAAE");
 		flowNames.add("JCasPairGeneratorAAE");
-		flowNames.add("FeatureComputer");
-		flowNames.add("DecorationAnnotatorAAE");
-		flowNames.add("KeLPRepresentationExtractorAAE");
+		flowNames.add("FeatureComputation");
+//		flowNames.add("DecorationAnnotatorAAE");
+//		flowNames.add("KeLPRepresentationExtractorAAE");
 		
 		FixedFlow fixedFlow = new FixedFlow_impl();
 	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
@@ -1270,157 +1663,169 @@ public class DescriptorGenerator {
 	    pipelineAAE.toXML(
 				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureExtractionAAE_Descriptor.xml").getAbsolutePath()));
 	    
+	    
+	    
 	    return "descriptors.feature.FeatureExtractionAAE_Descriptor";
 	    
 	}
 	
-	private static String generateFeatureExtractionPipelineAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
-		new File(root_folder+"/descriptors/feature").mkdirs();
-		
-		String descr = generateFeatureExtractionAAEDescriptor(root_folder, lang,sims,rank,trees);
-		
-		
-		//Generates a AAE descriptor for the testing pipeline
-		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
-	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
-		flowControllerDeclaration.setImport(flowControllerImport);
-		flowControllerDeclaration.setKey("FixedFlowController");
-		
-		AnalysisEngineDescription pipelineAAE = createEngineDescription(
-				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		pipelineAAE.setPrimitive(false);
-
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		
-		
-		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
-		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
-		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
-		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		param.setType("String");
-		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		parameters.addConfigurationParameter(param);
-		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
-		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
-		
-		
-		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		aaeImport.setName(descr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractionPipelineAAE", aaeImport);
-		
-		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("FeatureExtractionPipelineAAE");
-		
-		FixedFlow fixedFlow = new FixedFlow_impl();
-	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
-	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
-  
-	    pipelineAAE.toXML(
-				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureExtractionPipelineAAE_Descriptor.xml").getAbsolutePath()));
-	    
-	    return "descriptors.feature.FeatureExtractionPipelineAAE_Descriptor";
-	    
-	}
+//	private static String generateFeatureExtractionPipelineAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+//		new File(root_folder+"/descriptors/feature").mkdirs();
+//		
+//		String descr = generateFeatureExtractionAAEDescriptor(root_folder, lang,sims,rank,trees);
+//		
+//		
+//		//Generates a AAE descriptor for the testing pipeline
+//		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+//	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+//		flowControllerDeclaration.setImport(flowControllerImport);
+//		flowControllerDeclaration.setKey("FixedFlowController");
+//		
+//		AnalysisEngineDescription pipelineAAE = createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		pipelineAAE.setPrimitive(false);
+//
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		
+//		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+//		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+//		
+//		
+//		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		aaeImport.setName(descr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractionPipelineAAE", aaeImport);
+//		
+//		List<String> flowNames = new ArrayList<String>();
+//		flowNames.add("FeatureExtractionPipelineAAE");
+//		
+//		FixedFlow fixedFlow = new FixedFlow_impl();
+//	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+//	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+//  
+//	    pipelineAAE.toXML(
+//				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureExtractionPipelineAAE_Descriptor.xml").getAbsolutePath()));
+//	    
+//	    return "descriptors.feature.FeatureExtractionPipelineAAE_Descriptor";
+//	    
+//	}
+//	
+//	private static String generateFeatureExtractionPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+//		new File(root_folder+"/descriptors/feature").mkdirs();
+//		
+//		
+//		String descr = generateFeatureExtractionPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
+//		
+//		
+//		//Generates a AAE descriptor for the testing pipeline
+//		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
+//	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
+//		flowControllerDeclaration.setImport(flowControllerImport);
+//		flowControllerDeclaration.setKey("FixedFlowController");
+//		
+//		AnalysisEngineDescription pipelineAAE = createEngineDescription(
+//				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
+//		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+//		pipelineAAE.setPrimitive(false);
+//
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
+//		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
+//		
+//		
+//		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
+//		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
+//		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
+//		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		param.setType("String");
+//		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
+//		parameters.addConfigurationParameter(param);
+//		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
+//		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
+//		
+//		
+//		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+//		aaeImport.setName(descr);
+//		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractionPipeline", aaeImport);
+//		
+//		List<String> flowNames = new ArrayList<String>();
+//		flowNames.add("FeatureExtractionPipeline");
+//		
+//		FixedFlow fixedFlow = new FixedFlow_impl();
+//	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
+//	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
+//  
+//	    pipelineAAE.toXML(
+//				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureExtractionPipeline_Descriptor.xml").getAbsolutePath()));
+//	    
+//	    return "descriptors.feature.FeatureExtractionPipeline_Descriptor";
+//	    
+//	}
 	
-	private static String generateFeatureExtractionPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
-		new File(root_folder+"/descriptors/feature").mkdirs();
-		
-		String descr = generateFeatureExtractionPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
-		
-		
-		//Generates a AAE descriptor for the testing pipeline
-		Import flowControllerImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-	    flowControllerImport.setName("org.apache.uima.flow.FixedFlowController");
-	    FlowControllerDeclaration_impl flowControllerDeclaration = new FlowControllerDeclaration_impl();
-		flowControllerDeclaration.setImport(flowControllerImport);
-		flowControllerDeclaration.setKey("FixedFlowController");
-		
-		AnalysisEngineDescription pipelineAAE = createEngineDescription(
-				new LinkedList<AnalysisEngineDescription>(),new LinkedList<String>(),null,null,null);
-		pipelineAAE.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-		pipelineAAE.setPrimitive(false);
-
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setModifiesCas(true);
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(true);
-		pipelineAAE.getAnalysisEngineMetaData().getOperationalProperties().setOutputsNewCASes(true);
-		
-		
-		pipelineAAE.setFlowControllerDeclaration(flowControllerDeclaration);
-		ConfigurationParameterDeclarations parameters = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
-		ConfigurationParameter_impl param = new ConfigurationParameter_impl();
-		param.setName(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		param.setType("String");
-		param.addOverride("FixedFlowController/"+FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER);
-		parameters.addConfigurationParameter(param);
-		ConfigurationParameterSettings settings = pipelineAAE.getAnalysisEngineMetaData().getConfigurationParameterSettings();
-		settings.setParameterValue(FixedFlowController.PARAM_ACTION_AFTER_CAS_MULTIPLIER, "drop");
-		
-		
-		Import aaeImport = UIMAFramework.getResourceSpecifierFactory().createImport();
-		aaeImport.setName(descr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractionPipeline", aaeImport);
-		
-		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("FeatureExtractionPipeline");
-		
-		FixedFlow fixedFlow = new FixedFlow_impl();
-	    fixedFlow.setFixedFlow(flowNames.toArray(new String[flowNames.size()]));
-	    pipelineAAE.getAnalysisEngineMetaData().setFlowConstraints(fixedFlow);
-  
-	    pipelineAAE.toXML(
-				new FileOutputStream(new File(root_folder+"/descriptors/feature/FeatureExtractionPipeline_Descriptor.xml").getAbsolutePath()));
-	    
-	    return "descriptors.feature.FeatureExtractionPipeline_Descriptor";
-	    
-	}
-	
-	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName, String lang,int scaleout,
-			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
-		try {
+	public static String generateFeatureExtractionPipelineDeploymentDescriptor(String brokerURL,String queueName, String standardTextAnnotatorURL, String standardTextAnnotatorQueueName, String lang,
+			int scaleout,
+			boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, JDOMException {
+//		try {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateFeatureExtractionPipelineDescriptor(rootFolder,lang,sims,rank,trees);
+			String aaeDescr = generateFeatureExtractionAAEDescriptor(rootFolder,lang,sims,rank,trees);
 			
 			System.out.println("Generating XML description for FeatureExtractionPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("FeatureExtraction", 
 								           "FeatureExtractionPipelineAAE_Descriptor",
 								           aaeDescr, 
 								           queueName, brokerURL);
-			pipelineContext.setCasPoolSize(scaleout);
 			
-
-			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipelineAAE", new DelegateConfiguration[0]);
-			delegate11.setCasMultiplier(true);
-			delegate11.setCasPoolSize(scaleout);
-			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipeline", new DelegateConfiguration[]{delegate11});
+//			pipelineContext.setCasPoolSize(scaleout);
 			
-//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
+//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipelineAAE", new DelegateConfiguration[0]);
 //			delegate11.setCasMultiplier(true);
-//			delegate11.setCasPoolSize(10);
-//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
-//			
+//			delegate11.setCasPoolSize(scaleout);
+//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipeline", new DelegateConfiguration[]{delegate11});
+			
+			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
+			delegate11.setCasMultiplier(true);
+			delegate11.setCasPoolSize(10);
+			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
+			
 //			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
 //			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
 //					delegate21});
-//			
-//			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
-//			delegate31.setCasMultiplier(true);
-//			delegate31.setCasPoolSize(10);
-//			ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate31});
-//			
-//			ColocatedDelegateConfiguration delegate41 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAE", new DelegateConfiguration[0]);
-//			delegate41.setCasMultiplier(true);
-//			delegate41.setCasPoolSize(10);
-//			ColocatedDelegateConfiguration spCldd4 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAAE", new DelegateConfiguration[]{delegate41});
-//			
-//			ColocatedDelegateConfiguration delegate51 = new ColocatedDelegateConfigurationImpl("FeatureComputerAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
-//			ColocatedDelegateConfiguration spCldd5 = new ColocatedDelegateConfigurationImpl("FeatureComputer", new DelegateConfiguration[]{delegate51});
-//			
+			
+			RemoteDelegateConfiguration spCldd2 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
+					"StandardTextAnnotator",standardTextAnnotatorURL,
+					standardTextAnnotatorQueueName,SerializationStrategy.xmi);
+			spCldd2.setCasMultiplier(false);
+			spCldd2.setCasPoolSize(100);
+			spCldd2.setRemoteReplyQueueScaleout(5);
+			spCldd2.setRemote(true);
+			
+			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
+			delegate31.setCasMultiplier(true);
+			delegate31.setCasPoolSize(10);
+			ColocatedDelegateConfiguration spCldd3 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAAE", new DelegateConfiguration[]{delegate31});
+			
+			ColocatedDelegateConfiguration delegate41 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAE", new DelegateConfiguration[0]);
+			delegate41.setCasMultiplier(true);
+			delegate41.setCasPoolSize(10);
+			ColocatedDelegateConfiguration spCldd4 = new ColocatedDelegateConfigurationImpl("JCasPairGeneratorAAE", new DelegateConfiguration[]{delegate41});
+			
+			ColocatedDelegateConfiguration delegate51 = new ColocatedDelegateConfigurationImpl("FeatureComputationAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+			ColocatedDelegateConfiguration spCldd5 = new ColocatedDelegateConfigurationImpl("FeatureComputation", new DelegateConfiguration[]{delegate51});
+			
 //			ColocatedDelegateConfiguration delegate61 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
 //			ColocatedDelegateConfiguration spCldd6 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAAE", new DelegateConfiguration[]{delegate61});
 //
@@ -1431,7 +1836,7 @@ public class DescriptorGenerator {
 			
 			
 			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
-					pipelineContext,spCldd1);
+					pipelineContext,spCldd1,spCldd2,spCldd3,spCldd4,spCldd5);
 			
 			BufferedWriter out = new BufferedWriter(
 					new OutputStreamWriter(
@@ -1441,21 +1846,21 @@ public class DescriptorGenerator {
 			
 			
 			Document descriptor = loadDescriptor(rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
-			addScaleoutElementFirstLevel(descriptor, "FeatureExtractionPipeline",scaleout);
+			addScaleoutElementFirstLevel(descriptor, "FeatureComputation",scaleout);
 			saveDescriptor(descriptor, rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
 			
 			return rootFolder+"/descriptors"+"/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml";
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+//		} catch (JDOMException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
 	}
 	
 	private static String generateClassificationPipelineDescriptor(String root_folder, String lang, String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,lang,true,true,true);
+		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang,true,true,true);
 		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder,modelFile);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1487,14 +1892,14 @@ public class DescriptorGenerator {
 		
 		Import featureExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		featureExtractionAEImport.setName(feDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractor", featureExtractionAEImport);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractorAAE", featureExtractionAEImport);
 		
 		Import classificationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		classificationAEImport.setName(clDescr);
 		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("ClassificationAnnotatorAAE", classificationAEImport);
 		
 		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("FeatureExtractor");
+		flowNames.add("FeatureExtractorAAE");
 		flowNames.add("ClassificationAnnotatorAAE");
 
 		FixedFlow fixedFlow = new FixedFlow_impl();
@@ -1523,7 +1928,7 @@ public class DescriptorGenerator {
 			pipelineContext.setCasPoolSize(10);
 			
 			RemoteDelegateConfiguration spCldd1 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
-					"FeatureExtractor",featureExtractionURL,
+					"FeatureExtractorAAE",featureExtractionURL,
 					featureExtractionQueueName,SerializationStrategy.xmi);
 			spCldd1.setCasMultiplier(true);
 			spCldd1.setCasPoolSize(100);
@@ -1563,7 +1968,7 @@ public class DescriptorGenerator {
 	private static String generateLearningPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionPipelineDescriptor(root_folder,lang, sims, rank, trees);
+		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang, sims, rank, trees);
 		String lDescr = generateLearningAnnotatorAAEDescriptor(root_folder, sims, rank, trees);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1595,14 +2000,14 @@ public class DescriptorGenerator {
 		
 		Import featureExtractionAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		featureExtractionAEImport.setName(feDescr);
-		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractor", featureExtractionAEImport);
+		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("FeatureExtractorAAE", featureExtractionAEImport);
 		
 		Import classificationAEImport = UIMAFramework.getResourceSpecifierFactory().createImport();
 		classificationAEImport.setName(lDescr);
 		pipelineAAE.getDelegateAnalysisEngineSpecifiersWithImports().put("LearningAnnotatorAAE", classificationAEImport);
 		
 		List<String> flowNames = new ArrayList<String>();
-		flowNames.add("FeatureExtractor");
+		flowNames.add("FeatureExtractorAAE");
 		flowNames.add("LearningAnnotatorAAE");
 
 		FixedFlow fixedFlow = new FixedFlow_impl();
@@ -1632,7 +2037,7 @@ public class DescriptorGenerator {
 			pipelineContext.setCasPoolSize(10);
 			
 			RemoteDelegateConfiguration spCldd1 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
-					"FeatureExtractor",featureExtractionURL,
+					"FeatureExtractorAAE",featureExtractionURL,
 					featureExtractionQueueName,SerializationStrategy.xmi);
 			spCldd1.setCasMultiplier(true);
 			spCldd1.setCasPoolSize(100);

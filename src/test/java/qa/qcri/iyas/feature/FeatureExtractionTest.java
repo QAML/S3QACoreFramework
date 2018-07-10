@@ -206,25 +206,25 @@ public class FeatureExtractionTest {
 	
 	public void multiplierTest() throws Exception {
 		
-		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://localhost:61616");
-		broker.start();
-
-		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
-		
-//		generateAnalysisEngineDescritors(true);
-		String id = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616", "myQueueName","en", 10,false,true,false);
-		
-		String file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml";
-//		String file = generateInputTestFile(true);
-		runTestTaskB(true, file);
-		file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev-subtaskA.xml";
-		runTestTaskA(true, file);
-		Starter.undeployPipeline(id,uimaAsEngine);
-
-		Thread.sleep(100);
-		uimaAsEngine.stop();
-		broker.stop();
+//		BrokerService broker = new BrokerService();
+//		broker.addConnector("tcp://localhost:61616");
+//		broker.start();
+//
+//		UimaAsynchronousEngine uimaAsEngine = new BaseUIMAAsynchronousEngine_impl();
+//		
+////		generateAnalysisEngineDescritors(true);
+//		String id = Starter.depoyFeatureExtraction(uimaAsEngine,"tcp://localhost:61616", "myQueueName","en", 10,false,true,false);
+//		
+//		String file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev.xml";
+////		String file = generateInputTestFile(true);
+//		runTestTaskB(true, file);
+//		file = new File(DescriptorGenerator.class.getResource("/").toURI()).getAbsolutePath()+"/data/XML/SemEval/English/SemEval2016-Task3-CQA-QL-dev-subtaskA.xml";
+//		runTestTaskA(true, file);
+//		Starter.undeployPipeline(id,uimaAsEngine);
+//
+//		Thread.sleep(100);
+//		uimaAsEngine.stop();
+//		broker.stop();
 	}
 	
 	public static void main(String args[]) throws Exception {
