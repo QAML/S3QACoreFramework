@@ -646,7 +646,7 @@ public class Starter {
 		
 		Option textAnnQueueNameOpt = new Option(TEXT_ANNOTATION_QUEUE_NAME_OPT,TEXT_ANNOTATION_QUEUE_NAME_LONG_OPT,true,"Name of the queue where the text annotation pipeline is listening");
 		textAnnQueueNameOpt.setArgName("queue name");
-		textAnnQueueNameOpt.setRequired(true);
+		textAnnQueueNameOpt.setRequired(false);
 		
 		Option scaleoutOpt = new Option(SCALEOUT_OPT,SCALEOUT_LONG_NAME_OPT,true,"Number of instances to be instantiated for the feature computation sub-pipeline");
 		scaleoutOpt.setArgName("scaleout");
@@ -658,7 +658,7 @@ public class Starter {
 		
 		Option url7Opt = new Option(TEXT_ANNOTATION_IP_ADDRESS_OPT,TEXT_ANNOTATION_IP_ADDRESS_LONG_OPT,true,"IP address of the broker where the text annotation pipeline is registered");
 		url7Opt.setArgName("IP address");
-		url7Opt.setRequired(true);
+		url7Opt.setRequired(false);
 		
 		Option simsOpt = new Option(USE_SIMS_OPT, USE_SIMS_LONG_OPT, false, "Extract similarity features");
 		Option rankOpt = new Option(USE_RANK_OPT, USE_RANK_LONG_OPT, false, "Extract rank feature");

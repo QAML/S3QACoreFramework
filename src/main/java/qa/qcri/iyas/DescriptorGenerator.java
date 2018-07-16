@@ -1578,12 +1578,17 @@ public class DescriptorGenerator {
 	    
 	}
 	
-	private static String generateFeatureExtractionAAEDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
+	private static String generateFeatureExtractionAAEDescriptor(String root_folder, String lang, boolean remoteTextAnn, boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException {
 		new File(root_folder+"/descriptors/feature").mkdirs();
 		
 		String ijmDescr = generateInputJCasMultiplierAAEDescriptor(root_folder,true);
-//		String stDescr = generateStandardTextAnnotatorPipelineDescriptor(root_folder,lang);
-		String stDescr = generateStandardTextAnnotatorPipelineAAEDescriptor(root_folder,lang);
+		
+		String stDescr =  null;
+		if (remoteTextAnn)
+			stDescr = generateStandardTextAnnotatorPipelineDescriptor(root_folder,lang);
+		else
+			stDescr = generateStandardTextAnnotatorPipelineAAEDescriptor(root_folder,lang);
+		
 		String pjaDescr = generateProcessedJCasAggregatorAAEDescriptor(root_folder);
 		String jpgDescr = generateJCasPairGeneratorAAEDescriptor(root_folder);
 		String fcDescr = generateFeatureComputationPipelineAAEDescriptor(root_folder,lang,sims,rank,trees);
@@ -1782,7 +1787,9 @@ public class DescriptorGenerator {
 			String rootFolder = new File(System.getProperty("user.dir")).getAbsolutePath();
 			new File(rootFolder+"/descriptors").mkdir();
 			
-			String aaeDescr = generateFeatureExtractionAAEDescriptor(rootFolder,lang,sims,rank,trees);
+			
+			boolean remoteTextAnn = standardTextAnnotatorQueueName != null && standardTextAnnotatorURL != null;
+			String aaeDescr = generateFeatureExtractionAAEDescriptor(rootFolder,lang,remoteTextAnn,sims,rank,trees);
 			
 			System.out.println("Generating XML description for FeatureExtractionPipelineAAE_DeploymentDescriptor");
 			ServiceContext pipelineContext = new ServiceContextImpl("FeatureExtraction", 
@@ -1790,29 +1797,27 @@ public class DescriptorGenerator {
 								           aaeDescr, 
 								           queueName, brokerURL);
 			
-//			pipelineContext.setCasPoolSize(scaleout);
-			
-//			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipelineAAE", new DelegateConfiguration[0]);
-//			delegate11.setCasMultiplier(true);
-//			delegate11.setCasPoolSize(scaleout);
-//			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("FeatureExtractionPipeline", new DelegateConfiguration[]{delegate11});
-			
 			ColocatedDelegateConfiguration delegate11 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAE", new DelegateConfiguration[0]);
 			delegate11.setCasMultiplier(true);
 			delegate11.setCasPoolSize(10);
 			ColocatedDelegateConfiguration spCldd1 = new ColocatedDelegateConfigurationImpl("InputJCasMultiplierAAE", new DelegateConfiguration[]{delegate11});
 			
-			ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
-			ColocatedDelegateConfiguration spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
-					delegate21});
+			DelegateConfiguration spCldd2 = null;
+			if (remoteTextAnn) {
+				RemoteDelegateConfiguration rspCldd2 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
+						"StandardTextAnnotator",standardTextAnnotatorURL,
+						standardTextAnnotatorQueueName,SerializationStrategy.xmi);
+				rspCldd2.setCasMultiplier(false);
+				rspCldd2.setCasPoolSize(100);
+				rspCldd2.setRemoteReplyQueueScaleout(5);
+				rspCldd2.setRemote(true);
+				spCldd2 = rspCldd2;
+			} else {
+				ColocatedDelegateConfiguration delegate21 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotatorAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
+				spCldd2 = new ColocatedDelegateConfigurationImpl("StandardTextAnnotator", new DelegateConfiguration[]{
+						delegate21});
+			}
 			
-//			RemoteDelegateConfiguration spCldd2 = DeploymentDescriptorFactory.createRemoteDelegateConfiguration(
-//					"StandardTextAnnotator",standardTextAnnotatorURL,
-//					standardTextAnnotatorQueueName,SerializationStrategy.xmi);
-//			spCldd2.setCasMultiplier(false);
-//			spCldd2.setCasPoolSize(100);
-//			spCldd2.setRemoteReplyQueueScaleout(5);
-//			spCldd2.setRemote(true);
 			
 			ColocatedDelegateConfiguration delegate31 = new ColocatedDelegateConfigurationImpl("ProcessedJCASAggregatorAE", new DelegateConfiguration[0]);
 			delegate31.setCasMultiplier(true);
@@ -1827,15 +1832,6 @@ public class DescriptorGenerator {
 			ColocatedDelegateConfiguration delegate51 = new ColocatedDelegateConfigurationImpl("FeatureComputationAAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
 			ColocatedDelegateConfiguration spCldd5 = new ColocatedDelegateConfigurationImpl("FeatureComputation", new DelegateConfiguration[]{delegate51});
 			
-//			ColocatedDelegateConfiguration delegate61 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAE", new DelegateConfiguration[0], new ErrorHandlingSettings[0]);
-//			ColocatedDelegateConfiguration spCldd6 = new ColocatedDelegateConfigurationImpl("DecorationAnnotatorAAE", new DelegateConfiguration[]{delegate61});
-//
-//			ColocatedDelegateConfiguration delegate71 = new ColocatedDelegateConfigurationImpl("KeLPRepresentationExtractorAE", new DelegateConfiguration[0]);
-//			delegate71.setCasMultiplier(true);
-//			delegate71.setCasPoolSize(10);
-//			ColocatedDelegateConfiguration spCldd7 = new ColocatedDelegateConfigurationImpl("KeLPRepresentationExtractorAAE", new DelegateConfiguration[]{delegate71});
-			
-			
 			UimaASAggregateDeploymentDescriptor spdd = DeploymentDescriptorFactory.createAggregateDeploymentDescriptor(
 					pipelineContext,spCldd1,spCldd2,spCldd3,spCldd4,spCldd5);
 			
@@ -1847,7 +1843,8 @@ public class DescriptorGenerator {
 			
 			
 			Document descriptor = loadDescriptor(rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
-			addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
+			if (!remoteTextAnn)
+				addScaleoutElementFirstLevel(descriptor, "StandardTextAnnotator",scaleout);
 			addScaleoutElementFirstLevel(descriptor, "FeatureComputation",scaleout);
 			saveDescriptor(descriptor, rootFolder+"/descriptors/FeatureExtractionPipelineAAE_DeploymentDescriptor.xml");
 			
@@ -1862,7 +1859,7 @@ public class DescriptorGenerator {
 	private static String generateClassificationPipelineDescriptor(String root_folder, String lang, String modelFile) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang,true,true,true);
+		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang,false,true,true,true);
 		String clDescr = generateClassificationAnnotatorAAEDescriptor(root_folder,modelFile);
 		
 		//Generates a AAE descriptor for the testing pipeline
@@ -1970,7 +1967,7 @@ public class DescriptorGenerator {
 	private static String generateLearningPipelineDescriptor(String root_folder, String lang,boolean sims,boolean rank,boolean trees) throws ResourceInitializationException, InvalidXMLException, FileNotFoundException, SAXException, IOException, URISyntaxException {
 		new File(root_folder+"/descriptors/classification").mkdirs();
 		
-		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang, sims, rank, trees);
+		String feDescr = generateFeatureExtractionAAEDescriptor(root_folder,lang, false, sims, rank, trees);
 		String lDescr = generateLearningAnnotatorAAEDescriptor(root_folder, sims, rank, trees);
 		
 		//Generates a AAE descriptor for the testing pipeline
