@@ -76,9 +76,9 @@ class FeatureExtractionStatusCallBackListener extends UimaAsBaseCallbackListener
 	@Override
 	public void entityProcessComplete(CAS cas, EntityProcessStatus aStatus) {
 		if (!aStatus.getStatusMessage().equals("success")) {
-			System.out.println(StringEscapeUtils.unescapeXml(cas.getDocumentText()));
-			System.exit(0);
-//			throw new IllegalStateException(aStatus.getStatusMessage());
+//			System.out.println(StringEscapeUtils.unescapeXml(cas.getDocumentText()));
+//			System.exit(0);
+			throw new IllegalStateException(aStatus.getStatusMessage());
 		} else {
 			try {
 				if (JCasUtil.exists(cas.getJCas(), AdditionalInfo.class)) {

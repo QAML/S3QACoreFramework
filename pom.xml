@@ -194,6 +194,11 @@
 			<artifactId>ejml</artifactId>
 			<version>0.23</version>
 		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-tagger-ar-accurate</artifactId>
+			<version>20131112.1</version>
+		</dependency>
 		<!--
 		<dependency>
 		    <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
