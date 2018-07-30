@@ -48,6 +48,7 @@ import it.uniroma2.sag.kelp.kernel.standard.LinearKernelCombination;
 import it.uniroma2.sag.kelp.kernel.standard.NormalizationKernel;
 import it.uniroma2.sag.kelp.kernel.standard.RbfKernel;
 import it.uniroma2.sag.kelp.kernel.tree.PartialTreeKernel;
+import it.uniroma2.sag.kelp.kernel.tree.SubSetTreeKernel;
 import it.uniroma2.sag.kelp.kernel.vector.LinearKernel;
 import it.uniroma2.sag.kelp.learningalgorithm.LearningAlgorithm;
 import it.uniroma2.sag.kelp.learningalgorithm.classification.libsvm.BinaryCSvmClassification;
@@ -160,10 +161,13 @@ public class KeLPSVMLearner extends Learner  {
 			
 			if (treeKernel != null) {
 				int numberOfExamples = trainingset.getNumberOfExamples();
-				PartialTreeKernel ptk = new PartialTreeKernel(0.4f, 0.4f, 1, "tree");
-				ptk.setSquaredNormCache(new DynamicIndexSquaredNormCache(numberOfExamples));
+				SubSetTreeKernel sst = new SubSetTreeKernel(0.4f, "tree");
+				sst.setSquaredNormCache(new DynamicIndexSquaredNormCache(numberOfExamples));
+				//PartialTreeKernel ptk = new PartialTreeKernel(0.4f, 0.4f, 1, "tree");
+				//ptk.setSquaredNormCache(new DynamicIndexSquaredNormCache(numberOfExamples));
 				
-				NormalizationKernel norm = new NormalizationKernel(ptk);
+				//NormalizationKernel norm = new NormalizationKernel(ptk);
+				NormalizationKernel norm = new NormalizationKernel(sst);
 				norm.setKernelCache(new FixSizeKernelCache(numberOfExamples*2));
 				UncrossedPairwiseSumKernel pairwiseKernel = new UncrossedPairwiseSumKernel(norm, true);
 				
